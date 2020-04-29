@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Tools</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D7DA5B90-D25A-4AD1-A9E9-D0C86BC24AF3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <OutputPath>.mono\temp\bin\$(Configuration)</OutputPath>
+    <RootNamespace>Overlords</RootNamespace>
+    <AssemblyName>Overlords</AssemblyName>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <GodotProjectGeneratorVersion>1.0.7374.16792</GodotProjectGeneratorVersion>
+    <BaseIntermediateOutputPath>.mono\temp\obj</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)</IntermediateOutputPath>
+    <ApiConfiguration Condition=" '$(Configuration)' != 'Release' ">Debug</ApiConfiguration>
+    <ApiConfiguration Condition=" '$(Configuration)' == 'Release' ">Release</ApiConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(GodotDefineConstants);GODOT;DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>portable</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>$(GodotDefineConstants);GODOT;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Tools|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>portable</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>$(GodotDefineConstants);GODOT;DEBUG;TOOLS;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="GodotSharp">
+      <Private>False</Private>
+      <HintPath>$(ProjectDir)/.mono/assemblies/$(ApiConfiguration)/GodotSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="GodotSharpEditor" Condition=" '$(Configuration)' == 'Tools' ">
+      <Private>False</Private>
+      <HintPath>$(ProjectDir)/.mono/assemblies/$(ApiConfiguration)/GodotSharpEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="game\constants\CoreSignalNames.cs" />
+    <Compile Include="game\constants\InputNames.cs" />
+    <Compile Include="game\entity\shared\CharacterMotor.cs" />
+    <Compile Include="game\world\ClientGameController.cs" />
+    <Compile Include="game\world\EntityContainer.cs" />
+    <Compile Include="game\world\InputManager.cs" />
+    <Compile Include="game\world\Protocol.cs" />
+    <Compile Include="game\world\ServerGameController.cs" />
+    <Compile Include="helpers\behaviors\BehaviorsExtension.cs" />
+    <Compile Include="helpers\behaviors\FieldNotNull.cs" />
+    <Compile Include="helpers\behaviors\LinkNodePath.cs" />
+    <Compile Include="helpers\behaviors\RequireBehavior.cs" />
+    <Compile Include="helpers\behaviors\RequireParent.cs" />
+    <Compile Include="helpers\conditionals\ConditionalNode.cs" />
+    <Compile Include="helpers\conditionals\NetworkConditionalNode.cs" />
+    <Compile Include="helpers\listenables\BaseValue.cs" />
+    <Compile Include="helpers\listenables\BoolValue.cs" />
+    <Compile Include="helpers\listenables\IntValue.cs" />
+    <Compile Include="helpers\listenables\StringValue.cs" />
+    <Compile Include="helpers\network\NetworkUtils.cs" />
+    <Compile Include="helpers\network\RemoteEvent.cs" />
+    <Compile Include="helpers\network\RemoteEventHub.cs" />
+    <Compile Include="helpers\network\serialization\Core.cs" />
+    <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
+    <Compile Include="helpers\network\serialization\PrimitiveSerializer.cs" />
+    <Compile Include="helpers\network\serialization\RemoteEventSplitter.cs" />
+    <Compile Include="helpers\network\serialization\StructSerializer.cs" />
+    <Compile Include="menu\StartClientButton.cs" />
+    <Compile Include="menu\StartServerButton.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>
