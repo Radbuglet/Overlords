@@ -1,17 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="8f8d1fa4-5a3d-4ce5-8d36-a008b7174b96" name="Default Changelist" comment="" />
+    <list default="true" id="8f8d1fa4-5a3d-4ce5-8d36-a008b7174b96" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/game/entity/player/ServerPlayer.tscn" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/entity/player/ServerPlayerController.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/game/world/shared/EntityContainer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/trackingGroups/NodeGroup.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/helpers/trackingGroups/NodeGroupMemberTracker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Overlords/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Overlords/.idea/contentModel.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Overlords/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Overlords/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Overlords.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Overlords.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/TestWorld.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/game/TestWorld.tscn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/world/ClientGameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/game/world/client/ClientGameController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/world/EntityContainer.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/world/InputManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/game/world/client/InputManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/world/Protocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/game/world/shared/Protocol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/world/ServerGameController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/game/world/server/ServerGameController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/helpers/behaviors/BehaviorsExtension.cs" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/behaviors/BehaviorsExtension.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/81B66F56-5C96-467E-BD23-4BEBA2460F75/c0/438a0139/PropertyHint.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/listenables/BaseValue.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/listenables/IntValue.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/game/world/ClientGameController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/game/world/client/ClientGameController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/network/serialization/PrimitiveSerializer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/listenables/BoolValue.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/listenables/StringValue.cs" root0="FORCE_HIGHLIGHTING" />
@@ -19,8 +56,11 @@
     <setting file="file://$PROJECT_DIR$/helpers/conditionals/NetworkConditionalNode.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/conditionals/ConditionalNode.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/menu/StartServerButton.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/game/world/ServerGameController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/game/entity/player/ServerPlayerController.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/440D1D09-336D-46EE-B6BA-2229A55AC755/a6/3214a28e/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/game/world/server/ServerGameController.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/game/constants/CoreSignalNames.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/440D1D09-336D-46EE-B6BA-2229A55AC755/40/3668e048/IEnumerable.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/menu/StartClientButton.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/behaviors/LinkNodePath.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/behaviors/BehaviorsExtension.cs" root0="FORCE_HIGHLIGHTING" />
@@ -32,36 +72,21 @@
     <setting file="file://$PROJECT_DIR$/helpers/network/RemoteEventHub.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/behaviors/FieldNotNull.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/network/serialization/Core.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/game/world/EntityContainer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/game/world/shared/EntityContainer.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/440D1D09-336D-46EE-B6BA-2229A55AC755/70/c285c415/IConvertible.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/game/world/InputManager.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/game/world/Protocol.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/game/world/client/InputManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/game/world/shared/Protocol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/network/NetworkUtils.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/game/entity/shared/CharacterMotor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/network/serialization/EnumSerializer.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/helpers/trackingGroups/NodeGroup.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/81B66F56-5C96-467E-BD23-4BEBA2460F75/47/53952f67/Object.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/helpers/network/serialization/RemoteEventSplitter.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/helpers/trackingGroups/NodeGroupMemberTracker.cs" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/helpers/listenables/ListenableValue.cs" />
-        <option value="$PROJECT_DIR$/helpers/listenables/BoolValue.cs" />
-        <option value="$PROJECT_DIR$/helpers/listenables/StringValue.cs" />
-        <option value="$PROJECT_DIR$/helpers/listenables/IntValue.cs" />
-        <option value="$PROJECT_DIR$/helpers/listenables/BaseValue.cs" />
-        <option value="$PROJECT_DIR$/game/entity/character/LocalPlayerController.cs" />
-        <option value="$PROJECT_DIR$/game/entity/character/PlayerStatus.cs" />
-        <option value="$PROJECT_DIR$/game/entity/character/items/DataInventory.cs" />
-        <option value="$PROJECT_DIR$/game/entity/character/items/DataItemStack.cs" />
-        <option value="$PROJECT_DIR$/game/world/InputManager.cs" />
-        <option value="$PROJECT_DIR$/game/entity/player/PlayerState.cs" />
-        <option value="$PROJECT_DIR$/game/entity/player/PlayerStateShared.cs" />
-        <option value="$PROJECT_DIR$/game/entity/player/inventory/DataItemStack.cs" />
-        <option value="$PROJECT_DIR$/game/entity/player/inventory/ItemNbt.cs" />
-        <option value="$PROJECT_DIR$/game/entity/player/inventory/DataInventory.cs" />
-        <option value="$PROJECT_DIR$/game/entity/player/PlayerStateAuth.cs" />
-        <option value="$PROJECT_DIR$/game/entity/player/PlayerStateAll.cs" />
         <option value="$PROJECT_DIR$/game/entity/player/character/LocalPlayerController.cs" />
         <option value="$PROJECT_DIR$/helpers/network/RpcHub.cs" />
         <option value="$PROJECT_DIR$/helpers/network/NetworkUtils.cs" />
@@ -92,10 +117,27 @@
         <option value="$PROJECT_DIR$/game/world/ClientGameController.cs" />
         <option value="$PROJECT_DIR$/game/world/Protocol.cs" />
         <option value="$PROJECT_DIR$/helpers/behaviors/IndirectGameObject.cs" />
-        <option value="$PROJECT_DIR$/game/world/EntityContainer.cs" />
         <option value="$PROJECT_DIR$/helpers/behaviors/FieldNotNull.cs" />
-        <option value="$PROJECT_DIR$/helpers/behaviors/BehaviorsExtension.cs" />
+        <option value="$PROJECT_DIR$/game/entity/player/PlayerServerHandle.cs" />
+        <option value="$PROJECT_DIR$/game/entity/player/PlayerServer.cs" />
+        <option value="$PROJECT_DIR$/game/entity/player/PlayerServerComponent.cs" />
+        <option value="$PROJECT_DIR$/game/entity/player/ServerPlayer.cs" />
         <option value="$PROJECT_DIR$/game/world/ServerGameController.cs" />
+        <option value="$PROJECT_DIR$/game/world/EntityContainer.cs" />
+        <option value="$PROJECT_DIR$/game/world/shared/EntityGroups.cs" />
+        <option value="$PROJECT_DIR$/game/world/shared/EntityBase.cs" />
+        <option value="$PROJECT_DIR$/game/world/shared/EntityContainer.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/GroupTrackingBehavior.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/GroupTrackeable.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/GroupTrackAble.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/GroupTrackable.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/GroupTracker.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/EntityGroupTracker.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/NodeGroup.cs" />
+        <option value="$PROJECT_DIR$/game/world/server/ServerGameController.cs" />
+        <option value="$PROJECT_DIR$/game/entity/player/ServerPlayerController.cs" />
+        <option value="$PROJECT_DIR$/helpers/trackingGroups/NodeGroupMemberTracker.cs" />
+        <option value="$PROJECT_DIR$/helpers/behaviors/BehaviorsExtension.cs" />
       </list>
     </option>
   </component>
@@ -106,11 +148,15 @@
     <auto-save>true</auto-save>
   </component>
   <component name="ProjectId" id="1b002IaY46eIWf6JKZzdhYyAt4L" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DebuggerViewTab_PTCS_FirstProportionKey" value="0.34995976" />
     <property name="DebuggerViewTab_PTCS_LastProportionKey" value="0.30008045" />
     <property name="Rider.DefaultBreakpoints.AreToggled" value="true" />
@@ -192,7 +238,13 @@
       <workItem from="1588087669411" duration="1065000" />
       <workItem from="1588102774445" duration="493000" />
       <workItem from="1588112658894" duration="1078000" />
-      <workItem from="1588170378508" duration="4085000" />
+      <workItem from="1588170378508" duration="6924000" />
+      <workItem from="1588186702870" duration="1488000" />
+      <workItem from="1588188677182" duration="1266000" />
+      <workItem from="1588195201181" duration="2294000" />
+      <workItem from="1588214000806" duration="1149000" />
+      <workItem from="1588256215768" duration="654000" />
+      <workItem from="1588256922140" duration="1106000" />
     </task>
     <servers />
   </component>
@@ -201,7 +253,20 @@
   </component>
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
   <component name="UnityUnitTestConfiguration" currentTestLauncher="NUnit" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
   <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -213,25 +278,25 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="1038" y="560" key="ANALYSIS_DLG_com.jetbrains.rider.actions.impl.cleanup.RiderCodeCleanupAction$actionPerformed$dlg$1/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1587772251621" />
-    <state width="2517" height="401" key="GridCell.Tab.0.bottom" timestamp="1588103267069">
+    <state width="2517" height="401" key="GridCell.Tab.0.bottom" timestamp="1588258017775">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2517" height="401" key="GridCell.Tab.0.bottom/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588103267069" />
+    <state width="2517" height="401" key="GridCell.Tab.0.bottom/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588258017775" />
     <state width="2517" height="519" key="GridCell.Tab.0.bottom/0.0.2560.1400/2560.0.2560.1400@2560.0.2560.1400" timestamp="1587762501003" />
-    <state width="2517" height="401" key="GridCell.Tab.0.center" timestamp="1588103267069">
+    <state width="2517" height="401" key="GridCell.Tab.0.center" timestamp="1588258017775">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2517" height="401" key="GridCell.Tab.0.center/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588103267069" />
+    <state width="2517" height="401" key="GridCell.Tab.0.center/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588258017775" />
     <state width="2517" height="519" key="GridCell.Tab.0.center/0.0.2560.1400/2560.0.2560.1400@2560.0.2560.1400" timestamp="1587762501003" />
-    <state width="2517" height="401" key="GridCell.Tab.0.left" timestamp="1588103267068">
+    <state width="2517" height="401" key="GridCell.Tab.0.left" timestamp="1588258017775">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2517" height="401" key="GridCell.Tab.0.left/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588103267068" />
+    <state width="2517" height="401" key="GridCell.Tab.0.left/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588258017775" />
     <state width="2517" height="519" key="GridCell.Tab.0.left/0.0.2560.1400/2560.0.2560.1400@2560.0.2560.1400" timestamp="1587762501003" />
-    <state width="2517" height="401" key="GridCell.Tab.0.right" timestamp="1588103267069">
+    <state width="2517" height="401" key="GridCell.Tab.0.right" timestamp="1588258017775">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state width="2517" height="401" key="GridCell.Tab.0.right/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588103267069" />
+    <state width="2517" height="401" key="GridCell.Tab.0.right/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588258017775" />
     <state width="2517" height="519" key="GridCell.Tab.0.right/0.0.2560.1400/2560.0.2560.1400@2560.0.2560.1400" timestamp="1587762501003" />
     <state width="2517" height="519" key="GridCell.Tab.1.bottom" timestamp="1587773120208">
       <screen x="0" y="0" width="2560" height="1400" />
@@ -310,10 +375,10 @@
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
     <state x="936" y="330" key="run.anything.popup/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588088474467" />
-    <state x="936" y="353" width="672" height="676" key="search.everywhere.popup" timestamp="1588170522383">
+    <state x="936" y="353" width="672" height="676" key="search.everywhere.popup" timestamp="1588217198873">
       <screen x="0" y="0" width="2560" height="1400" />
     </state>
-    <state x="936" y="353" width="672" height="676" key="search.everywhere.popup/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588170522383" />
+    <state x="936" y="353" width="672" height="676" key="search.everywhere.popup/0.0.2560.1400/2560.0.2560.1400@0.0.2560.1400" timestamp="1588217198873" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

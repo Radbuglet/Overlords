@@ -1,9 +1,10 @@
 ﻿using Godot;
 using Overlords.game.constants;
+using Overlords.game.world.shared;
 using Overlords.helpers.behaviors;
 using Overlords.helpers.network;
 
-namespace Overlords.game.world
+namespace Overlords.game.world.client
 {
     public class ClientGameController: Node
     {

@@ -12,16 +12,25 @@
           <e p="InputNames.cs" t="Include" />
         </e>
         <e p="entity" t="Include">
+          <e p="player" t="Include">
+            <e p="ServerPlayerController.cs" t="Include" />
+          </e>
           <e p="shared" t="Include">
             <e p="CharacterMotor.cs" t="Include" />
           </e>
         </e>
         <e p="world" t="Include">
-          <e p="ClientGameController.cs" t="Include" />
-          <e p="EntityContainer.cs" t="Include" />
-          <e p="InputManager.cs" t="Include" />
-          <e p="Protocol.cs" t="Include" />
-          <e p="ServerGameController.cs" t="Include" />
+          <e p="client" t="Include">
+            <e p="ClientGameController.cs" t="Include" />
+            <e p="InputManager.cs" t="Include" />
+          </e>
+          <e p="server" t="Include">
+            <e p="ServerGameController.cs" t="Include" />
+          </e>
+          <e p="shared" t="Include">
+            <e p="EntityContainer.cs" t="Include" />
+            <e p="Protocol.cs" t="Include" />
+          </e>
         </e>
       </e>
       <e p="helpers" t="Include">
@@ -53,6 +62,10 @@
             <e p="RemoteEventSplitter.cs" t="Include" />
             <e p="StructSerializer.cs" t="Include" />
           </e>
+        </e>
+        <e p="trackingGroups" t="Include">
+          <e p="NodeGroup.cs" t="Include" />
+          <e p="NodeGroupMemberTracker.cs" t="Include" />
         </e>
       </e>
       <e p="menu" t="Include">

@@ -54,14 +54,22 @@ namespace Overlords.helpers.behaviors
         {
             initializedNode.InitializeCommon(null);
         }
-        
-        public static void InitializeBehavior(this Node initializedBehavior)
+
+        public static void InitializeBehavior(this Node initializedBehavior, bool autoCorrectName)
         {
-            Debug.Assert(initializedBehavior.Name == GetBehaviorNodeName(initializedBehavior.GetType()),
-                $"Behavior node at {initializedBehavior.GetNodeDebugInfo()} must be named \"{GetBehaviorNodeName(initializedBehavior.GetType())}\"");
-            
+            if (autoCorrectName)
+                initializedBehavior.Name = GetBehaviorNodeName(initializedBehavior.GetType());
+            else
+                Debug.Assert(initializedBehavior.Name == GetBehaviorNodeName(initializedBehavior.GetType()),
+                    $"Behavior node at {initializedBehavior.GetNodeDebugInfo()} must be named \"{GetBehaviorNodeName(initializedBehavior.GetType())}\"");
+
             var gameObject = initializedBehavior.GetGameObject<Node>();
             initializedBehavior.InitializeCommon(gameObject);
+        }
+
+        public static void InitializeBehavior(this Node initializedBehavior)
+        {
+            initializedBehavior.InitializeBehavior(false);
         }
 
         private static string GetBehaviorNodeName(Type behaviorType)
@@ -71,7 +79,8 @@ namespace Overlords.helpers.behaviors
 
         private static string GetNodeDebugInfo(this Node node)
         {
-            return $"<{node.Name}@{node.GetPath()}>";
+            var path = node.IsInsideTree() ? node.GetPath().ToString() : "{Outside tree}";
+            return $"<{node.Name}@{path}>";
         }
         
         public static TGameObject GetGameObject<TGameObject>(this Node behavior) where TGameObject : Node

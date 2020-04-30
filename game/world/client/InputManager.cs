@@ -1,6 +1,6 @@
 ﻿using Godot;
 
-namespace Overlords.game.world
+namespace Overlords.game.world.client
 {
 	public class InputManager : Node
 	{

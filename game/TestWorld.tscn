@@ -1,17 +1,43 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
-[ext_resource path="res://game/world/ServerGameController.cs" type="Script" id=1]
+[ext_resource path="res://game/world/server/ServerGameController.cs" type="Script" id=1]
 [ext_resource path="res://helpers/conditionals/NetworkConditionalNode.cs" type="Script" id=2]
-[ext_resource path="res://game/world/InputManager.cs" type="Script" id=3]
+[ext_resource path="res://game/world/client/InputManager.cs" type="Script" id=3]
 [ext_resource path="res://helpers/network/RemoteEvent.cs" type="Script" id=4]
-[ext_resource path="res://game/world/ClientGameController.cs" type="Script" id=5]
-[ext_resource path="res://game/world/EntityContainer.cs" type="Script" id=6]
+[ext_resource path="res://game/world/client/ClientGameController.cs" type="Script" id=5]
+[ext_resource path="res://game/world/shared/EntityContainer.cs" type="Script" id=6]
+[ext_resource path="res://game/entity/player/ServerPlayer.tscn" type="PackedScene" id=7]
 
 [sub_resource type="PlaneMesh" id=1]
 
 [sub_resource type="BoxShape" id=2]
 
 [node name="TestWorld" type="Spatial"]
+
+[node name="Map" type="Node" parent="."]
+
+[node name="Ground" type="MeshInstance" parent="Map"]
+transform = Transform( 50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0 )
+mesh = SubResource( 1 )
+material/0 = null
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="StaticBody" type="StaticBody" parent="Map/Ground"]
+
+[node name="CollisionShape" type="CollisionShape" parent="Map/Ground/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
+shape = SubResource( 2 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Map"]
+transform = Transform( 1, 0, 0, 0, -0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 6, 0 )
+shadow_enabled = true
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 300.0
+
+[node name="DynamicEntities" type="Node" parent="."]
+script = ExtResource( 6 )
 
 [node name="RemoteEventHub" type="Node" parent="."]
 script = ExtResource( 4 )
@@ -105,28 +131,4 @@ script = ExtResource( 2 )
 script = ExtResource( 1 )
 _pathToRemoteEventHub = NodePath("../../RemoteEventHub")
 _pathToDynamicEntities = NodePath("../../DynamicEntities")
-
-[node name="DynamicEntities" type="Node" parent="."]
-script = ExtResource( 6 )
-
-[node name="Map" type="Node" parent="."]
-
-[node name="Ground" type="MeshInstance" parent="Map"]
-transform = Transform( 50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0 )
-mesh = SubResource( 1 )
-material/0 = null
-__meta__ = {
-"_edit_lock_": true
-}
-
-[node name="StaticBody" type="StaticBody" parent="Map/Ground"]
-
-[node name="CollisionShape" type="CollisionShape" parent="Map/Ground/StaticBody"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
-shape = SubResource( 2 )
-
-[node name="DirectionalLight" type="DirectionalLight" parent="Map"]
-transform = Transform( 1, 0, 0, 0, -0.707107, 0.707107, 0, -0.707107, -0.707107, 0, 6, 0 )
-shadow_enabled = true
-directional_shadow_blend_splits = true
-directional_shadow_max_distance = 300.0
+_playerPrefab = ExtResource( 7 )

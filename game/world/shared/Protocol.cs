@@ -1,4 +1,4 @@
-﻿namespace Overlords.game.world
+﻿namespace Overlords.game.world.shared
 {
     public static class Protocol
     {

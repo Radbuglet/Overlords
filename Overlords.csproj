@@ -55,12 +55,13 @@
   <ItemGroup>
     <Compile Include="game\constants\CoreSignalNames.cs" />
     <Compile Include="game\constants\InputNames.cs" />
+    <Compile Include="game\entity\player\ServerPlayerController.cs" />
     <Compile Include="game\entity\shared\CharacterMotor.cs" />
-    <Compile Include="game\world\ClientGameController.cs" />
-    <Compile Include="game\world\EntityContainer.cs" />
-    <Compile Include="game\world\InputManager.cs" />
-    <Compile Include="game\world\Protocol.cs" />
-    <Compile Include="game\world\ServerGameController.cs" />
+    <Compile Include="game\world\client\ClientGameController.cs" />
+    <Compile Include="game\world\client\InputManager.cs" />
+    <Compile Include="game\world\server\ServerGameController.cs" />
+    <Compile Include="game\world\shared\EntityContainer.cs" />
+    <Compile Include="game\world\shared\Protocol.cs" />
     <Compile Include="helpers\behaviors\BehaviorsExtension.cs" />
     <Compile Include="helpers\behaviors\FieldNotNull.cs" />
     <Compile Include="helpers\behaviors\LinkNodePath.cs" />
@@ -80,6 +81,8 @@
     <Compile Include="helpers\network\serialization\PrimitiveSerializer.cs" />
     <Compile Include="helpers\network\serialization\RemoteEventSplitter.cs" />
     <Compile Include="helpers\network\serialization\StructSerializer.cs" />
+    <Compile Include="helpers\trackingGroups\NodeGroup.cs" />
+    <Compile Include="helpers\trackingGroups\NodeGroupMemberTracker.cs" />
     <Compile Include="menu\StartClientButton.cs" />
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
