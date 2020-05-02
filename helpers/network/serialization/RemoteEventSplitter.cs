@@ -17,14 +17,14 @@ namespace Overlords.helpers.network.serialization
         public void ProcessDecoding(TMeta meta, object raw)
         {
             if (!(raw is Array rawArray) || rawArray.Count != 2 || !(rawArray[0] is int))
-                throw new SerializationCore.DeserializationException("Invalid hub packet root.");
+                throw new CoreSerialization.DeserializationException("Invalid hub packet root.");
 
             var enumRaw = rawArray[0];
             if (!Enum.IsDefined(typeof(TEnum), enumRaw))
-                throw new SerializationCore.DeserializationException("Invalid hub packet type: invalid enum value");
+                throw new CoreSerialization.DeserializationException("Invalid hub packet type: invalid enum value");
 
             if (!_handlers.TryGetValue((TEnum) enumRaw, out var packetHandler))
-                throw new SerializationCore.DeserializationException("Invalid hub packet type: no handler bound");
+                throw new CoreSerialization.DeserializationException("Invalid hub packet type: no handler bound");
             
             packetHandler(meta, rawArray[1]);
         }

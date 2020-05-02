@@ -58,16 +58,7 @@ namespace Overlords.game.world.server
             newPlayer.GetBehavior<ServerPlayerController>().OwnerPeerId = newPeerId;
             
             // Replicate player to other players
-            {
-                var createPlayerPacket = new ClientBoundPackets.CreateOtherPlayer(true, newPeerId);
-                var createPlayerPacketSerialized = new StructSerializer<ClientBoundPackets.CreateOtherPlayer>(
-                    () => new ClientBoundPackets.CreateOtherPlayer()).Serialize(createPlayerPacket);
-                foreach (var otherPlayerPair in _playerGroup.IterateGroupMembersEntries())
-                {
-                    _remoteEventHub.Send(otherPlayerPair.Key,
-                        Protocol.ClientBoundPacketType.CreateOtherPlayer, createPlayerPacketSerialized);
-                }
-            }
+            // TODO
 
             // Send catchup data
             // TODO

@@ -25,7 +25,7 @@ namespace Overlords.helpers.network
             {
                 InboundSplitter.ProcessDecoding(sender, data);
             }
-            catch (SerializationCore.DeserializationException e)
+            catch (CoreSerialization.DeserializationException e)
             {
                 GD.PushWarning($"Failed to deserialize packet from {sender}. Reason:\n{e.Message}");
             }

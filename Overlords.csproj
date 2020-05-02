@@ -77,10 +77,9 @@
     <Compile Include="helpers\network\RemoteEvent.cs" />
     <Compile Include="helpers\network\RemoteEventHub.cs" />
     <Compile Include="helpers\network\serialization\Core.cs" />
-    <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
-    <Compile Include="helpers\network\serialization\PrimitiveSerializer.cs" />
+    <Compile Include="helpers\network\serialization\Primitive.cs" />
     <Compile Include="helpers\network\serialization\RemoteEventSplitter.cs" />
-    <Compile Include="helpers\network\serialization\StructSerializer.cs" />
+    <Compile Include="helpers\network\serialization\Struct.cs" />
     <Compile Include="helpers\trackingGroups\NodeGroup.cs" />
     <Compile Include="helpers\trackingGroups\NodeGroupMemberTracker.cs" />
     <Compile Include="menu\StartClientButton.cs" />

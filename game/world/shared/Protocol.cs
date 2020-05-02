@@ -17,27 +17,28 @@ namespace Overlords.game.world.shared
             OtherPlayerDisconnected,
         }
     }
-    
-    public static class ClientBoundPackets
+
+    public static class ClientBound
     {
-        public struct CreateOtherPlayer: ISerializableStruct
+        public class CreateOtherPlayer
         {
-            public bool ShowJoinMessage;
             public int PeerId;
-
-            public CreateOtherPlayer(bool showJoinMessage, int peerId)
+            public bool IncludeJoinMessage;
+            
+            private static IEnumerable<SerializableStructField> GetFields()
             {
-                ShowJoinMessage = showJoinMessage;
-                PeerId = peerId;
+                yield return SerializableStructField.OfPrimitive<int>(nameof(PeerId));
+                yield return SerializableStructField.OfPrimitive<bool>(nameof(IncludeJoinMessage));
             }
-
-            public IEnumerable<SerializableStructField> GetSerializedFields()
+            
+            public static object Serialize(CreateOtherPlayer target)
             {
-                yield return new SerializableStructField(
-                    nameof(ShowJoinMessage), new PrimitiveSerializer<bool>());
-                    
-                yield return new SerializableStructField(
-                    nameof(PeerId), new PrimitiveSerializer<int>());
+                return StructSerialization.Serialize(target, GetFields());
+            }
+            
+            public static CreateOtherPlayer Deserialize(object raw)
+            {
+                return StructSerialization.Deserialize(raw, (GetFields(), new CreateOtherPlayer()));
             }
         }
     }
