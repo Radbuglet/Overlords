@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.network.serialization
 {
-    public class StructSerializer<TStruct>: SerializationCore.IHandler<TStruct>
+    public class StructSerializer<TStruct>: SerializationCore.IUpCastableHandler<TStruct>, SerializationCore.ITypelessHandler where TStruct: ISerializableStruct
     {
         private readonly Func<TStruct> _emptyStructFactory;
 
@@ -14,57 +13,65 @@ namespace Overlords.helpers.network.serialization
             _emptyStructFactory = emptyStructFactory;
         }
 
-        private IEnumerable<Tuple<FieldInfo, SerializationCore.IUnsafeHandler<object>>> IterateSubFields()
+        public object Serialize(TStruct structData)
         {
-            var type = typeof(TStruct);
-            foreach (var field in type.GetFields())
+            var structDataType = typeof(TStruct);
+            var dataSerialized = new Array();
+            foreach (var (name, serializer) in structData.GetSerializedFields())
             {
-                var serializationAttr = field.GetCustomAttribute<SerializableStructField>();
-                if (serializationAttr == null) continue;
-                yield return new Tuple<FieldInfo, SerializationCore.IUnsafeHandler<object>>(
-                    field, serializationAttr.SerializationProvider());
+                var fieldValue = structDataType.GetField(name).GetValue(structData);
+                dataSerialized.Add(serializer.SerializeTypeless(fieldValue));
             }
-        }
-        
-        public object Serialize(TStruct data)
-        {
-            var serializedResult = new Array();
-            foreach (var (field, handler) in IterateSubFields())
-            {
-                serializedResult.Add(handler.SerializeTypeless(
-                    field.GetValue(data)));
-            }
-            
-            return serializedResult;
-        }
-
-        public object SerializeTypeless(object raw)
-        {
-            return Serialize((TStruct) raw);
+            return dataSerialized;
         }
 
         public TStruct Deserialize(object raw)
         {
             if (!(raw is Array structRawData)) throw new SerializationCore.DeserializationException();
             var structInstance = _emptyStructFactory();
+            var structDataType = typeof(TStruct);
             var index = 0;
-            foreach (var (field, handler) in IterateSubFields())
+            foreach (var (fieldName, serializer) in structInstance.GetSerializedFields())
             {
                 if (index >= structRawData.Count) throw new SerializationCore.DeserializationException();
-                field.SetValue(structInstance, handler.Deserialize(structRawData[index]));
+                structDataType.GetField(fieldName)
+                    .SetValue(structInstance, serializer.DeserializeTypeless(structRawData[index]));
                 index++;
             }
             return structInstance;
         }
-    }
-    
-    [AttributeUsage(AttributeTargets.Field)]
-    public class SerializableStructField: Attribute
-    {
-        public readonly Func<SerializationCore.IUnsafeHandler<object>> SerializationProvider;
-        public SerializableStructField(Func<SerializationCore.IUnsafeHandler<object>> serializationProvider)
+        
+        public object SerializeTypeless(object raw)
         {
-            SerializationProvider = serializationProvider;
+            return Serialize((TStruct) raw);
         }
+
+        public object DeserializeTypeless(object raw)
+        {
+            return Deserialize(raw);
+        }
+    }
+
+    public struct SerializableStructField
+    {
+        public readonly string FieldName;
+        public readonly SerializationCore.ITypelessHandler Serializer;
+
+        public SerializableStructField(string fieldName, SerializationCore.ITypelessHandler serializer)
+        {
+            FieldName = fieldName;
+            Serializer = serializer;
+        }
+        
+        public void Deconstruct(out string fieldName, out SerializationCore.ITypelessHandler serializer)
+        {
+            fieldName = FieldName;
+            serializer = Serializer;
+        }
+    }
+
+    public interface ISerializableStruct
+    {
+        IEnumerable<SerializableStructField> GetSerializedFields();
     }
 }

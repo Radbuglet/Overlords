@@ -13,7 +13,7 @@ namespace Overlords.game.world.client
         [LinkNodePath(nameof(_pathToRemoteEventHub))]
         public RemoteEvent RemoteEvent;
 
-        private RemoteEventHub<Protocol.ClientBoundPacket, Protocol.ServerBoundPacket> _remoteEventHub;
+        private RemoteEventHub<Protocol.ClientBoundPacketType, Protocol.ServerBoundPacketType> _remoteEventHub;
         
         public override void _Ready()
         {
@@ -22,14 +22,14 @@ namespace Overlords.game.world.client
             tree.Connect(SceneTreeSignals.ConnectedToServer, this, nameof(_ConnectionEstablished));
             tree.Connect(SceneTreeSignals.ConnectionFailed, this, nameof(_ConnectionFailed));
             tree.Connect(SceneTreeSignals.ServerDisconnected, this, nameof(_ServerDisconnected));
-            _remoteEventHub = new RemoteEventHub<Protocol.ClientBoundPacket, Protocol.ServerBoundPacket>(RemoteEvent);
+            _remoteEventHub = new RemoteEventHub<Protocol.ClientBoundPacketType, Protocol.ServerBoundPacketType>(RemoteEvent);
             AddChild(_remoteEventHub);
         }
 
         private void _ConnectionEstablished()
         {
             GD.Print("We connected!");
-            _remoteEventHub.Send(Protocol.ServerBoundPacket.SendMessage, "Foo bar baz!");
+            _remoteEventHub.Send(Protocol.ServerBoundPacketType.SendMessage, "Foo bar baz!");
         }
         
         private void _ConnectionFailed()

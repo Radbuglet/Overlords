@@ -2,7 +2,7 @@
 
 namespace Overlords.helpers.network.serialization
 {
-    public class EnumSerializer<TEnum>: SerializationCore.IHandler<TEnum> where TEnum: Enum
+    public class EnumSerializer<TEnum>: SerializationCore.IUpCastableHandler<TEnum>, SerializationCore.ITypelessHandler where TEnum: Enum
     {
         public TEnum Deserialize(object raw)
         {
@@ -12,9 +12,14 @@ namespace Overlords.helpers.network.serialization
             return (TEnum) (object) enumValueRaw;
         }
 
-        public object Serialize(TEnum data)
+        public object Serialize(TEnum structData)
         {
-            return (int) (object) data;
+            return (int) (object) structData;
+        }
+        
+        public object DeserializeTypeless(object raw)
+        {
+            return Deserialize(raw);
         }
         
         public object SerializeTypeless(object raw)

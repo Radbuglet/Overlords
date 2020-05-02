@@ -17,15 +17,16 @@ namespace Overlords.helpers.network.serialization
             }
         }
 
-        public interface IUnsafeHandler<out T>
+        public interface ITypelessHandler
         {
             object SerializeTypeless(object raw);
-            T Deserialize(object raw);
+            object DeserializeTypeless(object raw);
         }
         
-        public interface IHandler<T>: IUnsafeHandler<T>
+        public interface IUpCastableHandler<T>
         {
-            object Serialize(T data);
+            object Serialize(T structData);
+            T Deserialize(object raw);
         }
     }
 }

@@ -5,16 +5,11 @@ namespace Overlords.game.entity.player
 {
     public class ServerPlayerController: Node
     {
-        private int _ownerPeerId;
+        public int OwnerPeerId;
         
         public override void _Ready()
         {
             this.InitializeBehavior();
-        }
-
-        public void Configure(int ownerPeerId)
-        {
-            _ownerPeerId = ownerPeerId;
         }
     }
 }
