@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="game\constants\CoreSignalNames.cs" />
     <Compile Include="game\constants\InputNames.cs" />
+    <Compile Include="game\entity\player\PublicPlayerState.cs" />
     <Compile Include="game\entity\player\ServerPlayerController.cs" />
     <Compile Include="game\entity\shared\CharacterMotor.cs" />
     <Compile Include="game\world\client\ClientGameController.cs" />

@@ -52,7 +52,8 @@ namespace Overlords.helpers.network.serialization
             var raw = new Array();
             foreach (var field in fields)
             {
-                raw.Add(field.GetReflectionField(instanceType).GetValue(instance));
+                raw.Add(field.Serialize(
+                    field.GetReflectionField(instanceType).GetValue(instance)));
             }
             return raw;
         }

@@ -7,11 +7,17 @@ namespace Overlords.helpers.network
 		[Signal]
 		public delegate void FiredRemotely();
 
-		[Master]
-		[Puppet]
+		[Remote]
 		public void HandleRemote(object data)
 		{
-			EmitSignal(nameof(FiredRemotely), GetTree().GetRpcSenderId(), data);
+			var tree = GetTree();
+			var senderId = tree.GetRpcSenderId();
+			if (tree.GetNetworkMode() == NetworkUtils.NetworkMode.Client && senderId != GetNetworkMaster())
+			{
+				GD.PushWarning("Non-master attempted to call this remote event but clients only accept RemoteEvent calls from masters!");
+				return;
+			}
+			EmitSignal(nameof(FiredRemotely), senderId, data);
 		}
 
 		public void Fire(object data)

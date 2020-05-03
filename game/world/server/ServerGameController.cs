@@ -4,7 +4,6 @@ using Overlords.game.entity.player;
 using Overlords.game.world.shared;
 using Overlords.helpers.behaviors;
 using Overlords.helpers.network;
-using Overlords.helpers.network.serialization;
 using Overlords.helpers.trackingGroups;
 
 namespace Overlords.game.world.server
@@ -21,7 +20,7 @@ namespace Overlords.game.world.server
         [LinkNodePath(nameof(_pathToDynamicEntities))]
         public EntityContainer DynamicEntities;
 
-        private RemoteEventHub<Protocol.ServerBoundPacketType, Protocol.ClientBoundPacketType> _remoteEventHub;
+        private RemoteEventHub<ServerBoundPacketType, ClientBoundPacketType> _remoteEventHub;
         private readonly NodeGroup<int, Node> _playerGroup = new NodeGroup<int, Node>();
 
         public override void _Ready()
@@ -30,8 +29,8 @@ namespace Overlords.game.world.server
             var tree = GetTree();
             tree.Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerConnected));
             tree.Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerDisconnected));
-            _remoteEventHub = new RemoteEventHub<Protocol.ServerBoundPacketType, Protocol.ClientBoundPacketType>(RemoteEvent);
-            _remoteEventHub.BindHandler(Protocol.ServerBoundPacketType.SendMessage,
+            _remoteEventHub = new RemoteEventHub<ServerBoundPacketType, ClientBoundPacketType>(RemoteEvent);
+            _remoteEventHub.BindHandler(ServerBoundPacketType.SendMessage,
                 (sender, data) => {
                     GD.Print($"{sender} says: {data}");
                 });
@@ -55,16 +54,28 @@ namespace Overlords.game.world.server
             
             // Setup player
             var newPlayer = _playerPrefab.Instance();
-            newPlayer.GetBehavior<ServerPlayerController>().OwnerPeerId = newPeerId;
-            
-            // Replicate player to other players
-            // TODO
+            var newPlayerPublicState = newPlayer.GetBehavior<PublicPlayerState>();
+            newPlayerPublicState.PlayerName = "Some username";
+            DynamicEntities.AddEntity(newPeerId.ToString(), newPlayer);
 
-            // Send catchup data
-            // TODO
+            // Replicate player to other players
+            {
+                var serializedPacket = new Protocol.CbCreateOtherPlayer
+                {
+                    IncludeJoinMessage = true,
+                    PlayerInfo = newPlayerPublicState.SerializeInfo(newPeerId)
+                }.Serialize();
+                
+                foreach (var oldPeerEntry in _playerGroup.IterateGroupMembersEntries())
+                {
+                    _remoteEventHub.Send(oldPeerEntry.Key, ClientBoundPacketType.CreateOtherPlayer, serializedPacket);
+                }
+            }
+
+            // Send catchup data  TODO: Add actual catchup data
+            _remoteEventHub.Send(newPeerId, ClientBoundPacketType.JoinedGame, new Protocol.CbJoinedGame().Serialize());
             
             // Register player
-            DynamicEntities.AddEntity(newPeerId.ToString(), newPlayer);
             _playerGroup.AddToGroup(newPeerId, newPlayer);
         }
     }
