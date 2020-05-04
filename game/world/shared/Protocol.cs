@@ -13,7 +13,7 @@ namespace Overlords.game.world.shared
     {
         JoinedGame,
         CreateOtherPlayer,
-        OtherPlayerDisconnected,
+        DeleteOtherPlayer
     }
 
     public static class Protocol
@@ -24,6 +24,9 @@ namespace Overlords.game.world.shared
             public string Name;
             public Vector3 Position;
             public Vector2 Orientation;
+            
+            public static readonly SimpleStructSerializer<PlayerInfoPublic> Serializer = new SimpleStructSerializer<PlayerInfoPublic>(
+                () => new PlayerInfoPublic(), GetFields);
 
             private static IEnumerable<SerializableStructField> GetFields()
             {
@@ -32,15 +35,22 @@ namespace Overlords.game.world.shared
                 yield return SerializableStructField.OfPrimitive<Vector3>(nameof(Position));
                 yield return SerializableStructField.OfPrimitive<Vector2>(nameof(Orientation));
             }
+        }
+        
+        public struct CbJoinedGame
+        {
+            public static readonly SimpleStructSerializer<CbJoinedGame> Serializer = new SimpleStructSerializer<CbJoinedGame>(
+                () => new CbJoinedGame(),
+                GetFields);
             
-            public static object Serialize(PlayerInfoPublic data)
+            private static IEnumerable<SerializableStructField> GetFields()
             {
-                return StructSerialization.Serialize(data, GetFields());
+                yield break;
             }
 
-            public static PlayerInfoPublic Deserialize(object raw)
+            public object Serialize()
             {
-                return StructSerialization.Deserialize(raw, (GetFields(), new PlayerInfoPublic()));
+                return Serializer.Serialize(this);
             }
         }
         
@@ -49,48 +59,19 @@ namespace Overlords.game.world.shared
             public PlayerInfoPublic PlayerInfo;
             public bool IncludeJoinMessage;
             
+            public static readonly SimpleStructSerializer<CbCreateOtherPlayer> Serializer = new SimpleStructSerializer<CbCreateOtherPlayer>(
+                () => new CbCreateOtherPlayer(),
+                GetFields);
+
             private static IEnumerable<SerializableStructField> GetFields()
             {
-                yield return SerializableStructField.OfPair(nameof(PlayerInfo), PlayerInfoPublic.Serialize, PlayerInfoPublic.Deserialize);
+                yield return SerializableStructField.OfStruct(nameof(PlayerInfo), PlayerInfoPublic.Serializer);
                 yield return SerializableStructField.OfPrimitive<bool>(nameof(IncludeJoinMessage));
             }
-            
-            public static object Serialize(CbCreateOtherPlayer target)
-            {
-                return StructSerialization.Serialize(target, GetFields());
-            }
 
             public object Serialize()
             {
-                return Serialize(this);
-            }
-            
-            public static CbCreateOtherPlayer Deserialize(object raw)
-            {
-                return StructSerialization.Deserialize(raw, (GetFields(), new CbCreateOtherPlayer()));
-            }
-        }
-        
-        public struct CbJoinedGame
-        {
-            private static IEnumerable<SerializableStructField> GetFields()
-            {
-                yield break;
-            }
-            
-            public static object Serialize(CbJoinedGame target)
-            {
-                return StructSerialization.Serialize(target, GetFields());
-            }
-
-            public object Serialize()
-            {
-                return Serialize(this);
-            }
-            
-            public static CbJoinedGame Deserialize(object raw)
-            {
-                return StructSerialization.Deserialize(raw, (GetFields(), new CbJoinedGame()));
+                return Serializer.Serialize(this);
             }
         }
     }

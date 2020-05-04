@@ -42,8 +42,35 @@ namespace Overlords.helpers.network.serialization
             return new SerializableStructField(fieldName, data => PrimitiveSerialization.Serialize((TValue) data),
                 raw => PrimitiveSerialization.Deserialize<TValue>(raw));
         }
+        
+        public static SerializableStructField OfStruct<TStruct>(string fieldName, SimpleStructSerializer<TStruct> serializer)
+        {
+            return OfPair(fieldName, serializer.Serialize, serializer.Deserialize);
+        }
     }
     
+    public class SimpleStructSerializer<TStruct>
+    {
+        private readonly Func<TStruct> _createEmptyStruct;
+        private readonly Func<IEnumerable<SerializableStructField>> _fieldGetter;
+
+        public SimpleStructSerializer(Func<TStruct> emptyStruct, Func<IEnumerable<SerializableStructField>> fieldGetter)
+        {
+            _createEmptyStruct = emptyStruct;
+            _fieldGetter = fieldGetter;
+        }
+
+        public object Serialize(TStruct instance)
+        {
+            return StructSerialization.Serialize(instance, _fieldGetter());
+        }
+        
+        public TStruct Deserialize(object raw)
+        {
+            return StructSerialization.Deserialize(raw, (_fieldGetter(), _createEmptyStruct()));
+        }
+    }
+
     public static class StructSerialization
     {
         public static object Serialize<TStruct>(TStruct instance, IEnumerable<SerializableStructField> fields)

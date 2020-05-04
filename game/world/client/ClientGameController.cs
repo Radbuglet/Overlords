@@ -28,10 +28,10 @@ namespace Overlords.game.world.client
             {
                 try
                 {
-                    Protocol.CbJoinedGame.Deserialize(packet);
+                    Protocol.CbJoinedGame.Serializer.Deserialize(packet);
                     GD.Print("Joined game and got a valid packet!");
                 }
-                catch (CoreSerialization.DeserializationException e)
+                catch (CoreSerialization.DeserializationException)
                 {
                     GD.PushWarning("Failed to deserialize joined game packet!");
                 }
