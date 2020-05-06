@@ -37,6 +37,14 @@ namespace Overlords.game.world.server
             AddChild(_remoteEventHub);
         }
 
+        private void BroadcastToPlayers(ClientBoundPacketType type, object data)
+        {
+            foreach (var peerEntry in _playerGroup.IterateGroupMembersEntries())
+            {
+                _remoteEventHub.Send(peerEntry.Key, type, data);
+            }
+        }
+
         private void _PeerConnected(int peerId)
         {
             GD.Print($"{peerId} connected!");
@@ -46,6 +54,9 @@ namespace Overlords.game.world.server
         private void _PeerDisconnected(int peerId)
         {
             GD.Print($"{peerId} disconnected!");
+            var disconnectedPlayer = _playerGroup.GetMemberOfGroup<Node>(peerId, null);
+            if (disconnectedPlayer == null) return;
+            HandlePlayerLeave(peerId, disconnectedPlayer);
         }
 
         private void HandlePlayerJoin(int newPeerId)
@@ -56,27 +67,33 @@ namespace Overlords.game.world.server
             var newPlayer = _playerPrefab.Instance();
             var newPlayerPublicState = newPlayer.GetBehavior<PublicPlayerState>();
             newPlayerPublicState.PlayerName = "Some username";
-            DynamicEntities.AddEntity(newPeerId.ToString(), newPlayer);
+            DynamicEntities.AddEntity(Protocol.GetNetworkNameForPlayer(newPeerId), newPlayer);
 
             // Replicate player to other players
+            BroadcastToPlayers(ClientBoundPacketType.CreateOtherPlayer, new Protocol.CbCreateOtherPlayer
             {
-                var serializedPacket = new Protocol.CbCreateOtherPlayer
-                {
-                    IncludeJoinMessage = true,
-                    PlayerInfo = newPlayerPublicState.SerializeInfo(newPeerId)
-                }.Serialize();
-                
-                foreach (var oldPeerEntry in _playerGroup.IterateGroupMembersEntries())
-                {
-                    _remoteEventHub.Send(oldPeerEntry.Key, ClientBoundPacketType.CreateOtherPlayer, serializedPacket);
-                }
-            }
+                IncludeJoinMessage = true,
+                PlayerInfo = newPlayerPublicState.SerializeInfo(newPeerId)
+            }.Serialize());
 
             // Send catchup data  TODO: Add actual catchup data
             _remoteEventHub.Send(newPeerId, ClientBoundPacketType.JoinedGame, new Protocol.CbJoinedGame().Serialize());
             
             // Register player
             _playerGroup.AddToGroup(newPeerId, newPlayer);
+        }
+
+        private void HandlePlayerLeave(int leftPeerId, Node playerRoot)
+        {
+            // Handle leave logic
+            _playerGroup.RemoveFromGroup(leftPeerId);  // We need to unregister the player from the group immediately.
+            playerRoot.QueueFree();
+
+            // Replicate disconnect to remaining peers
+            BroadcastToPlayers(ClientBoundPacketType.DeleteOtherPlayer, new Protocol.CbDestroyOtherPlayer
+            {
+                PeerId = leftPeerId
+            }.Serialize());
         }
     }
 }

@@ -4,7 +4,7 @@
 [ext_resource path="res://helpers/trackingGroups/NodeGroupMemberTracker.cs" type="Script" id=2]
 [ext_resource path="res://game/entity/player/PublicPlayerState.cs" type="Script" id=3]
 
-[node name="ServerPlayer" type="Spatial"]
+[node name="Player" type="Spatial"]
 
 [node name="NodeGroupMemberTracker" type="Node" parent="."]
 script = ExtResource( 2 )

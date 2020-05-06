@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection;
 using Godot;
+using Overlords.helpers.csharp;
 
 namespace Overlords.helpers.behaviors
 {
@@ -17,7 +18,7 @@ namespace Overlords.helpers.behaviors
                 {
                     Debug.Assert(gameObject != null, "Attempted to use behavior linking in non-behavior initialization!");
                     var requiredBehavior = gameObject.GetBehaviorDynamic(field.FieldType);
-                    field.SetValue(thisType, requiredBehavior);
+                    field.SetValueSafe(thisType, requiredBehavior);
                 }
 
                 // Parent linking
@@ -26,7 +27,7 @@ namespace Overlords.helpers.behaviors
                     var parent = initializedNode.GetParent();
                     Debug.Assert(field.FieldType.IsInstanceOfType(parent),
                         $"Failed to link required parent to node {GetNodeDebugInfo(initializedNode)}: Invalid parent type!");
-                    field.SetValue(initializedNode, parent);
+                    field.SetValueSafe(initializedNode, parent);
                 }
 
                 // Node path linking
@@ -39,7 +40,8 @@ namespace Overlords.helpers.behaviors
                         Debug.Assert(nodePath != null, $"Failed to link NodePath: nodePath in field \"{field.Name}\" is null.");
                         Debug.Assert(nodePath is NodePath,
                             $"LinkNodePath attribute placed on non-NodePath field named \"{field.Name}\".");
-                        field.SetValue(initializedNode, initializedNode.GetNode((NodePath) nodePath));
+                        var instance = initializedNode.GetNode((NodePath) nodePath);
+                        field.SetValueSafe(initializedNode, instance);
                     }
                 }
                 

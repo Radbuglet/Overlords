@@ -6,7 +6,7 @@
 [ext_resource path="res://helpers/network/RemoteEvent.cs" type="Script" id=4]
 [ext_resource path="res://game/world/client/ClientGameController.cs" type="Script" id=5]
 [ext_resource path="res://game/world/shared/EntityContainer.cs" type="Script" id=6]
-[ext_resource path="res://game/entity/player/ServerPlayer.tscn" type="PackedScene" id=7]
+[ext_resource path="res://game/entity/player/Player.tscn" type="PackedScene" id=7]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -15,6 +15,9 @@
 [node name="TestWorld" type="Spatial"]
 
 [node name="Map" type="Node" parent="."]
+
+[node name="DefaultCamera" type="Camera" parent="Map"]
+transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 14, 23 )
 
 [node name="Ground" type="MeshInstance" parent="Map"]
 transform = Transform( 50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0 )
@@ -123,6 +126,8 @@ align = 1
 [node name="ClientGameController" type="Node" parent="ClientLogic"]
 script = ExtResource( 5 )
 _pathToRemoteEventHub = NodePath("../../RemoteEventHub")
+_pathToDynamicEntities = NodePath("../../DynamicEntities")
+_playerPrefab = ExtResource( 7 )
 
 [node name="ServerLogic" type="Node" parent="."]
 script = ExtResource( 2 )

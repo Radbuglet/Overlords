@@ -55,5 +55,14 @@ namespace Overlords.helpers.network
         {
             InboundSplitter.BindDecodingHandler(target, handler);
         }
+
+        public void BindHandler<TPacket>(TInbound target, SimpleStructSerializer<TPacket> packetType,
+            Action<int, TPacket> handler)
+        {
+            BindHandler(target, (sender, packet) =>
+            {
+                handler(sender, packetType.Deserialize(packet));  // Deserialization exceptions are already handled by Splitter.
+            });
+        }
     }
 }

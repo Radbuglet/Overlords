@@ -52,22 +52,22 @@ namespace Overlords.helpers.network.serialization
     public class SimpleStructSerializer<TStruct>
     {
         private readonly Func<TStruct> _createEmptyStruct;
-        private readonly Func<IEnumerable<SerializableStructField>> _fieldGetter;
+        private readonly IEnumerable<SerializableStructField> _fields;
 
-        public SimpleStructSerializer(Func<TStruct> emptyStruct, Func<IEnumerable<SerializableStructField>> fieldGetter)
+        public SimpleStructSerializer(Func<TStruct> emptyStruct, IEnumerable<SerializableStructField> fields)
         {
             _createEmptyStruct = emptyStruct;
-            _fieldGetter = fieldGetter;
+            _fields = fields;
         }
 
         public object Serialize(TStruct instance)
         {
-            return StructSerialization.Serialize(instance, _fieldGetter());
+            return StructSerialization.Serialize(instance, _fields);
         }
         
         public TStruct Deserialize(object raw)
         {
-            return StructSerialization.Deserialize(raw, (_fieldGetter(), _createEmptyStruct()));
+            return StructSerialization.Deserialize(raw, (_fields, _createEmptyStruct()));
         }
     }
 

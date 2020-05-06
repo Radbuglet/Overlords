@@ -25,6 +25,7 @@ namespace Overlords.helpers.trackingGroups
         {
             var gotMember = _members.TryGetValue(key, out var removedMember);
             Debug.Assert(gotMember, "NodeGroup doesn't contain a member with that ID!");
+            _members.Remove(key);
             removedMember.GetBehavior<NodeGroupMemberTracker>()
                 .UnregisterNodeFromGroup(this);
 

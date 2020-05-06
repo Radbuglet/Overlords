@@ -55,6 +55,8 @@
   <ItemGroup>
     <Compile Include="game\constants\CoreSignalNames.cs" />
     <Compile Include="game\constants\InputNames.cs" />
+    <Compile Include="game\entity\player\ClientLocalController.cs" />
+    <Compile Include="game\entity\player\ClientPuppetController.cs" />
     <Compile Include="game\entity\player\PublicPlayerState.cs" />
     <Compile Include="game\entity\player\ServerPlayerController.cs" />
     <Compile Include="game\entity\shared\CharacterMotor.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="helpers\behaviors\RequireParent.cs" />
     <Compile Include="helpers\conditionals\ConditionalNode.cs" />
     <Compile Include="helpers\conditionals\NetworkConditionalNode.cs" />
+    <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\listenables\BaseValue.cs" />
     <Compile Include="helpers\listenables\BoolValue.cs" />
     <Compile Include="helpers\listenables\IntValue.cs" />

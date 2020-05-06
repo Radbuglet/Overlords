@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Godot;
+﻿using Godot;
 using Overlords.helpers.network.serialization;
 
 namespace Overlords.game.world.shared
@@ -26,27 +25,20 @@ namespace Overlords.game.world.shared
             public Vector2 Orientation;
             
             public static readonly SimpleStructSerializer<PlayerInfoPublic> Serializer = new SimpleStructSerializer<PlayerInfoPublic>(
-                () => new PlayerInfoPublic(), GetFields);
-
-            private static IEnumerable<SerializableStructField> GetFields()
-            {
-                yield return SerializableStructField.OfPrimitive<int>(nameof(PeerId));
-                yield return SerializableStructField.OfPrimitive<string>(nameof(Name));
-                yield return SerializableStructField.OfPrimitive<Vector3>(nameof(Position));
-                yield return SerializableStructField.OfPrimitive<Vector2>(nameof(Orientation));
-            }
+                () => new PlayerInfoPublic(), new[]
+                {
+                    SerializableStructField.OfPrimitive<int>(nameof(PeerId)),
+                    SerializableStructField.OfPrimitive<string>(nameof(Name)),
+                    SerializableStructField.OfPrimitive<Vector3>(nameof(Position)),
+                    SerializableStructField.OfPrimitive<Vector2>(nameof(Orientation))
+                });
         }
         
         public struct CbJoinedGame
         {
             public static readonly SimpleStructSerializer<CbJoinedGame> Serializer = new SimpleStructSerializer<CbJoinedGame>(
                 () => new CbJoinedGame(),
-                GetFields);
-            
-            private static IEnumerable<SerializableStructField> GetFields()
-            {
-                yield break;
-            }
+                new SerializableStructField[]{});
 
             public object Serialize()
             {
@@ -61,18 +53,38 @@ namespace Overlords.game.world.shared
             
             public static readonly SimpleStructSerializer<CbCreateOtherPlayer> Serializer = new SimpleStructSerializer<CbCreateOtherPlayer>(
                 () => new CbCreateOtherPlayer(),
-                GetFields);
-
-            private static IEnumerable<SerializableStructField> GetFields()
+                new []
+                {
+                    SerializableStructField.OfStruct(nameof(PlayerInfo), PlayerInfoPublic.Serializer),
+                    SerializableStructField.OfPrimitive<bool>(nameof(IncludeJoinMessage))
+                });
+            
+            public object Serialize()
             {
-                yield return SerializableStructField.OfStruct(nameof(PlayerInfo), PlayerInfoPublic.Serializer);
-                yield return SerializableStructField.OfPrimitive<bool>(nameof(IncludeJoinMessage));
+                return Serializer.Serialize(this);
             }
+        }
+        
+        public struct CbDestroyOtherPlayer
+        {
+            public int PeerId;
+            
+            public static readonly SimpleStructSerializer<CbDestroyOtherPlayer> Serializer = new SimpleStructSerializer<CbDestroyOtherPlayer>(
+                () => new CbDestroyOtherPlayer(),
+                new []
+                {
+                    SerializableStructField.OfPrimitive<int>(nameof(PeerId))
+                });
 
             public object Serialize()
             {
                 return Serializer.Serialize(this);
             }
+        }
+
+        public static string GetNetworkNameForPlayer(int peerId)
+        {
+            return $"player_{peerId}";
         }
     }
 }

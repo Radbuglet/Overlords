@@ -3,19 +3,25 @@ using Overlords.game.constants;
 using Overlords.game.world.shared;
 using Overlords.helpers.behaviors;
 using Overlords.helpers.network;
-using Overlords.helpers.network.serialization;
+using Overlords.helpers.trackingGroups;
 
 namespace Overlords.game.world.client
 {
     public class ClientGameController: Node
     {
         [Export] private readonly NodePath _pathToRemoteEventHub;
+        [Export] private readonly NodePath _pathToDynamicEntities;
+        [FieldNotNull] [Export] private readonly PackedScene _playerPrefab;
 
         [LinkNodePath(nameof(_pathToRemoteEventHub))]
         public RemoteEvent RemoteEvent;
 
+        [LinkNodePath(nameof(_pathToDynamicEntities))]
+        public EntityContainer DynamicEntities;
+
         private RemoteEventHub<ClientBoundPacketType, ServerBoundPacketType> _remoteEventHub;
-        
+        private readonly NodeGroup<int, Node> _players = new NodeGroup<int, Node>();
+
         public override void _Ready()
         {
             this.InitializeBehavior();
@@ -24,22 +30,29 @@ namespace Overlords.game.world.client
             tree.Connect(SceneTreeSignals.ConnectionFailed, this, nameof(_ConnectionFailed));
             tree.Connect(SceneTreeSignals.ServerDisconnected, this, nameof(_ServerDisconnected));
             _remoteEventHub = new RemoteEventHub<ClientBoundPacketType, ServerBoundPacketType>(RemoteEvent);
-            _remoteEventHub.BindHandler(ClientBoundPacketType.JoinedGame, (sender, packet) =>
-            {
-                try
+            _remoteEventHub.BindHandler(ClientBoundPacketType.CreateOtherPlayer, Protocol.CbCreateOtherPlayer.Serializer,
+                (sender, packet) =>
                 {
-                    Protocol.CbJoinedGame.Serializer.Deserialize(packet);
-                    GD.Print("Joined game and got a valid packet!");
-                }
-                catch (CoreSerialization.DeserializationException)
+                    var newPlayerPeerId = packet.PlayerInfo.PeerId;
+                    var newPlayerInstance = _playerPrefab.Instance();
+                    _players.AddToGroup(newPlayerPeerId, newPlayerInstance);
+                    DynamicEntities.AddEntity(Protocol.GetNetworkNameForPlayer(newPlayerPeerId), newPlayerInstance);
+                    GD.Print($"Puppet player joined with peer id {newPlayerPeerId}");
+                });
+            
+            _remoteEventHub.BindHandler(ClientBoundPacketType.DeleteOtherPlayer, Protocol.CbDestroyOtherPlayer.Serializer,
+                (sender, packet) =>
                 {
-                    GD.PushWarning("Failed to deserialize joined game packet!");
-                }
-            });
-            _remoteEventHub.BindHandler(ClientBoundPacketType.CreateOtherPlayer, (sender, packet) =>
-            {
-                GD.Print("Another dude joined!");
-            });
+                    var disconnectedPlayer = _players.GetMemberOfGroup<Node>(packet.PeerId, null);
+                    if (disconnectedPlayer == null)
+                    {
+                        GD.PushWarning($"Failed to remove puppet player. Player with PeerId {packet.PeerId} doesn't exist.");
+                        return;
+                    }
+                    
+                    disconnectedPlayer.QueueFree();
+                    GD.Print($"Puppet player left with peer id {packet.PeerId}");
+                });
             AddChild(_remoteEventHub);
         }
 
