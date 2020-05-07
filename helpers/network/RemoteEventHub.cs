@@ -7,15 +7,15 @@ namespace Overlords.helpers.network
     public class RemoteEventHub<TInbound, TOutbound>: Node where TInbound: Enum where TOutbound: Enum
     {
         public readonly RemoteEvent RemoteEvent;
-        public readonly RemoteEventSplitter<int, TInbound> InboundSplitter;
-        public readonly RemoteEventSplitter<int, TOutbound> OutboundSplitter;
+        public readonly EnumValueSplitter<int, TInbound> InboundSplitter;
+        public readonly EnumValueSplitter<int, TOutbound> OutboundSplitter;
 
         public RemoteEventHub(RemoteEvent remoteEvent)
         {
             Name = "RemoteEventHub";
             RemoteEvent = remoteEvent;
-            InboundSplitter = new RemoteEventSplitter<int, TInbound>();
-            OutboundSplitter = new RemoteEventSplitter<int, TOutbound>();
+            InboundSplitter = new EnumValueSplitter<int, TInbound>();
+            OutboundSplitter = new EnumValueSplitter<int, TOutbound>();
             remoteEvent.Connect(nameof(RemoteEvent.FiredRemotely), this, nameof(_ReceivedData));
         }
 

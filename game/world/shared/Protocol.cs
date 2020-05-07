@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Godot.Collections;
 using Overlords.helpers.network.serialization;
 
 namespace Overlords.game.world.shared
@@ -27,18 +28,23 @@ namespace Overlords.game.world.shared
             public static readonly SimpleStructSerializer<PlayerInfoPublic> Serializer = new SimpleStructSerializer<PlayerInfoPublic>(
                 () => new PlayerInfoPublic(), new[]
                 {
-                    SerializableStructField.OfPrimitive<int>(nameof(PeerId)),
-                    SerializableStructField.OfPrimitive<string>(nameof(Name)),
-                    SerializableStructField.OfPrimitive<Vector3>(nameof(Position)),
-                    SerializableStructField.OfPrimitive<Vector2>(nameof(Orientation))
+                    PrimitiveSerialization.MakePair<int>().ForField(nameof(PeerId)),
+                    PrimitiveSerialization.MakePair<string>().ForField(nameof(Name)),
+                    PrimitiveSerialization.MakePair<Vector3>().ForField(nameof(Position)),
+                    PrimitiveSerialization.MakePair<Vector2>().ForField(nameof(Orientation))
                 });
         }
         
         public struct CbJoinedGame
         {
+            public Array<PlayerInfoPublic> OtherPlayers;
+            
             public static readonly SimpleStructSerializer<CbJoinedGame> Serializer = new SimpleStructSerializer<CbJoinedGame>(
                 () => new CbJoinedGame(),
-                new SerializableStructField[]{});
+                new[]
+                {
+                    ListSerialization.MakePair<PlayerInfoPublic>(PlayerInfoPublic.Serializer).ForField(nameof(OtherPlayers))
+                });
 
             public object Serialize()
             {
@@ -55,8 +61,8 @@ namespace Overlords.game.world.shared
                 () => new CbCreateOtherPlayer(),
                 new []
                 {
-                    SerializableStructField.OfStruct(nameof(PlayerInfo), PlayerInfoPublic.Serializer),
-                    SerializableStructField.OfPrimitive<bool>(nameof(IncludeJoinMessage))
+                    PlayerInfoPublic.Serializer.ForField(nameof(PlayerInfo)),
+                    PrimitiveSerialization.MakePair<bool>().ForField(nameof(IncludeJoinMessage))
                 });
             
             public object Serialize()
@@ -73,7 +79,7 @@ namespace Overlords.game.world.shared
                 () => new CbDestroyOtherPlayer(),
                 new []
                 {
-                    SerializableStructField.OfPrimitive<int>(nameof(PeerId))
+                    PrimitiveSerialization.MakePair<int>().ForField(nameof(PeerId))
                 });
 
             public object Serialize()

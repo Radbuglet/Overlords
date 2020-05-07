@@ -5,7 +5,7 @@ using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.network.serialization
 {
-    public class RemoteEventSplitter<TMeta, TEnum>
+    public class EnumValueSplitter<TMeta, TEnum>
     {
         private readonly Dictionary<TEnum, Action<TMeta, object>> _handlers = new Dictionary<TEnum, Action<TMeta, object>>();
 

@@ -1,55 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using static Overlords.helpers.network.serialization.CoreSerialization;
 using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.network.serialization
 {
-    public struct SerializableStructField
-    {
-        private readonly string _fieldName;
-        public readonly Func<object, object> Serialize;
-        public readonly Func<object, object> Deserialize;
-
-        public SerializableStructField(string fieldName, Func<object, object> serialize, Func<object, object> deserialize)
-        {
-            _fieldName = fieldName;
-            Serialize = serialize;
-            Deserialize = deserialize;
-        }
-
-        public FieldInfo GetReflectionField(Type type)
-        {
-            return type.GetField(_fieldName);
-        }
-
-        public static SerializableStructField OfPair<TData>(string fieldName,
-            CoreSerialization.Serialize<TData> serialize, CoreSerialization.Deserialize<TData> deserialize)
-        {
-            return new SerializableStructField(fieldName, data => serialize((TData) data),
-                raw => deserialize(raw));
-        }
-        
-        public static SerializableStructField OfPair<TData, TConfig>(string fieldName, TConfig config,
-            CoreSerialization.SerializeConfigured<TData, TConfig> serialize, CoreSerialization.DeserializeConfigured<TData, TConfig> deserialize)
-        {
-            return new SerializableStructField(fieldName, data => serialize((TData) data, config),
-                raw => deserialize(raw, config));
-        }
-
-        public static SerializableStructField OfPrimitive<TValue>(string fieldName)
-        {
-            return new SerializableStructField(fieldName, data => PrimitiveSerialization.Serialize((TValue) data),
-                raw => PrimitiveSerialization.Deserialize<TValue>(raw));
-        }
-        
-        public static SerializableStructField OfStruct<TStruct>(string fieldName, SimpleStructSerializer<TStruct> serializer)
-        {
-            return OfPair(fieldName, serializer.Serialize, serializer.Deserialize);
-        }
-    }
-    
-    public class SimpleStructSerializer<TStruct>
+    public class SimpleStructSerializer<TStruct>: ITypelessSerializationPair
     {
         private readonly Func<TStruct> _createEmptyStruct;
         private readonly IEnumerable<SerializableStructField> _fields;
@@ -69,6 +26,33 @@ namespace Overlords.helpers.network.serialization
         {
             return StructSerialization.Deserialize(raw, (_fields, _createEmptyStruct()));
         }
+
+        public object SerializeTypeless(object data)
+        {
+            return Serialize((TStruct) data);
+        }
+
+        public object DeserializeTypeless(object raw)
+        {
+            return Deserialize(raw);
+        }
+    }
+
+    public class SerializableStructField
+    {
+        private readonly string _fieldName;
+        public readonly ITypelessSerializationPair SerializationPair;
+
+        public SerializableStructField(string fieldName, ITypelessSerializationPair serializationPair)
+        {
+            _fieldName = fieldName;
+            SerializationPair = serializationPair;
+        }
+
+        public FieldInfo GetReflectionField(Type type)
+        {
+            return type.GetField(_fieldName);
+        }
     }
 
     public static class StructSerialization
@@ -79,7 +63,7 @@ namespace Overlords.helpers.network.serialization
             var raw = new Array();
             foreach (var field in fields)
             {
-                raw.Add(field.Serialize(
+                raw.Add(field.SerializationPair.SerializeTypeless(
                     field.GetReflectionField(instanceType).GetValue(instance)));
             }
             return raw;
@@ -95,10 +79,15 @@ namespace Overlords.helpers.network.serialization
             foreach (var field in fields)
             {
                 var rawField = rawArray[index];
-                field.GetReflectionField(instanceType).SetValue(targetInstance, field.Deserialize(rawField));
+                field.GetReflectionField(instanceType).SetValue(targetInstance, field.SerializationPair.DeserializeTypeless(rawField));
                 index++;
             }
             return targetInstance;
+        }
+
+        public static SerializableStructField ForField(this ITypelessSerializationPair serializationPair, string fieldName)
+        {
+            return new SerializableStructField(fieldName, serializationPair);
         }
     }
 }

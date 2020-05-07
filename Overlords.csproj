@@ -80,9 +80,10 @@
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
     <Compile Include="helpers\network\RemoteEventHub.cs" />
+    <Compile Include="helpers\network\serialization\List.cs" />
     <Compile Include="helpers\network\serialization\Core.cs" />
     <Compile Include="helpers\network\serialization\Primitive.cs" />
-    <Compile Include="helpers\network\serialization\RemoteEventSplitter.cs" />
+    <Compile Include="helpers\network\serialization\EnumValueSplitter.cs" />
     <Compile Include="helpers\network\serialization\Struct.cs" />
     <Compile Include="helpers\trackingGroups\NodeGroup.cs" />
     <Compile Include="helpers\trackingGroups\NodeGroupMemberTracker.cs" />

@@ -30,5 +30,15 @@ namespace Overlords.helpers.network.serialization
             return validator(data) ? data :
                 throw new DeserializationException("Primitive does not conform to validation standards.");
         }
+
+        public static TypelessSerializationPair MakePair<TData>()
+        {
+            return TypelessSerializationPair.OfPair(Serialize, Deserialize<TData>);
+        }
+        
+        public static TypelessSerializationPair MakePair<TData>(Func<TData, bool> validator)
+        {
+            return TypelessSerializationPair.OfPair(validator, SerializeValidated, DeserializeValidated);
+        }
     }
 }

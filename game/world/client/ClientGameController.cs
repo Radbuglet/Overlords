@@ -30,6 +30,12 @@ namespace Overlords.game.world.client
             tree.Connect(SceneTreeSignals.ConnectionFailed, this, nameof(_ConnectionFailed));
             tree.Connect(SceneTreeSignals.ServerDisconnected, this, nameof(_ServerDisconnected));
             _remoteEventHub = new RemoteEventHub<ClientBoundPacketType, ServerBoundPacketType>(RemoteEvent);
+            _remoteEventHub.BindHandler(ClientBoundPacketType.JoinedGame, Protocol.CbJoinedGame.Serializer,
+                (sender, packet) =>
+            {
+                GD.Print($"Caught up and received {packet.OtherPlayers.Count} player(s)!");  // BUG: "OtherPlayers" isn't getting populated???
+            });
+            
             _remoteEventHub.BindHandler(ClientBoundPacketType.CreateOtherPlayer, Protocol.CbCreateOtherPlayer.Serializer,
                 (sender, packet) =>
                 {

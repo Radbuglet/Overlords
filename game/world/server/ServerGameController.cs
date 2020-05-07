@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Godot.Collections;
 using Overlords.game.constants;
 using Overlords.game.entity.player;
 using Overlords.game.world.shared;
@@ -77,7 +78,10 @@ namespace Overlords.game.world.server
             }.Serialize());
 
             // Send catchup data  TODO: Add actual catchup data
-            _remoteEventHub.Send(newPeerId, ClientBoundPacketType.JoinedGame, new Protocol.CbJoinedGame().Serialize());
+            _remoteEventHub.Send(newPeerId, ClientBoundPacketType.JoinedGame, new Protocol.CbJoinedGame
+            {
+                OtherPlayers = new Array<Protocol.PlayerInfoPublic>()
+            }.Serialize());
             
             // Register player
             _playerGroup.AddToGroup(newPeerId, newPlayer);
