@@ -5,6 +5,7 @@ using Overlords.game.entity.player;
 using Overlords.game.world.shared;
 using Overlords.helpers.behaviors;
 using Overlords.helpers.network;
+using Overlords.helpers.network.serialization;
 using Overlords.helpers.trackingGroups;
 
 namespace Overlords.game.world.server
@@ -31,7 +32,7 @@ namespace Overlords.game.world.server
             tree.Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerConnected));
             tree.Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerDisconnected));
             _remoteEventHub = new RemoteEventHub<ServerBoundPacketType, ClientBoundPacketType>(RemoteEvent);
-            _remoteEventHub.BindHandler(ServerBoundPacketType.SendMessage,
+            _remoteEventHub.BindHandler(ServerBoundPacketType.SendMessage, new PrimitiveSerializer<string>(),
                 (sender, data) => {
                     GD.Print($"{sender} says: {data}");
                 });
@@ -42,7 +43,7 @@ namespace Overlords.game.world.server
         {
             foreach (var peerEntry in _playerGroup.IterateGroupMembersEntries())
             {
-                _remoteEventHub.Send(peerEntry.Key, type, data);
+                _remoteEventHub.Fire(peerEntry.Key, true, type, data);
             }
         }
 
@@ -77,8 +78,8 @@ namespace Overlords.game.world.server
                 PlayerInfo = newPlayerPublicState.SerializeInfo(newPeerId)
             }.Serialize());
 
-            // Send catchup data  TODO: Add actual catchup data
-            _remoteEventHub.Send(newPeerId, ClientBoundPacketType.JoinedGame, new Protocol.CbJoinedGame
+            // Send catchup data
+            _remoteEventHub.Fire(newPeerId, true, ClientBoundPacketType.JoinedGame, new Protocol.CbJoinedGame
             {
                 OtherPlayers = new Array<Protocol.PlayerInfoPublic>()
             }.Serialize());

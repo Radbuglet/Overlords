@@ -5,7 +5,7 @@ namespace Overlords.helpers.network
 	public class RemoteEvent: Node
 	{
 		[Signal]
-		public delegate void FiredRemotely();
+		public delegate void FiredRemotely();  // Signature: int sender, object data
 
 		[Remote]
 		public void HandleRemote(object data)
@@ -38,6 +38,24 @@ namespace Overlords.helpers.network
 		public void FireUnreliable(int target, object data)
 		{
 			RpcUnreliableId(target, nameof(HandleRemote), data);
+		}
+
+		public void GenericFire(int? target, bool reliable, object data)
+		{
+			if (target == null)
+			{
+				if (reliable)
+					Fire(data);
+				else
+					FireUnreliable(data);
+			}
+			else
+			{
+				if (reliable)
+					Fire(target.Value, data);
+				else
+					FireUnreliable(target.Value, data);
+			}
 		}
 	}
 }

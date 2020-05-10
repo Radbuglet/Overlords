@@ -33,7 +33,7 @@ namespace Overlords.game.world.client
             _remoteEventHub.BindHandler(ClientBoundPacketType.JoinedGame, Protocol.CbJoinedGame.Serializer,
                 (sender, packet) =>
             {
-                GD.Print($"Caught up and received {packet.OtherPlayers.Count} player(s)!");  // BUG: "OtherPlayers" isn't getting populated???
+                GD.Print($"Caught up and received {packet.OtherPlayers.Count} player(s)!");
             });
             
             _remoteEventHub.BindHandler(ClientBoundPacketType.CreateOtherPlayer, Protocol.CbCreateOtherPlayer.Serializer,
@@ -65,7 +65,7 @@ namespace Overlords.game.world.client
         private void _ConnectionEstablished()
         {
             GD.Print("We connected!");
-            _remoteEventHub.Send(ServerBoundPacketType.SendMessage, "Foo bar baz!");
+            _remoteEventHub.Fire(null, true, ServerBoundPacketType.SendMessage, "Foo bar baz!");
         }
         
         private void _ConnectionFailed()

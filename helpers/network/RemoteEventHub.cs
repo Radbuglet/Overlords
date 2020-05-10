@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Godot;
 using Overlords.helpers.network.serialization;
 
@@ -6,63 +7,87 @@ namespace Overlords.helpers.network
 {
     public class RemoteEventHub<TInbound, TOutbound>: Node where TInbound: Enum where TOutbound: Enum
     {
-        public readonly RemoteEvent RemoteEvent;
-        public readonly EnumValueSplitter<int, TInbound> InboundSplitter;
-        public readonly EnumValueSplitter<int, TOutbound> OutboundSplitter;
-
-        public RemoteEventHub(RemoteEvent remoteEvent)
+        private class HubPacket
         {
-            Name = "RemoteEventHub";
-            RemoteEvent = remoteEvent;
-            InboundSplitter = new EnumValueSplitter<int, TInbound>();
-            OutboundSplitter = new EnumValueSplitter<int, TOutbound>();
-            remoteEvent.Connect(nameof(RemoteEvent.FiredRemotely), this, nameof(_ReceivedData));
+            public int EventType;
+            public object EventArg;
+            
+            public static readonly StructSerializer<HubPacket> Serializer = new StructSerializer<HubPacket>(
+                () => new HubPacket(),
+                new Dictionary<string, ISerializerRaw>
+                {
+                    [nameof(EventType)] = new PrimitiveSerializer<int>(),
+                    [nameof(EventArg)] = new PrimitiveSerializer<object>()
+                });
+
+            public object Serialize()
+            {
+                return Serializer.Serialize(this);
+            }
+        }
+        
+        private readonly Dictionary<int, Action<int, object>> _inboundHandlers = new Dictionary<int,Action<int, object>>();
+
+        private readonly RemoteEvent _remoteEvent;
+
+        public RemoteEventHub(RemoteEvent boundEvent)
+        {
+            _remoteEvent = boundEvent;
+            _remoteEvent.Connect(nameof(RemoteEvent.FiredRemotely), this, nameof(_ReceivedInbound));
         }
 
-        private void _ReceivedData(int sender, object data)
+        private void _ReceivedInbound(int sender, object data)
         {
+            HubPacket packetRoot;
             try
             {
-                InboundSplitter.ProcessDecoding(sender, data);
+                packetRoot = HubPacket.Serializer.Deserialize(data);
             }
-            catch (CoreSerialization.DeserializationException e)
+            catch (DeserializationException)
             {
-                GD.PushWarning($"Failed to deserialize packet from {sender}. Reason:\n{e.Message}");
+                GD.PushWarning($"Failed to deserialize hub packet from {sender}.");
+                return;
+            }
+
+            if (_inboundHandlers.TryGetValue(packetRoot.EventType, out var handler))
+            {
+                handler(sender, packetRoot.EventArg);
+            }
+            else
+            {
+                GD.PushWarning($"No packet handler defined for packet received from {sender} (or the packet type is invalid).");
             }
         }
-
-        public void Send(TOutbound type, object data)
-        {
-            RemoteEvent.Fire(OutboundSplitter.Encode(type, data));
-        }
         
-        public void SendUnreliable(TOutbound type, object data)
-        {
-            RemoteEvent.FireUnreliable(OutboundSplitter.Encode(type, data));
-        }
-        
-        public void Send(int target, TOutbound type, object data)
-        {
-            RemoteEvent.Fire(target, OutboundSplitter.Encode(type, data));
-        }
-        
-        public void SendUnreliable(int target, TOutbound type, object data)
-        {
-            RemoteEvent.FireUnreliable(target, OutboundSplitter.Encode(type, data));
-        }
 
-        public void BindHandler(TInbound target, Action<int, object> handler)
+        public delegate void PacketHandler<in TPacket>(int sender, TPacket packet);
+        
+        public void BindHandler<TPacket>(TInbound packetType, ISerializer<TPacket> serializer, PacketHandler<TPacket> handler)
         {
-            InboundSplitter.BindDecodingHandler(target, handler);
-        }
-
-        public void BindHandler<TPacket>(TInbound target, SimpleStructSerializer<TPacket> packetType,
-            Action<int, TPacket> handler)
-        {
-            BindHandler(target, (sender, packet) =>
+            _inboundHandlers.Add(packetType.SerializeEnum(), (sender, packetRaw) =>
             {
-                handler(sender, packetType.Deserialize(packet));  // Deserialization exceptions are already handled by Splitter.
+                TPacket parsedPacket;
+                try
+                {
+                    parsedPacket = serializer.Deserialize(packetRaw);
+                }
+                catch (DeserializationException err)
+                {
+                    GD.PushWarning($"Failed to deserialize hub packet root. Reason: {err.Message}");
+                    return;
+                }
+
+                handler(sender, parsedPacket);
             });
+        }
+
+        public void Fire(int? target, bool reliable, TOutbound packetType, object packetData)
+        {
+            _remoteEvent.GenericFire(target, reliable, new HubPacket
+            {
+                EventType = packetType.SerializeEnum(),
+                EventArg = packetData
+            }.Serialize());
         }
     }
 }

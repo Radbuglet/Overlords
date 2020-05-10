@@ -25,25 +25,25 @@ namespace Overlords.game.world.shared
             public Vector3 Position;
             public Vector2 Orientation;
             
-            public static readonly SimpleStructSerializer<PlayerInfoPublic> Serializer = new SimpleStructSerializer<PlayerInfoPublic>(
-                () => new PlayerInfoPublic(), new[]
+            public static readonly StructSerializer<PlayerInfoPublic> Serializer = new StructSerializer<PlayerInfoPublic>(
+                () => new PlayerInfoPublic(), new System.Collections.Generic.Dictionary<string, ISerializerRaw>
                 {
-                    PrimitiveSerialization.MakePair<int>().ForField(nameof(PeerId)),
-                    PrimitiveSerialization.MakePair<string>().ForField(nameof(Name)),
-                    PrimitiveSerialization.MakePair<Vector3>().ForField(nameof(Position)),
-                    PrimitiveSerialization.MakePair<Vector2>().ForField(nameof(Orientation))
+                    [nameof(PeerId)] = new PrimitiveSerializer<int>(),
+                    [nameof(Name)] = new PrimitiveSerializer<string>(),
+                    [nameof(Position)] = new PrimitiveSerializer<Vector3>(),
+                    [nameof(Orientation)] = new PrimitiveSerializer<Vector2>()
                 });
         }
         
-        public struct CbJoinedGame
+        public class CbJoinedGame
         {
             public Array<PlayerInfoPublic> OtherPlayers;
             
-            public static readonly SimpleStructSerializer<CbJoinedGame> Serializer = new SimpleStructSerializer<CbJoinedGame>(
+            public static readonly StructSerializer<CbJoinedGame> Serializer = new StructSerializer<CbJoinedGame>(
                 () => new CbJoinedGame(),
-                new[]
+                new System.Collections.Generic.Dictionary<string, ISerializerRaw>
                 {
-                    ListSerialization.MakePair<PlayerInfoPublic>(PlayerInfoPublic.Serializer).ForField(nameof(OtherPlayers))
+                    [nameof(OtherPlayers)] = new ListSerializer<PlayerInfoPublic>(PlayerInfoPublic.Serializer)
                 });
 
             public object Serialize()
@@ -52,17 +52,17 @@ namespace Overlords.game.world.shared
             }
         }
         
-        public struct CbCreateOtherPlayer
+        public class CbCreateOtherPlayer
         {
             public PlayerInfoPublic PlayerInfo;
             public bool IncludeJoinMessage;
             
-            public static readonly SimpleStructSerializer<CbCreateOtherPlayer> Serializer = new SimpleStructSerializer<CbCreateOtherPlayer>(
+            public static readonly StructSerializer<CbCreateOtherPlayer> Serializer = new StructSerializer<CbCreateOtherPlayer>(
                 () => new CbCreateOtherPlayer(),
-                new []
+                new System.Collections.Generic.Dictionary<string, ISerializerRaw>
                 {
-                    PlayerInfoPublic.Serializer.ForField(nameof(PlayerInfo)),
-                    PrimitiveSerialization.MakePair<bool>().ForField(nameof(IncludeJoinMessage))
+                    [nameof(PlayerInfo)] = PlayerInfoPublic.Serializer,
+                    [nameof(IncludeJoinMessage)] = new PrimitiveSerializer<bool>()
                 });
             
             public object Serialize()
@@ -71,15 +71,15 @@ namespace Overlords.game.world.shared
             }
         }
         
-        public struct CbDestroyOtherPlayer
+        public class CbDestroyOtherPlayer
         {
             public int PeerId;
             
-            public static readonly SimpleStructSerializer<CbDestroyOtherPlayer> Serializer = new SimpleStructSerializer<CbDestroyOtherPlayer>(
+            public static readonly StructSerializer<CbDestroyOtherPlayer> Serializer = new StructSerializer<CbDestroyOtherPlayer>(
                 () => new CbDestroyOtherPlayer(),
-                new []
+                new System.Collections.Generic.Dictionary<string, ISerializerRaw>
                 {
-                    PrimitiveSerialization.MakePair<int>().ForField(nameof(PeerId))
+                    [nameof(PeerId)] = new PrimitiveSerializer<int>()
                 });
 
             public object Serialize()
