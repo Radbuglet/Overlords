@@ -1,6 +1,8 @@
-﻿namespace Overlords.game.entity.player
+﻿using Godot;
+
+namespace Overlords.game.entity.player
 {
-    public class ClientPuppetController
+    public class ClientPuppetController: Node
     {
         
     }

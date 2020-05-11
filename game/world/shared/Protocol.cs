@@ -1,4 +1,4 @@
-﻿using Godot;
+using Godot;
 using Godot.Collections;
 using Overlords.helpers.network.serialization;
 
@@ -24,6 +24,7 @@ namespace Overlords.game.world.shared
             public string Name;
             public Vector3 Position;
             public Vector2 Orientation;
+            public int Balance;
             
             public static readonly StructSerializer<PlayerInfoPublic> Serializer = new StructSerializer<PlayerInfoPublic>(
                 () => new PlayerInfoPublic(), new System.Collections.Generic.Dictionary<string, ISerializerRaw>
@@ -31,18 +32,22 @@ namespace Overlords.game.world.shared
                     [nameof(PeerId)] = new PrimitiveSerializer<int>(),
                     [nameof(Name)] = new PrimitiveSerializer<string>(),
                     [nameof(Position)] = new PrimitiveSerializer<Vector3>(),
-                    [nameof(Orientation)] = new PrimitiveSerializer<Vector2>()
+                    [nameof(Orientation)] = new PrimitiveSerializer<Vector2>(),
+                    [nameof(Balance)] = new PrimitiveSerializer<int>()
                 });
         }
         
         public class CbJoinedGame
         {
+            public PlayerInfoPublic LocalPlayerInfoPublic;
+            // ReSharper disable once CollectionNeverUpdated.Global
             public Array<PlayerInfoPublic> OtherPlayers;
             
             public static readonly StructSerializer<CbJoinedGame> Serializer = new StructSerializer<CbJoinedGame>(
                 () => new CbJoinedGame(),
                 new System.Collections.Generic.Dictionary<string, ISerializerRaw>
                 {
+                    [nameof(LocalPlayerInfoPublic)] = PlayerInfoPublic.Serializer,
                     [nameof(OtherPlayers)] = new ListSerializer<PlayerInfoPublic>(PlayerInfoPublic.Serializer)
                 });
 

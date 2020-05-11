@@ -18,6 +18,14 @@ namespace Overlords.game.entity.player
             this.InitializeBehavior();
         }
 
+        public void ApplyInfo(Protocol.PlayerInfoPublic infoPacket)
+        {
+            PlayerName = infoPacket.Name;
+            PlayerSpatialRoot.Translation = infoPacket.Position;
+            Orientation = infoPacket.Orientation;
+            Balance = infoPacket.Balance;
+        }
+
         public Protocol.PlayerInfoPublic SerializeInfo(int peerId)
         {
             return new Protocol.PlayerInfoPublic
@@ -25,7 +33,8 @@ namespace Overlords.game.entity.player
                 PeerId = peerId,
                 Name = Name,
                 Position = PlayerSpatialRoot.Translation,
-                Orientation = Orientation
+                Orientation = Orientation,
+                Balance = Balance
             };
         }
     }

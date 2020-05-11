@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.constants;
+using Overlords.game.entity.player;
 using Overlords.game.world.shared;
 using Overlords.helpers.behaviors;
 using Overlords.helpers.network;
@@ -39,11 +40,8 @@ namespace Overlords.game.world.client
             _remoteEventHub.BindHandler(ClientBoundPacketType.CreateOtherPlayer, Protocol.CbCreateOtherPlayer.Serializer,
                 (sender, packet) =>
                 {
-                    var newPlayerPeerId = packet.PlayerInfo.PeerId;
-                    var newPlayerInstance = _playerPrefab.Instance();
-                    _players.AddToGroup(newPlayerPeerId, newPlayerInstance);
-                    DynamicEntities.AddEntity(Protocol.GetNetworkNameForPlayer(newPlayerPeerId), newPlayerInstance);
-                    GD.Print($"Puppet player joined with peer id {newPlayerPeerId}");
+                    SpawnPuppetPlayer(packet.PlayerInfo);
+                    GD.Print($"Puppet player joined with peer id {packet.PlayerInfo.PeerId}");
                 });
             
             _remoteEventHub.BindHandler(ClientBoundPacketType.DeleteOtherPlayer, Protocol.CbDestroyOtherPlayer.Serializer,
@@ -76,6 +74,18 @@ namespace Overlords.game.world.client
         private void _ServerDisconnected()
         {
             GD.Print("We disconnected!");
+        }
+
+        private void SpawnPuppetPlayer(Protocol.PlayerInfoPublic state)
+        {
+            var peerId = state.PeerId;
+            var playerRoot = _playerPrefab.Instance();
+            _players.AddToGroup(peerId, playerRoot);
+            {
+                var stateContainer = playerRoot.GetBehavior<PublicPlayerState>();
+                stateContainer.ApplyInfo(state);
+            }
+            DynamicEntities.AddEntity(Protocol.GetNetworkNameForPlayer(peerId), playerRoot);
         }
     }
 }

@@ -67,20 +67,23 @@ namespace Overlords.game.world.server
             
             // Setup player
             var newPlayer = _playerPrefab.Instance();
-            var newPlayerPublicState = newPlayer.GetBehavior<PublicPlayerState>();
-            newPlayerPublicState.PlayerName = "Some username";
+            var newPlayerPs = newPlayer.GetBehavior<PublicPlayerState>();
+            newPlayerPs.PlayerName = "Some username";
             DynamicEntities.AddEntity(Protocol.GetNetworkNameForPlayer(newPeerId), newPlayer);
+
+            var newPublicPsSerialized = newPlayerPs.SerializeInfo(newPeerId);
 
             // Replicate player to other players
             BroadcastToPlayers(ClientBoundPacketType.CreateOtherPlayer, new Protocol.CbCreateOtherPlayer
             {
                 IncludeJoinMessage = true,
-                PlayerInfo = newPlayerPublicState.SerializeInfo(newPeerId)
+                PlayerInfo = newPublicPsSerialized
             }.Serialize());
 
             // Send catchup data
             _remoteEventHub.Fire(newPeerId, true, ClientBoundPacketType.JoinedGame, new Protocol.CbJoinedGame
             {
+                LocalPlayerInfoPublic = newPublicPsSerialized,
                 OtherPlayers = new Array<Protocol.PlayerInfoPublic>()
             }.Serialize());
             
