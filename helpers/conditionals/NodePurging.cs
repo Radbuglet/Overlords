@@ -5,7 +5,7 @@ namespace Overlords.helpers.conditionals
 {
     public static class NodePurging  // TODO: What about freeing?
     {
-        public static void PurgeParallel(Node node)
+        public static void PurgeParallel(this Node node)
         {
             node.GetParent().RemoveChild(node);
         }

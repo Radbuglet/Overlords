@@ -71,7 +71,6 @@
     <Compile Include="helpers\behaviors\RequireBehavior.cs" />
     <Compile Include="helpers\behaviors\RequireParent.cs" />
     <Compile Include="helpers\conditionals\ConditionalNode.cs" />
-    <Compile Include="helpers\conditionals\EnumConditionalNode.cs" />
     <Compile Include="helpers\conditionals\NetworkConditionalNode.cs" />
     <Compile Include="helpers\conditionals\NodePurging.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
