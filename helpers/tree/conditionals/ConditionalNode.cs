@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using Godot;
+﻿using Godot;
 using Godot.Collections;
 using Overlords.helpers.csharp;
 
-namespace Overlords.helpers.conditionals
+namespace Overlords.helpers.tree.conditionals
 {
     public abstract class ConditionalNode : Node
     {
@@ -21,7 +20,7 @@ namespace Overlords.helpers.conditionals
         {
             if (ShouldExist()) return;
             NodePurging.PurgeParallel(_parallelTargets.ConvertToNodeIterator(this));
-            this.PurgeSelf(removeSelf);
+            this.PurgeConditionalNode(removeSelf);
         }
     }
 }

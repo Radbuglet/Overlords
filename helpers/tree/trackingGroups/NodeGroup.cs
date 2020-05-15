@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 using Godot;
-using Overlords.helpers.behaviors;
+using Overlords.helpers.tree.behaviors;
 
-namespace Overlords.helpers.trackingGroups
+namespace Overlords.helpers.tree.trackingGroups
 {
     public interface INodeGroupTypeless
     {

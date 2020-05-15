@@ -4,7 +4,7 @@ using System.Reflection;
 using Godot;
 using Overlords.helpers.csharp;
 
-namespace Overlords.helpers.behaviors
+namespace Overlords.helpers.tree.behaviors
 {
     public static class BehaviorsExtension
     {

@@ -1,24 +1,25 @@
 ﻿using System.Collections.Generic;
 using Godot;
 
-namespace Overlords.helpers.conditionals
+namespace Overlords.helpers.tree
 {
     public static class NodePurging  // TODO: What about freeing?
     {
-        public static void PurgeParallel(this Node node)
+        public static void Purge(this Node node)
         {
             node.GetParent().RemoveChild(node);
+            node.QueueFree();
         }
         
         public static void PurgeParallel(IEnumerable<Node> targets)
         {
             foreach (var parallelNode in targets)
             {
-                PurgeParallel(parallelNode);
+                Purge(parallelNode);
             }
         }
         
-        public static void PurgeSelf(this Node node, bool freeSelf)
+        public static void PurgeConditionalNode(this Node node, bool freeSelf)
         {
             foreach (var child in node.GetChildren())
             {

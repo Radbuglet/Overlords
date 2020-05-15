@@ -1,6 +1,4 @@
-﻿using Godot;
-using Godot.Collections;
-using Overlords.game.world.shared;
+﻿using Godot.Collections;
 using Overlords.helpers.csharp;
 
 namespace Overlords.helpers.network.serialization

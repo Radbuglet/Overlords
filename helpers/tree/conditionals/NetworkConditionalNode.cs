@@ -1,7 +1,7 @@
 ﻿using Godot;
 using Overlords.helpers.network;
 
-namespace Overlords.helpers.conditionals
+namespace Overlords.helpers.tree.conditionals
 {
     public class NetworkConditionalNode: ConditionalNode
     {

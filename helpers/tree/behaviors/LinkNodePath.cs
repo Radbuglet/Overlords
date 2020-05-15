@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Overlords.helpers.behaviors
+namespace Overlords.helpers.tree.behaviors
 {
     [AttributeUsage(AttributeTargets.Field)]
     public class LinkNodePath : Attribute
