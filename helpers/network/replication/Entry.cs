@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Godot;
+using Overlords.helpers.tree;
 
 namespace Overlords.helpers.network.replication
 {
@@ -12,10 +13,10 @@ namespace Overlords.helpers.network.replication
     {
         public const string ReceivesCatchupGroup = "replicator_catches_up";
 
-        public static void PerformCatchup(this SceneTree sceneTree, int targetPeerId)  // TODO
+        public static void PerformCatchup(this SceneTree sceneTree, int targetPeerId)
         {
             var containerStack = new Stack<(Node container, HashSet<string> allowedChildren)>();
-            foreach (var nodeUnCasted in sceneTree.GetNodesInGroup(ReceivesCatchupGroup))
+            foreach (var nodeUnCasted in sceneTree.GetNodesInGroup(ReceivesCatchupGroup))  // TODO: Better documentation; test
             {
                 // Cast node
                 var node = (Node) nodeUnCasted;
@@ -28,15 +29,30 @@ namespace Overlords.helpers.network.replication
                 // Check whether the node will be visible in the remote tree or not
                 if (containerStack.Count > 0)
                 {
-                    var pathToContainer = containerStack.Peek().container.GetPathTo(node);
-                    if (pathToContainer.GetName(0) == "..")
+                    // Backtrack to first container that contains this node
+                    var isContained = false;
+                    Node containedBy = null;
+                    while (!isContained)
                     {
-                        
+                        (isContained, containedBy) = node.IsDescendantOfWithBacktrack(containerStack.Peek().container);
+                        containerStack.Pop();
+                        if (containerStack.Count == 0) break;
                     }
+
+                    // Check if we're allowed to replicate
+                    if (containerStack.Count > 0 && !containerStack.Peek().allowedChildren.Contains(containedBy.Name))
+                        continue;
                 }
 
-                // Replicate
-                catchesUp.CatchupJoinedPeer(targetPeerId);  // TODO: Conditional descendants
+                // Replicate and update the container rules
+                var allowedContainers = catchesUp.CatchupJoinedPeer(targetPeerId);
+                if (allowedContainers == null) continue;  // No additional restrictions have been added.
+                var allowedNames = new HashSet<string>();
+                foreach (var allowedContainer in allowedContainers)
+                {
+                    allowedNames.Add(allowedContainer.Name);
+                }
+                containerStack.Push((node, allowedNames));
             }
         }
 

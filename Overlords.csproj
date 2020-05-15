@@ -76,6 +76,7 @@
     <Compile Include="helpers\tree\behaviors\RequireParent.cs" />
     <Compile Include="helpers\tree\conditionals\ConditionalNode.cs" />
     <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
+    <Compile Include="helpers\tree\NodePathUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="helpers\tree\trackingGroups\NodeGroup.cs" />
     <Compile Include="helpers\tree\trackingGroups\NodeGroupMemberTracker.cs" />

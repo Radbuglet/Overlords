@@ -131,7 +131,7 @@ namespace Overlords.helpers.network.replication
                 }
 
                 var instance = _entityTypes[replicatedObject.EntityTypeId].Instance();
-                instance.Name = replicatedObject.Name;  // TODO: This is stupidly unsafe!
+                instance.Name = replicatedObject.Name;  // TODO: Validate name!
                 AddChild(instance);
             }
         }
@@ -152,7 +152,7 @@ namespace Overlords.helpers.network.replication
 
             foreach (var name in names)
             {
-                var child = GetNodeOrNull<Node>(name);  // TODO: This is stupidly unsafe!
+                var child = GetNodeOrNull<Node>(name);  // TODO: Validate "path"!
                 if (child == null)
                 {
                     GD.PushWarning("Failed to remove child: child with that name doesn't exist!");
