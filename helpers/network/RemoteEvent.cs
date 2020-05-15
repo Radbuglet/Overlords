@@ -42,20 +42,7 @@ namespace Overlords.helpers.network
 
 		public void GenericFire(int? target, bool reliable, object data)
 		{
-			if (target == null)
-			{
-				if (reliable)
-					Fire(data);
-				else
-					FireUnreliable(data);
-			}
-			else
-			{
-				if (reliable)
-					Fire(target.Value, data);
-				else
-					FireUnreliable(target.Value, data);
-			}
+			this.RpcGeneric(nameof(HandleRemote), target, reliable, data);
 		}
 	}
 }

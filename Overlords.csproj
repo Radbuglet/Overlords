@@ -54,9 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
-    <Compile Include="helpers\csharp\CoreSignalNames.cs" />
+    <Compile Include="game\world\WorldControllerClient.cs" />
+    <Compile Include="game\world\WorldControllerServer.cs" />
+    <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
-    <Compile Include="helpers\csharp\GodotCsUtils.cs" />
+    <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />

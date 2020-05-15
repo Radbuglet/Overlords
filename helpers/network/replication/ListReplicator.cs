@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Godot;
 using Godot.Collections;
 using Overlords.helpers.network.serialization;
@@ -8,8 +8,6 @@ using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.network.replication
 {
-    // TODO: Warnings and error checking
-    // TODO: CLIENT SAFETY!
     public class ListReplicator: Node, IReplicatorCatchesUp
     {
         private class ReplicatedObject
@@ -30,6 +28,10 @@ namespace Overlords.helpers.network.replication
             public string Name;
             public int EntityTypeId;
         }
+
+        [Signal] public delegate void ObjectReplicated(Node node);
+        
+        [Signal] public delegate void ObjectPreDeReplicated(Node node);
         
         public delegate bool CanReplicateInstanceTo(int peerId, Node instance);
         
@@ -43,6 +45,7 @@ namespace Overlords.helpers.network.replication
             var index = 0;
             foreach (var entityType in _entityTypes)
             {
+                Debug.Assert(!_resourceToPrefabMappings.ContainsKey(entityType.ResourceName), "Duplicate entity type in configured entity type list!");
                 _resourceToPrefabMappings.Add(entityType.ResourceName, index);
                 index++;
             }
@@ -132,7 +135,6 @@ namespace Overlords.helpers.network.replication
 
                 var instance = _entityTypes[replicatedObject.EntityTypeId].Instance(); 
                 
-                // TODO: Remove name validation code when Godot exposes its own.
                 // Check name in order to prevent the assertion in the set_name method causing a crash
                 if (replicatedObject.Name.Length == 0)
                 {
@@ -154,9 +156,9 @@ namespace Overlords.helpers.network.replication
                     GD.PushWarning("Invalid name for list replicated instance: duplicate name!");
                     continue; 
                 }
-                
-                
+
                 AddChild(instance);
+                EmitSignal(nameof(ObjectReplicated), instance);
             }
         }
         
@@ -182,14 +184,9 @@ namespace Overlords.helpers.network.replication
                     GD.PushWarning("Failed to remove child: child with that name doesn't exist!");
                     continue;
                 }
+                EmitSignal(nameof(ObjectPreDeReplicated), child);
                 child.Purge();
             }
-        }
-        
-        [Puppet]
-        private void _InsertObject(object newObject, object anchorNodeName, object isBeforeAnchor)
-        {
-            throw new NotImplementedException();
         }
     }
 }
