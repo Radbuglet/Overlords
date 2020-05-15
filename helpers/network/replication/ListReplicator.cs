@@ -130,8 +130,32 @@ namespace Overlords.helpers.network.replication
                     continue;
                 }
 
-                var instance = _entityTypes[replicatedObject.EntityTypeId].Instance();
-                instance.Name = replicatedObject.Name;  // TODO: Validate name!
+                var instance = _entityTypes[replicatedObject.EntityTypeId].Instance(); 
+                
+                // TODO: Remove name validation code when Godot exposes its own.
+                // Check name in order to prevent the assertion in the set_name method causing a crash
+                if (replicatedObject.Name.Length == 0)
+                {
+                    GD.PushWarning("Invalid name for list replicated instance: name is empty!");
+                    continue;
+                }
+                
+                // See if the name is valid in terms of character set (only assertion in that method has been dealt with by the code above)
+                instance.Name = replicatedObject.Name;
+                if (instance.Name != replicatedObject.Name)  // This is actually the method used internally.
+                {
+                    GD.PushWarning("Invalid name for list replicated instance: name character set invalid!");
+                    continue;
+                }
+                
+                // See if the name is not a duplicate as that is the only other source of invalid names here.
+                if (this.GetChildByName(instance.Name) != null)
+                {
+                    GD.PushWarning("Invalid name for list replicated instance: duplicate name!");
+                    continue; 
+                }
+                
+                
                 AddChild(instance);
             }
         }
@@ -152,7 +176,7 @@ namespace Overlords.helpers.network.replication
 
             foreach (var name in names)
             {
-                var child = GetNodeOrNull<Node>(name);  // TODO: Validate "path"!
+                var child = this.GetChildByName(name);
                 if (child == null)
                 {
                     GD.PushWarning("Failed to remove child: child with that name doesn't exist!");

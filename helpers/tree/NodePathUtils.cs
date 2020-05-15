@@ -35,5 +35,10 @@ namespace Overlords.helpers.tree
 
             return (false, null);
         }
+
+        public static Node GetChildByName(this Node node, string name)
+        {
+            return node.GetChildren().Cast<Node>().FirstOrDefault(child => child.Name == name);
+        }
     }
 }
