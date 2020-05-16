@@ -54,17 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
-    <Compile Include="game\world\WorldControllerClient.cs" />
-    <Compile Include="game\world\WorldControllerServer.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
-    <Compile Include="helpers\network\replication\ListReplicator.cs" />
-    <Compile Include="helpers\network\replication\Entry.cs" />
-    <Compile Include="helpers\network\replication\ValueReplicator.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
     <Compile Include="helpers\network\serialization\Interfaces.cs" />
     <Compile Include="helpers\network\serialization\ListSerializer.cs" />
@@ -87,7 +82,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="game\entity" />
+    <Folder Include="helpers\network\replication" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
