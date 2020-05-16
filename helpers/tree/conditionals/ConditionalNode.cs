@@ -20,7 +20,7 @@ namespace Overlords.helpers.tree.conditionals
         {
             if (ShouldExist()) return;
             NodePurging.PurgeParallel(_parallelTargets.ConvertToNodeIterator(this));
-            this.PurgeConditionalNode(removeSelf);
+            this.PurgeWhileLocked(removeSelf);
         }
     }
 }

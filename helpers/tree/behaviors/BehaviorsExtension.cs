@@ -44,7 +44,7 @@ namespace Overlords.helpers.tree.behaviors
                         field.SetValueSafe(initializedNode, instance);
                     }
                     
-                    var attribLinkNode = field.GetCustomAttribute<LinkNode>();
+                    var attribLinkNode = field.GetCustomAttribute<LinkNodeStatic>();
                     if (attribLinkNode != null)
                     {
                         var instance = initializedNode.GetNode(attribLinkNode.Path);

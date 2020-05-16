@@ -19,11 +19,11 @@ namespace Overlords.helpers.tree
             }
         }
         
-        public static void PurgeConditionalNode(this Node node, bool freeSelf)
+        public static void PurgeWhileLocked(this Node node, bool freeSelf)
         {
-            foreach (var child in node.GetChildren())
+            foreach (var child in node.EnumerateChildren())
             {
-                node.RemoveChild((Node) child);
+                node.RemoveChild(child);
             }
 
             if (freeSelf) node.QueueFree();

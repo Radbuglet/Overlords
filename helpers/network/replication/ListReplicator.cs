@@ -76,9 +76,8 @@ namespace Overlords.helpers.network.replication
         {
             IEnumerable<Node> EnumerateReplicatedInstances()
             {
-                foreach (var childUnCasted in GetChildren())
+                foreach (var child in this.EnumerateChildren())
                 {
-                    var child = (Node) childUnCasted;
                     if (CatchupReplicationValidator(targetPeerId, child))
                     {
                         yield return child;

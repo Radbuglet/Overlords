@@ -4,7 +4,7 @@ using Godot;
 
 namespace Overlords.helpers.tree
 {
-    public static class NodePathUtils
+    public static class NodeUtils
     {
         public static IEnumerable<Node> EnumerateAncestors(this Node node)
         {
@@ -38,7 +38,31 @@ namespace Overlords.helpers.tree
 
         public static Node GetChildByName(this Node node, string name)
         {
-            return node.GetChildren().Cast<Node>().FirstOrDefault(child => child.Name == name);
+            return node.EnumerateChildren().FirstOrDefault(child => child.Name == name);
+        }
+
+        public static void MoveInto(this Node from, Node into)
+        {
+            foreach (var child in from.EnumerateChildren())
+            {
+                child.ReParent(into);
+            }
+        }
+
+        public static void ImportNodesFrom(this Node into, PackedScene from)
+        {
+            from.Instance().MoveInto(into);
+        }
+
+        public static void ReParent(this Node node, Node newParent)
+        {
+            node.GetParent()?.RemoveChild(node);
+            newParent.AddChild(node);
+        }
+
+        public static IEnumerable<Node> EnumerateChildren(this Node node)
+        {
+            return node.GetChildren().Cast<Node>();
         }
     }
 }

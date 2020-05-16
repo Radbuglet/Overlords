@@ -72,13 +72,13 @@
     <Compile Include="helpers\network\serialization\StructSerializer.cs" />
     <Compile Include="helpers\tree\behaviors\BehaviorsExtension.cs" />
     <Compile Include="helpers\tree\behaviors\FieldNotNull.cs" />
-    <Compile Include="helpers\tree\behaviors\LinkNode.cs" />
-    <Compile Include="helpers\tree\behaviors\LinkNodePath.cs" />
+    <Compile Include="helpers\tree\behaviors\LinkNodeStatic.cs" />
+    <Compile Include="helpers\tree\behaviors\LinkNodeEditor.cs" />
     <Compile Include="helpers\tree\behaviors\RequireBehavior.cs" />
     <Compile Include="helpers\tree\behaviors\RequireParent.cs" />
     <Compile Include="helpers\tree\conditionals\ConditionalNode.cs" />
     <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
-    <Compile Include="helpers\tree\NodePathUtils.cs" />
+    <Compile Include="helpers\tree\NodeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="helpers\tree\trackingGroups\NodeGroup.cs" />
     <Compile Include="helpers\tree\trackingGroups\NodeGroupMemberTracker.cs" />
@@ -87,7 +87,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="game\entity\player" />
+    <Folder Include="game\entity" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

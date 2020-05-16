@@ -11,10 +11,10 @@ namespace Overlords.game.world
 {
     public class WorldControllerServer: Node
     {
-        [LinkNode("../../DynamicEntities")]
+        [LinkNodeStatic("../../DynamicEntities")]
         public ListReplicator EntityReplicator;
         
-        [LinkNode("../../RemoteEvents/LoggedIn")]
+        [LinkNodeStatic("../../RemoteEvents/LoggedIn")]
         public RemoteEvent RemoteLoggedIn;
 
         [FieldNotNull] [Export] private PackedScene _playerPrefab;

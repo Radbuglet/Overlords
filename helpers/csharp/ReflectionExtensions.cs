@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -11,16 +12,24 @@ namespace Overlords.helpers.csharp
                 $"Invalid reflection field assignment: {(value == null ? "null" : value.GetType().Name)} is not assignable to {fieldInfo.FieldType.Name}");
             fieldInfo.SetValue(instance, value);
         }
-        
+
+        public static FieldInfo GetFieldOrFail(this Type type, string name)
+        {
+            var field = type.GetField(name);
+            Debug.Assert(field != null, $"Field named \"{name}\" doesn't exist on type {type.Name}!");
+            return field;
+        }
+
         public static void SetValueSafe(this object instance, string name, object value)
         {
             Debug.Assert(instance != null, "Can't set value on null instance!");
-            instance.GetType().GetField(name).SetValue(instance, value);
+            instance.GetType().GetFieldOrFail(name).SetValueSafe(instance, value);
         }
 
-        public static object GetValueSafe<TObj>(this TObj instance, string name)
+        public static object GetValueSafe(this object instance, string name)
         {
-            return typeof(TObj).GetField(name).GetValue(instance);  // TODO: Assertions
+            Debug.Assert(instance != null, "Can't get value on null instance!");
+            return instance.GetType().GetFieldOrFail(name).GetValue(instance);
         }
     }
 }

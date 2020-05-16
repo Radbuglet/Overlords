@@ -4,10 +4,10 @@ using Godot;
 namespace Overlords.helpers.tree.behaviors
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public class LinkNode: Attribute
+    public class LinkNodeStatic: Attribute
     {
         public readonly NodePath Path;
-        public LinkNode(string path)
+        public LinkNodeStatic(string path)
         {
             Path = path;
         }

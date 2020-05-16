@@ -6,7 +6,7 @@ namespace Overlords.game.world
 {
     public class WorldControllerClient: Node
     {
-        [LinkNode("../../RemoteEvents/LoggedIn")]
+        [LinkNodeStatic("../../RemoteEvents/LoggedIn")]
         public RemoteEvent RemoteLoggedIn;
         
         public override void _Ready()
