@@ -33,14 +33,21 @@ namespace Overlords.helpers.tree.behaviors
                 // Node path linking
                 if (field.GetValue(initializedNode) == null)
                 {
-                    var attrib = field.GetCustomAttribute<LinkNodePath>();
-                    if (attrib != null)
+                    var attribLinkNodePath = field.GetCustomAttribute<LinkNodePath>();
+                    if (attribLinkNodePath != null)
                     {
-                        var nodePath = initializedNode.Get(attrib.ExportedPropName);
+                        var nodePath = initializedNode.Get(attribLinkNodePath.ExportedPropName);
                         Debug.Assert(nodePath != null, $"Failed to link NodePath: nodePath in field \"{field.Name}\" is null.");
                         Debug.Assert(nodePath is NodePath,
                             $"LinkNodePath attribute placed on non-NodePath field named \"{field.Name}\".");
                         var instance = initializedNode.GetNode((NodePath) nodePath);
+                        field.SetValueSafe(initializedNode, instance);
+                    }
+                    
+                    var attribLinkNode = field.GetCustomAttribute<LinkNode>();
+                    if (attribLinkNode != null)
+                    {
+                        var instance = initializedNode.GetNode(attribLinkNode.Path);
                         field.SetValueSafe(initializedNode, instance);
                     }
                 }

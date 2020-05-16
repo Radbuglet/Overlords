@@ -49,9 +49,14 @@ namespace Overlords.helpers.tree.trackingGroups
             _members.Remove((TKey) key);
         }
 
-        public IEnumerable<KeyValuePair<TKey, TEntityBase>> IterateGroupMembersEntries()
+        public IEnumerable<KeyValuePair<TKey, TEntityBase>> IterateGroupEntries()
         {
             return _members;
+        }
+        
+        public IEnumerable<TKey> IterateGroupKeys()
+        {
+            return _members.Keys;
         }
         
         public IEnumerable<TEntityBase> IterateGroupMembers()

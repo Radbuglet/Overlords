@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace Overlords.helpers.csharp
@@ -7,7 +7,8 @@ namespace Overlords.helpers.csharp
     {
         public static void SetValueSafe(this FieldInfo fieldInfo, object instance, object value)
         {
-            Debug.Assert(fieldInfo.FieldType.IsInstanceOfType(value), "Invalid reflection field assignment: unassignable type");
+            Debug.Assert(fieldInfo.FieldType.IsInstanceOfType(value),
+                $"Invalid reflection field assignment: {(value == null ? "null" : value.GetType().Name)} is not assignable to {fieldInfo.FieldType.Name}");
             fieldInfo.SetValue(instance, value);
         }
         

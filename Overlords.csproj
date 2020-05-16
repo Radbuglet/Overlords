@@ -62,7 +62,6 @@
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
-    <Compile Include="helpers\network\RemoteEventHub.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />
     <Compile Include="helpers\network\replication\Entry.cs" />
     <Compile Include="helpers\network\replication\ValueReplicator.cs" />
@@ -73,6 +72,7 @@
     <Compile Include="helpers\network\serialization\StructSerializer.cs" />
     <Compile Include="helpers\tree\behaviors\BehaviorsExtension.cs" />
     <Compile Include="helpers\tree\behaviors\FieldNotNull.cs" />
+    <Compile Include="helpers\tree\behaviors\LinkNode.cs" />
     <Compile Include="helpers\tree\behaviors\LinkNodePath.cs" />
     <Compile Include="helpers\tree\behaviors\RequireBehavior.cs" />
     <Compile Include="helpers\tree\behaviors\RequireParent.cs" />
@@ -85,6 +85,9 @@
     <Compile Include="menu\StartClientButton.cs" />
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="game\entity\player" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

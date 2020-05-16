@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Godot.Collections;
 using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.network.serialization
 {
-    public class ListSerializer<TElem>: AbstractSerializer<Array<TElem>>
+    public class ListSerializer<TElem>: AbstractSerializer<List<TElem>>
     {
         private readonly ISerializer<TElem> _elementSerializer;
         
@@ -13,12 +12,12 @@ namespace Overlords.helpers.network.serialization
             _elementSerializer = elementSerializer;
         }
         
-        public override object Serialize(Array<TElem> data)
+        public override object Serialize(List<TElem> data)
         {
             return ListSerialization.Serialize(_elementSerializer, data);
         }
 
-        public override Array<TElem> Deserialize(object serializedRaw)
+        public override List<TElem> Deserialize(object serializedRaw)
         {
             return ListSerialization.Deserialize(_elementSerializer, serializedRaw);
         }
@@ -37,11 +36,13 @@ namespace Overlords.helpers.network.serialization
             return serializedArray;
         }
         
-        public static Array<TElem> Deserialize<TElem>(ISerializer<TElem> elementSerializer, object serializedRaw)
+        public static List<TElem> Deserialize<TElem>(ISerializer<TElem> elementSerializer, object serializedRaw)
         {
-            var deserializedArray = new Array<TElem>();
+            var deserializedArray = new List<TElem>();
             if (!(serializedRaw is Array serializedArray))
                 throw new DeserializationException("Root of serialized typed list was not a primitive array!");
+            
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var serializedElement in serializedArray)
             {
                 deserializedArray.Add(elementSerializer.Deserialize(serializedElement));

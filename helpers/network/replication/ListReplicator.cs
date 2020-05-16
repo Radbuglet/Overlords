@@ -45,8 +45,8 @@ namespace Overlords.helpers.network.replication
             var index = 0;
             foreach (var entityType in _entityTypes)
             {
-                Debug.Assert(!_resourceToPrefabMappings.ContainsKey(entityType.ResourceName), "Duplicate entity type in configured entity type list!");
-                _resourceToPrefabMappings.Add(entityType.ResourceName, index);
+                Debug.Assert(!_resourceToPrefabMappings.ContainsKey(entityType.ResourcePath), "Duplicate entity type in configured entity type list!");
+                _resourceToPrefabMappings.Add(entityType.ResourcePath, index);
                 index++;
             }
         }
@@ -114,7 +114,7 @@ namespace Overlords.helpers.network.replication
         [Puppet]
         private void _PushObjects(object objectsRaw)
         {
-            Array<ReplicatedObject> replicatedObjects;
+            List<ReplicatedObject> replicatedObjects;
             try
             {
                 replicatedObjects = ListSerialization.Deserialize(ReplicatedObject.Serializer, objectsRaw);
@@ -165,7 +165,7 @@ namespace Overlords.helpers.network.replication
         [Puppet]
         private void _RemoveObjects(object namesRaw)
         {
-            Array<string> names;
+            List<string> names;
             try
             {
                 names = ListSerialization.Deserialize(new PrimitiveSerializer<string>(), namesRaw);
