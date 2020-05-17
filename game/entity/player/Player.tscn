@@ -1,8 +1,12 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://helpers/tree/trackingGroups/NodeGroupMemberTracker.cs" type="Script" id=1]
+[ext_resource path="res://game/entity/player/PlayerInitializer.cs" type="Script" id=2]
 
 [node name="Player" type="Spatial"]
 
 [node name="NodeGroupMemberTracker" type="Node" parent="."]
 script = ExtResource( 1 )
+
+[node name="PlayerInitializer" type="Node" parent="."]
+script = ExtResource( 2 )

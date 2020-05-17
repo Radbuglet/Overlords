@@ -54,8 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
-    <Compile Include="game\entity\EntityReplicatedState.cs" />
-    <Compile Include="game\world\EntityContainer.cs" />
+    <Compile Include="game\entity\player\PlayerInitializer.cs" />
     <Compile Include="game\world\Protocol.cs" />
     <Compile Include="game\world\WorldControllerClient.cs" />
     <Compile Include="game\world\WorldControllerShared.cs" />
@@ -67,6 +66,8 @@
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
+    <Compile Include="helpers\network\replication\EntityContainer.cs" />
+    <Compile Include="helpers\network\replication\EntityReplicatedState.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
     <Compile Include="helpers\network\serialization\Interfaces.cs" />
     <Compile Include="helpers\network\serialization\ListSerializer.cs" />

@@ -1,13 +1,12 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Godot;
 using Overlords.helpers.csharp;
-using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree;
 using Array = Godot.Collections.Array;
 
-namespace Overlords.game.world
+namespace Overlords.helpers.network.replication
 {
     public class EntityContainer: Node
     {
@@ -39,37 +38,13 @@ namespace Overlords.game.world
         
         public delegate void EntityCreator<in TConstructor>(TConstructor constructorData);
         public delegate TConstructor EntitySerializer<out TConstructor>(int target, Node node);
-
-        private RemoteEvent _remoteOnEntitiesAdded;
-        private RemoteEvent _remoteOnEntitiesRemoved;
+        
         private readonly List<RegisteredEntityType> _registeredEntityTypes = new List<RegisteredEntityType>();
 
         public override void _Ready()
         {
-            _remoteOnEntitiesAdded = new RemoteEvent
-            {
-                Name = "remoteEntitiesAdded"
-            };
-            _remoteOnEntitiesRemoved = new RemoteEvent
-            {
-                Name = "remoteEntitiesRemoved"
-            };
-            AddChild(_remoteOnEntitiesAdded);
-            AddChild(_remoteOnEntitiesRemoved);
-
-            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-            switch (GetTree().GetNetworkMode())
-            {
-                case NetworkUtils.NetworkMode.Client:
-                    _remoteOnEntitiesAdded.Connect(nameof(RemoteEvent.FiredRemotely), this,
-                        nameof(_ClInstancesReplicated));
-                    _remoteOnEntitiesRemoved.Connect(nameof(RemoteEvent.FiredRemotely), this,
-                        nameof(_ClInstancesDeReplicated));
-                    break;
-                case NetworkUtils.NetworkMode.None:
-                    GD.PushWarning("EntityContainer created in a non-networked scene tree!");
-                    break;
-            }
+            if (GetTree().GetNetworkMode() == NetworkUtils.NetworkMode.None)
+                GD.PushWarning("EntityContainer created in a non-networked scene tree!");
         }
         
         public RegisteredEntityType RegisterEntityType<TConstructor>(ISerializer<TConstructor> constructorSerializer,
@@ -102,7 +77,7 @@ namespace Overlords.game.world
 
         public void SvReplicateInstances(int target, IEnumerable<(Node, RegisteredEntityType)> instances)
         {
-            var packet = new Godot.Collections.Array();
+            var packet = new Array();
             foreach (var (instance, type) in instances)
             {
                 packet.Add(new AddedEntity
@@ -111,7 +86,8 @@ namespace Overlords.game.world
                     ConstructorArgs = type.MakeEntityConstructor(target, instance)
                 }.Serialize());
             }
-            _remoteOnEntitiesAdded.FireId(target, packet);
+
+            RpcId(target, nameof(_ClInstancesReplicated), packet);
         }
         
         public void SvReplicateInstances(IEnumerable<int> targets, Func<IEnumerable<(Node, RegisteredEntityType)>> iterateInstances)
@@ -132,24 +108,25 @@ namespace Overlords.game.world
 
         public void SvDeReplicateInstances(IEnumerable<int> targets, IEnumerable<Node> instances)
         {
-            var packet = new Godot.Collections.Array();
+            var packet = new Array();
             foreach (var instance in instances)
             {
                 packet.Add(instance.Name);
             }
 
             if (targets == null)
-                _remoteOnEntitiesRemoved.Fire(packet);
+                Rpc(nameof(_ClInstancesDeReplicated), packet);
             else
             {
                 foreach (var peer in targets)
                 {
-                    _remoteOnEntitiesRemoved.FireId(peer, packet);
+                    RpcId(peer, nameof(_ClInstancesDeReplicated), packet);
                 }
             }
         }
 
-        private void _ClInstancesReplicated(int sender, object raw)
+        [Puppet]
+        private void _ClInstancesReplicated(object raw)
         {
             if (!(raw is Array entities))
             {
@@ -182,7 +159,8 @@ namespace Overlords.game.world
             }
         }
         
-        private void _ClInstancesDeReplicated(int sender, object raw)
+        [Puppet]
+        private void _ClInstancesDeReplicated(object raw)
         {
             if (!(raw is Array entityNames))
             {

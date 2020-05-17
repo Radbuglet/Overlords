@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Godot;
 using Overlords.helpers.csharp;
+using Overlords.helpers.network.replication;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;
@@ -10,7 +11,7 @@ namespace Overlords.game.world
     public class WorldControllerServer: Node
     {
         [Export] private NodePath _pathToControllerShared;
-        [FieldNotNull] [Export] public PackedScene _playerPrefab;
+        [FieldNotNull] [Export] public PackedScene PlayerPrefab;
 
         [LinkNodePath(nameof(_pathToControllerShared))]
         public WorldControllerShared ControllerShared;
@@ -31,7 +32,7 @@ namespace Overlords.game.world
             var entityContainer = ControllerShared.EntityContainer;
             
             // Make player
-            var newPlayer = _playerPrefab.Instance();
+            var newPlayer = PlayerPrefab.Instance();
             newPlayer.Name = Protocol.GetPlayerName(peerId);
             entityContainer.AddChild(newPlayer);
             
@@ -54,14 +55,14 @@ namespace Overlords.game.world
         private void _PeerDisconnected(int peerId)
         {
             GD.Print($"{peerId} disconnected!");
+            
             var player = _playerGroup.GetMemberOfGroup<Node>(peerId, null);
-            if (player != null)
-            {
-                GD.Print("Player removed!");
-                _playerGroup.RemoveFromGroup(peerId);
-                ControllerShared.EntityContainer.SvDeReplicateInstances(_playerGroup.IterateGroupKeys(), player.AsEnumerable());
-                player.Purge();
-            }
+            if (player == null) return;
+            
+            GD.Print("Player removed!");
+            _playerGroup.RemoveFromGroup(peerId);
+            ControllerShared.EntityContainer.SvDeReplicateInstances(_playerGroup.IterateGroupKeys(), player.AsEnumerable());
+            player.Purge();
         }
     }
 }
