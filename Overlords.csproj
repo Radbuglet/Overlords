@@ -54,15 +54,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
+    <Compile Include="game\entity\EntityReplicatedState.cs" />
+    <Compile Include="game\world\entityContainer\EntityContainer.cs" />
+    <Compile Include="game\world\entityContainer\EntityContainerClient.cs" />
+    <Compile Include="game\world\entityContainer\EntityContainerServer.cs" />
+    <Compile Include="game\world\WorldControllerClient.cs" />
+    <Compile Include="game\world\WorldControllerServer.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
+    <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
-    <Compile Include="helpers\network\replication\list\ListReplicator.cs" />
-    <Compile Include="helpers\network\replication\list\ListReplicatorClient.cs" />
-    <Compile Include="helpers\network\replication\list\ListReplicatorServer.cs" />
+    <Compile Include="helpers\network\RemoteEventTyped.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
     <Compile Include="helpers\network\serialization\Interfaces.cs" />
     <Compile Include="helpers\network\serialization\ListSerializer.cs" />

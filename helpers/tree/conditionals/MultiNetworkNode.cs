@@ -9,18 +9,13 @@ namespace Overlords.helpers.tree.conditionals
     {
         public (NetworkUtils.NetworkMode mode, object instance)? Instance;
 
-        protected abstract TCommon MakeCommon();
-        protected abstract TServer MakeServer(TCommon common);
-        protected abstract TClient MakeClient(TCommon common);
+        protected abstract void InitializeCommon();
+        protected abstract TServer MakeServer();
+        protected abstract TClient MakeClient();
 
         public override void _Ready()
         {
-            var commonNode = MakeCommon();
-            if (commonNode != null)
-            {
-                commonNode.Name = "common";
-                AddChild(commonNode);
-            }
+            InitializeCommon();
             
             var networkMode = GetTree().GetNetworkMode();
             Node networkExclusive;
@@ -28,13 +23,13 @@ namespace Overlords.helpers.tree.conditionals
             {
                 case NetworkUtils.NetworkMode.Server:
                 {
-                    networkExclusive = MakeServer(commonNode);
+                    networkExclusive = MakeServer();
                     networkExclusive.Name = "Server";
                     break;
                 }
                 case NetworkUtils.NetworkMode.Client:
-                    networkExclusive = MakeClient(commonNode);
-                    networkExclusive.Name = "client";
+                    networkExclusive = MakeClient();
+                    networkExclusive.Name = "Client";
                     break;
                 default:
                     throw new InvalidOperationException("MultiNetworkNode called while the tree didn't have networking configured");
@@ -51,14 +46,8 @@ namespace Overlords.helpers.tree.conditionals
             return (TType) Instance.Value.instance;
         }
 
-        public TServer AsServer()
-        {
-            return AsType<TServer>(NetworkUtils.NetworkMode.Server);
-        }
-        
-        public TClient AsClient()
-        {
-            return AsType<TClient>(NetworkUtils.NetworkMode.Client);
-        }
+        public TServer Server => AsType<TServer>(NetworkUtils.NetworkMode.Server);
+
+        public TClient Client => AsType<TClient>(NetworkUtils.NetworkMode.Client);
     }
 }
