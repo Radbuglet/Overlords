@@ -60,6 +60,9 @@
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
+    <Compile Include="helpers\network\replication\list\ListReplicator.cs" />
+    <Compile Include="helpers\network\replication\list\ListReplicatorClient.cs" />
+    <Compile Include="helpers\network\replication\list\ListReplicatorServer.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
     <Compile Include="helpers\network\serialization\Interfaces.cs" />
     <Compile Include="helpers\network\serialization\ListSerializer.cs" />
@@ -71,6 +74,7 @@
     <Compile Include="helpers\tree\behaviors\LinkNodeEditor.cs" />
     <Compile Include="helpers\tree\behaviors\RequireBehavior.cs" />
     <Compile Include="helpers\tree\behaviors\RequireParent.cs" />
+    <Compile Include="helpers\tree\conditionals\MultiNetworkNode.cs" />
     <Compile Include="helpers\tree\conditionals\ConditionalNode.cs" />
     <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
     <Compile Include="helpers\tree\NodeUtils.cs" />
@@ -80,9 +84,6 @@
     <Compile Include="menu\StartClientButton.cs" />
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="helpers\network\replication" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
