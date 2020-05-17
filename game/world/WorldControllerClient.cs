@@ -1,6 +1,8 @@
-﻿namespace Overlords.game.world
+﻿using Godot;
+
+namespace Overlords.game.world
 {
-    public class WorldControllerClient
+    public class WorldControllerClient: Node
     {
         
     }

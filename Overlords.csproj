@@ -56,7 +56,9 @@
     <Compile Include="game\constants\InputNames.cs" />
     <Compile Include="game\entity\EntityReplicatedState.cs" />
     <Compile Include="game\world\EntityContainer.cs" />
+    <Compile Include="game\world\Protocol.cs" />
     <Compile Include="game\world\WorldControllerClient.cs" />
+    <Compile Include="game\world\WorldControllerShared.cs" />
     <Compile Include="game\world\WorldControllerServer.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
