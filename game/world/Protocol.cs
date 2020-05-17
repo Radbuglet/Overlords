@@ -16,5 +16,10 @@ namespace Overlords.game.world
             
             public int OwnerPeerId;
         }
+
+        public static string GetPlayerName(int peerId)
+        {
+            return $"player_{peerId}";
+        }
     }
 }

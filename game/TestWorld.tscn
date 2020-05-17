@@ -1,9 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://game/world/WorldControllerShared.cs" type="Script" id=1]
 [ext_resource path="res://game/world/WorldControllerServer.cs" type="Script" id=2]
 [ext_resource path="res://game/world/WorldControllerClient.cs" type="Script" id=3]
 [ext_resource path="res://game/world/EntityContainer.cs" type="Script" id=4]
+[ext_resource path="res://game/entity/player/Player.tscn" type="PackedScene" id=5]
+[ext_resource path="res://helpers/tree/conditionals/NetworkConditionalNode.cs" type="Script" id=6]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -45,12 +47,16 @@ script = ExtResource( 4 )
 script = ExtResource( 1 )
 
 [node name="Server" type="Node" parent="."]
+script = ExtResource( 6 )
 
 [node name="WorldControllerServer" type="Node" parent="Server"]
 script = ExtResource( 2 )
 _pathToControllerShared = NodePath("../../Shared/WorldControllerShared")
+_playerPrefab = ExtResource( 5 )
 
 [node name="Client" type="Node" parent="."]
+script = ExtResource( 6 )
+_desiredNetworkMode = 1
 
 [node name="WorldControllerClient" type="Node" parent="Client"]
 script = ExtResource( 3 )

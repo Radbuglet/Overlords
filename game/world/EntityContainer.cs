@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Godot;
+using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree;
@@ -112,6 +113,22 @@ namespace Overlords.game.world
             }
             _remoteOnEntitiesAdded.FireId(target, packet);
         }
+        
+        public void SvReplicateInstances(IEnumerable<int> targets, Func<IEnumerable<(Node, RegisteredEntityType)>> iterateInstances)
+        {
+            foreach (var target in targets)
+            {
+                SvReplicateInstances(target, iterateInstances());
+            }
+        }
+
+        public void SvReplicateInstance(IEnumerable<int> targets, (Node, RegisteredEntityType) instance)
+        {
+            foreach (var target in targets)
+            {
+                SvReplicateInstances(target, instance.AsEnumerable());
+            }
+        }
 
         public void SvDeReplicateInstances(IEnumerable<int> targets, IEnumerable<Node> instances)
         {
@@ -139,6 +156,8 @@ namespace Overlords.game.world
                 GD.PushWarning("Invalid replicated instance list!");
                 return;
             }
+            
+            GD.Print($"Received {entities.Count} {(entities.Count == 1 ? "entity" : "entities")}");
 
             foreach (var rawEntity in entities)
             {
@@ -159,8 +178,7 @@ namespace Overlords.game.world
                     continue;
                 }
 
-                _registeredEntityTypes[addedEntity.TypeIndex].InstantiateEntity(addedEntity);
-                GD.Print("Entity remotely spawned.");
+                _registeredEntityTypes[addedEntity.TypeIndex].InstantiateEntity(addedEntity.ConstructorArgs);
             }
         }
         
