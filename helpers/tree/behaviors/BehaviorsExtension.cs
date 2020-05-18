@@ -33,7 +33,7 @@ namespace Overlords.helpers.tree.behaviors
                 // Node path linking
                 if (field.GetValue(initializedNode) == null)
                 {
-                    var attribLinkNodePath = field.GetCustomAttribute<LinkNodePath>();
+                    var attribLinkNodePath = field.GetCustomAttribute<LinkNodeEditor>();
                     if (attribLinkNodePath != null)
                     {
                         var nodePath = initializedNode.Get(attribLinkNodePath.ExportedPropName);

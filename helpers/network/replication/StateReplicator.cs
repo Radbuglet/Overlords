@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Godot;
 using Godot.Collections;
@@ -6,20 +7,21 @@ using Overlords.helpers.network.serialization;
 
 namespace Overlords.helpers.network.replication
 {
-    public class EntityReplicatedState: Node
+    public class StateReplicator: Node
     {
         public interface IStateField
         {
             int FieldIndex { get; }
             
             object SerializeData();
-            void DeserializeValue(object raw);
+            void DeserializeRemoteValue(object raw);
         }
         
         public class StateField<TValue>: IStateField
         {
-            public int FieldIndex { get; set; }
+            public event Action<TValue, TValue> OnValueRemotelyChanged;
             
+            public int FieldIndex { get; set; }
             private readonly ISerializer<TValue> _serializer;
             private TValue _value;
             public bool IsValueSet { get; private set; }
@@ -44,11 +46,13 @@ namespace Overlords.helpers.network.replication
                 return _serializer.Serialize(Value);
             }
 
-            public void DeserializeValue(object raw)
+            public void DeserializeRemoteValue(object raw)
             {
                 try
                 {
+                    var oldValue = Value;
                     Value = _serializer.Deserialize(raw);
+                    OnValueRemotelyChanged?.Invoke(Value, oldValue);
                 }
                 catch (DeserializationException e)
                 {
@@ -59,12 +63,11 @@ namespace Overlords.helpers.network.replication
 
         private readonly List<IStateField> _fields = new List<IStateField>();
 
-        public StateField<TVal> AddField<TVal>(StateField<TVal> stateField)
+        public void RegisterField<TVal>(StateField<TVal> stateField)
         {
             Debug.Assert(stateField.FieldIndex == -1);
             stateField.FieldIndex = _fields.Count;
             _fields.Add(stateField);
-            return stateField;
         }
 
         public void ReplicateValues(IEnumerable<int> targets, IEnumerable<IStateField> fields, bool reliable)
@@ -80,7 +83,7 @@ namespace Overlords.helpers.network.replication
             }
         }
 
-        public object SerializeValues(IEnumerable<IStateField> fields)
+        public Dictionary SerializeValues(IEnumerable<IStateField> fields)
         {
             var serialized = new Godot.Collections.Dictionary<int, object>();
             foreach (var field in fields)
@@ -88,7 +91,12 @@ namespace Overlords.helpers.network.replication
                 serialized.Add(field.FieldIndex, field.SerializeData());
             }
 
-            return serialized;
+            return (Dictionary) serialized;
+        }
+
+        public Dictionary SerializeValues()
+        {
+            return SerializeValues(_fields);
         }
 
         public void LoadValues(Dictionary rawDictionary)
@@ -101,7 +109,7 @@ namespace Overlords.helpers.network.replication
                     continue;
                 }
                 
-                _fields[fieldIndex].DeserializeValue(kv.Value);
+                _fields[fieldIndex].DeserializeRemoteValue(kv.Value);
             }
         }
 

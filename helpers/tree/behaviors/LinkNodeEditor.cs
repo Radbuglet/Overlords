@@ -3,11 +3,11 @@
 namespace Overlords.helpers.tree.behaviors
 {
     [AttributeUsage(AttributeTargets.Field)]
-    public class LinkNodePath : Attribute
+    public class LinkNodeEditor : Attribute
     {
         public readonly string ExportedPropName;
 
-        public LinkNodePath(string exportedPropName)
+        public LinkNodeEditor(string exportedPropName)
         {
             ExportedPropName = exportedPropName;
         }

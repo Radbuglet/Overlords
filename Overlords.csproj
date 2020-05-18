@@ -54,11 +54,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
-    <Compile Include="game\entity\player\PlayerInitializer.cs" />
-    <Compile Include="game\world\Protocol.cs" />
-    <Compile Include="game\world\WorldControllerClient.cs" />
-    <Compile Include="game\world\WorldControllerShared.cs" />
-    <Compile Include="game\world\WorldControllerServer.cs" />
+    <Compile Include="game\entities\player\PlayerLogicShared.cs" />
+    <Compile Include="game\world\WorldLogicClient.cs" />
+    <Compile Include="game\world\WorldLogicServer.cs" />
+    <Compile Include="game\world\WorldLogicShared.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
@@ -66,8 +65,8 @@
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
-    <Compile Include="helpers\network\replication\EntityContainer.cs" />
-    <Compile Include="helpers\network\replication\EntityReplicatedState.cs" />
+    <Compile Include="helpers\network\replication\ListReplicator.cs" />
+    <Compile Include="helpers\network\replication\StateReplicator.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
     <Compile Include="helpers\network\serialization\Interfaces.cs" />
     <Compile Include="helpers\network\serialization\ListSerializer.cs" />
@@ -82,6 +81,7 @@
     <Compile Include="helpers\tree\conditionals\MultiNetworkNode.cs" />
     <Compile Include="helpers\tree\conditionals\ConditionalNode.cs" />
     <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
+    <Compile Include="helpers\tree\interfaceBehaviors\InterfaceBehaviorRouter.cs" />
     <Compile Include="helpers\tree\NodeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="helpers\tree\trackingGroups\NodeGroup.cs" />
