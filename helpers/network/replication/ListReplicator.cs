@@ -83,7 +83,12 @@ namespace Overlords.helpers.network.replication
             }
             
             GD.Print($"Received {entities.Count} {(entities.Count == 1 ? "entity" : "entities")}");
-
+            if (BuildRemoteInstance == null)
+            {
+                GD.PushWarning($"{nameof(BuildRemoteInstance)} is null!");
+                return;
+            }
+            
             foreach (var entity in entities)
             {
                 BuildRemoteInstance(entity);

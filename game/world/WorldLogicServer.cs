@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Overlords.game.constants;
 using Overlords.game.entities.player;
 using Overlords.helpers;
 using Overlords.helpers.csharp;
@@ -17,7 +18,7 @@ namespace Overlords.game.world
     
     public class WorldLogicServer : Node
     {
-        [Export]
+        [FieldNotNull] [Export]
         private PackedScene _playerPrefab;
         
         [RequireBehavior]
@@ -35,7 +36,7 @@ namespace Overlords.game.world
             {
                 TypeIndex = SharedLogic.TypeRegistrar.GetTypeFromNode(entity).Index,
                 Constructor = entity.GetImplementation<IEntityCatchupEmitter>().SerializeConstructor(target)
-            };
+            }.Serialize();
             
             var tree = GetTree();
             tree.Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));

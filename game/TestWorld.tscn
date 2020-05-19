@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://helpers/tree/conditionals/MultiNetworkConditionalNode.cs" type="Script" id=1]
 [ext_resource path="res://game/world/WorldLogicShared.cs" type="Script" id=2]
 [ext_resource path="res://helpers/network/replication/ListReplicator.cs" type="Script" id=3]
 [ext_resource path="res://game/world/WorldLogicClient.cs" type="Script" id=4]
 [ext_resource path="res://game/world/WorldLogicServer.cs" type="Script" id=5]
+[ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -47,9 +48,11 @@ script = ExtResource( 3 )
 
 [node name="WorldLogicShared" type="Node" parent="."]
 script = ExtResource( 2 )
+_editorEntityTypes = [ ExtResource( 6 ) ]
 
 [node name="WorldLogicClient" type="Node" parent="."]
 script = ExtResource( 4 )
 
 [node name="WorldLogicServer" type="Node" parent="."]
 script = ExtResource( 5 )
+_playerPrefab = ExtResource( 6 )

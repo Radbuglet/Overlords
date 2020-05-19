@@ -1,4 +1,5 @@
 ﻿using System;
+using Godot;
 
 namespace Overlords.helpers.network.serialization
 {
@@ -42,6 +43,36 @@ namespace Overlords.helpers.network.serialization
         public object DeserializeUnTyped(object raw)
         {
             return Deserialize(raw);
+        }
+    }
+
+    public static class SerializationExtensions
+    {
+        public static bool TryDeserialize<TVal>(this ISerializer<TVal> serializer, object raw, out TVal deserialized, out DeserializationException exception)
+        {
+            try
+            {
+                deserialized = serializer.Deserialize(raw);
+                exception = null;
+                return true;
+            }
+            catch (DeserializationException e)
+            {
+                deserialized = default;
+                exception = e;
+                return false;
+            }
+        }
+
+        public static bool TryDeserializedOrWarn<TVal>(this ISerializer<TVal> serializer, object raw, out TVal deserialized)
+        {
+            var success = serializer.TryDeserialize(raw, out deserialized, out var error);
+            if (!success)
+            {
+                GD.PushWarning($"Failed to deserialize: {error.Message}");
+            }
+
+            return success;
         }
     }
 }
