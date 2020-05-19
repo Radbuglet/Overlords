@@ -37,8 +37,7 @@ namespace Overlords.game.world
             
             // Create and setup player
             var newPlayer = SharedLogic.PlayerPrefab.Instance();
-            newPlayer.GetBehavior<PlayerLogicShared>()
-                .InitializeShared(peerId);
+            newPlayer.GetBehavior<PlayerLogicShared>().SetupPreEntry(GetTree(), peerId);
             entityContainer.AddChild(newPlayer);
             RegisterAutoCatchup(newPlayer);
             

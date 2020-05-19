@@ -21,11 +21,11 @@ namespace Overlords.helpers.network.replication
         {
             public event Action<TValue, TValue> OnValueRemotelyChanged;
             
-            public int FieldIndex { get; set; }
             private readonly ISerializer<TValue> _serializer;
             private TValue _value;
+            
+            public int FieldIndex { get; set; } = -1;
             public bool IsValueSet { get; private set; }
-
             public TValue Value
             {
                 get => _value;
@@ -57,11 +57,13 @@ namespace Overlords.helpers.network.replication
 
         private readonly List<IStateField> _fields = new List<IStateField>();
 
-        public void RegisterField<TVal>(StateField<TVal> stateField)
+        public StateField<TVal> MakeField<TVal>(ISerializer<TVal> serializer)
         {
+            var stateField = new StateField<TVal>(serializer);
             Debug.Assert(stateField.FieldIndex == -1);
             stateField.FieldIndex = _fields.Count;
             _fields.Add(stateField);
+            return stateField;
         }
 
         public void ReplicateValues(IEnumerable<int> targets, IEnumerable<IStateField> fields, bool reliable)
@@ -95,15 +97,15 @@ namespace Overlords.helpers.network.replication
 
         public void LoadValues(Dictionary rawDictionary)
         {
-            foreach (KeyValuePair<object, object> kv in rawDictionary)
+            foreach (var key in rawDictionary.Keys)
             {
-                if (!(kv.Key is int fieldIndex) || fieldIndex < 0 || fieldIndex >= _fields.Count)
+                if (!(key is int fieldIndex) || fieldIndex < 0 || fieldIndex >= _fields.Count)
                 {
                     GD.PushWarning("Failed to deserialize fieldIndex for state set.");
                     continue;
                 }
                 
-                _fields[fieldIndex].DeserializeRemoteValue(kv.Value);
+                _fields[fieldIndex].DeserializeRemoteValue(rawDictionary[key]);
             }
         }
 

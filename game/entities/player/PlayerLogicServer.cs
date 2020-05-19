@@ -10,14 +10,16 @@ namespace Overlords.game.entities.player
         public override void _Ready()
         {
             this.InitializeBehavior();
+            LogicShared.BalanceValue.Value = (int) GD.RandRange(0, 420.69);
         }
 
-        public object SerializeConstructor(int target)
+        public PlayerProtocol.NetworkConstructor MakeConstructor(int target)
         {
-            return new PlayerLogicShared.NetworkConstructor
+            return new PlayerProtocol.NetworkConstructor
             {
-                OwnerPeerId = LogicShared.OwnerPeerId
-            }.Serialize();
+                OwnerPeerId = LogicShared.OwnerPeerId,
+                ReplicatedState = LogicShared.StateReplicator.SerializeValues()
+            };
         }
     }
 }

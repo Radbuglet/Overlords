@@ -19,15 +19,15 @@ namespace Overlords.game.world
         public override void _Ready()
         {
             this.InitializeBehavior();
-            EntityContainer.RegisterEntityType(PlayerPrefab, PlayerLogicShared.NetworkConstructor.Serializer,
+            EntityContainer.RegisterEntityType(PlayerPrefab, PlayerProtocol.NetworkConstructor.Serializer,
                 (instance, container, constructor) =>
                 {
-                    instance.GetBehavior<PlayerLogicShared>().InitializeShared(constructor.OwnerPeerId);
+                    var sharedLogic = instance.GetBehavior<PlayerLogicShared>();
+                    sharedLogic.SetupPreEntry(GetTree(), constructor.OwnerPeerId);
+                    sharedLogic.StateReplicator.LoadValues(constructor.ReplicatedState);
                     container.AddChild(instance);
-                }, (target, instance) => new PlayerLogicShared.NetworkConstructor
-                {
-                     OwnerPeerId = instance.GetBehavior<PlayerLogicShared>().OwnerPeerId
-                });
+                },
+                (target, instance) => instance.GetBehavior<PlayerLogicServer>().MakeConstructor(target));
         }
     }
 }
