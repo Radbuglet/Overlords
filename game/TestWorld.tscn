@@ -48,11 +48,10 @@ script = ExtResource( 3 )
 
 [node name="WorldLogicShared" type="Node" parent="."]
 script = ExtResource( 2 )
-_editorEntityTypes = [ ExtResource( 6 ) ]
+PlayerPrefab = ExtResource( 6 )
 
 [node name="WorldLogicClient" type="Node" parent="."]
 script = ExtResource( 4 )
 
 [node name="WorldLogicServer" type="Node" parent="."]
 script = ExtResource( 5 )
-_playerPrefab = ExtResource( 6 )

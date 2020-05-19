@@ -67,7 +67,6 @@
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
-    <Compile Include="helpers\network\replication\EntityTypeRegistrar.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />
     <Compile Include="helpers\network\replication\StateReplicator.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />

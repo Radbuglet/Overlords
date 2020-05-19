@@ -1,5 +1,5 @@
 ﻿using Godot;
-using Godot.Collections;
+using Overlords.game.entities.player;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;
@@ -8,16 +8,26 @@ namespace Overlords.game.world
 {
     public class WorldLogicShared: Node
     {
-        [Export]
-        private Array<PackedScene> _editorEntityTypes = new Array<PackedScene>();
+        [Export][FieldNotNull]
+        public PackedScene PlayerPrefab;
         
-        public readonly EntityTypeRegistrar TypeRegistrar = new EntityTypeRegistrar();
+        [LinkNodeStatic("../EntityContainer")]
+        public ListReplicator EntityContainer;
+        
         public readonly NodeGroup<int, Node> GroupPlayers = new NodeGroup<int, Node>();
 
         public override void _Ready()
         {
             this.InitializeBehavior();
-            TypeRegistrar.RegisterTypes(_editorEntityTypes);
+            EntityContainer.RegisterEntityType(PlayerPrefab, PlayerLogicShared.NetworkConstructor.Serializer,
+                (instance, container, constructor) =>
+                {
+                    instance.GetBehavior<PlayerLogicShared>().InitializeShared(constructor.OwnerPeerId);
+                    container.AddChild(instance);
+                }, (target, instance) => new PlayerLogicShared.NetworkConstructor
+                {
+                     OwnerPeerId = instance.GetBehavior<PlayerLogicShared>().OwnerPeerId
+                });
         }
     }
 }

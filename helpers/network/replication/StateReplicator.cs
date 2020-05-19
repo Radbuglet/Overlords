@@ -48,16 +48,10 @@ namespace Overlords.helpers.network.replication
 
             public void DeserializeRemoteValue(object raw)
             {
-                try
-                {
-                    var oldValue = Value;
-                    Value = _serializer.Deserialize(raw);
-                    OnValueRemotelyChanged?.Invoke(Value, oldValue);
-                }
-                catch (DeserializationException e)
-                {
-                    GD.PushWarning($"Failed to set StateField: {e.Message}");
-                }
+                if (!_serializer.TryDeserializedOrWarn(raw, out var newValue)) return;
+                var oldValue = Value;
+                Value = newValue;
+                OnValueRemotelyChanged?.Invoke(newValue, oldValue);
             }
         }
 

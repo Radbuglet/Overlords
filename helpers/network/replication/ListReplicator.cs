@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Godot;
 using Overlords.helpers.csharp;
+using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree;
 using Array = Godot.Collections.Array;
 
@@ -10,26 +11,85 @@ namespace Overlords.helpers.network.replication
 {
     public class ListReplicator: Node
     {
-        public delegate object InstanceSerializer(int target, Node instanceRoot);
-        public delegate void InstanceBuilder(object serializedInstance);
+        private class AddedEntity
+        {
+            public static readonly StructSerializer<AddedEntity> Serializer = new StructSerializer<AddedEntity>(
+                () => new AddedEntity(),
+                new Dictionary<string, ISerializerRaw>
+                {
+                    [nameof(TypeIndex)] = new PrimitiveSerializer<int>(),
+                    [nameof(ConstructorArgs)] = new PrimitiveSerializer<object>()
+                });
+
+            public object Serialize()
+            {
+                return Serializer.Serialize(this);
+            }
+            
+            public int TypeIndex;
+            public object ConstructorArgs;
+        }
+
+        private class RegisteredEntityType
+        {
+            public int TypeIndex;
+            public Action<object> BuildEntity;
+            public Func<int, Node, object> SerializeConstructor;
+        }
         
-        public InstanceSerializer SerializeInstance;
-        public InstanceBuilder BuildRemoteInstance;
         
+        private readonly List<RegisteredEntityType> _registeredEntityTypes = new List<RegisteredEntityType>();
+        private readonly Dictionary<string, RegisteredEntityType> _fileToEntityType = new Dictionary<string, RegisteredEntityType>();
+        
+        public delegate void RemoteEntityInitializer<in TConstructor>(Node root, Node container, TConstructor constructor);
+        public delegate TConstructor EntityStateEmitter<out TConstructor>(int targetPeer, Node root);
+
+
         public override void _Ready()
         {
             if (GetTree().GetNetworkMode() == NetworkUtils.NetworkMode.None)
                 GD.PushWarning("EntityContainer created in a non-networked scene tree!");
         }
+        
+        public void RegisterEntityType<TConstructor>(PackedScene scene, ISerializer<TConstructor> constructorSerializer,
+            RemoteEntityInitializer<TConstructor> buildEntity, EntityStateEmitter<TConstructor> makeEntityConstructor)
+        {
+            Debug.Assert(!_fileToEntityType.ContainsKey(scene.ResourcePath));
+            var typeIndex = _registeredEntityTypes.Count;
+            var entityType = new RegisteredEntityType
+            {
+                TypeIndex = typeIndex,
+                BuildEntity = entityArgsRaw =>
+                {
+                    if (!constructorSerializer.TryDeserialize(entityArgsRaw, out var entityArgs, out var error))
+                    {
+                        GD.PushWarning($"Failed to construct entity due to constructor deserialization error: {error.Message}");
+                        return;
+                    }
+                    
+                    buildEntity(scene.Instance(), this, entityArgs);
+                },
+                SerializeConstructor = (target, instance) => new AddedEntity
+                {
+                    TypeIndex = typeIndex,
+                    ConstructorArgs = constructorSerializer.Serialize(makeEntityConstructor(target, instance))
+                }.Serialize()
+            };
+            _registeredEntityTypes.Add(entityType);
+            _fileToEntityType.Add(scene.ResourcePath, entityType);
+        }
 
         public void SvReplicateInstances(int target, IEnumerable<Node> instances)
         {
             var packet = new Array();
-            Debug.Assert(instances != null);
-            Debug.Assert(SerializeInstance != null);
             foreach (var instance in instances)
             {
-                packet.Add(SerializeInstance(target, instance));
+                if (!_fileToEntityType.TryGetValue(instance.Filename, out var entityType))
+                {
+                    GD.PushWarning("Failed to replicate instance: type not registered!");
+                    continue;
+                }
+                packet.Add(entityType.SerializeConstructor(target, instance));
             }
 
             RpcId(target, nameof(_ClInstancesReplicated), packet);
@@ -37,7 +97,6 @@ namespace Overlords.helpers.network.replication
         
         public void SvReplicateInstances(IEnumerable<int> targets, Func<IEnumerable<Node>> iterateInstances)
         {
-            Debug.Assert(targets != null);
             foreach (var target in targets)
             {
                 SvReplicateInstances(target, iterateInstances());
@@ -46,7 +105,6 @@ namespace Overlords.helpers.network.replication
 
         public void SvReplicateInstance(IEnumerable<int> targets, Node instance)
         {
-            Debug.Assert(targets != null);
             foreach (var target in targets)
             {
                 SvReplicateInstances(target, instance.AsEnumerable());
@@ -55,7 +113,6 @@ namespace Overlords.helpers.network.replication
 
         public void SvDeReplicateInstances(IEnumerable<int> targets, IEnumerable<Node> instances)
         {
-            Debug.Assert(instances != null);
             var packet = new Array();
             foreach (var instance in instances)
             {
@@ -83,15 +140,19 @@ namespace Overlords.helpers.network.replication
             }
             
             GD.Print($"Received {entities.Count} {(entities.Count == 1 ? "entity" : "entities")}");
-            if (BuildRemoteInstance == null)
+
+            foreach (var rawEntity in entities)
             {
-                GD.PushWarning($"{nameof(BuildRemoteInstance)} is null!");
-                return;
-            }
-            
-            foreach (var entity in entities)
-            {
-                BuildRemoteInstance(entity);
+                if (!AddedEntity.Serializer.TryDeserializedOrWarn(rawEntity, out var addedEntity))
+                    continue;
+
+                if (addedEntity.TypeIndex < 0 || addedEntity.TypeIndex >= _registeredEntityTypes.Count)
+                {
+                    GD.PushWarning("Invalid entity type index!");
+                    continue;
+                }
+
+                _registeredEntityTypes[addedEntity.TypeIndex].BuildEntity(addedEntity.ConstructorArgs);
             }
         }
         
