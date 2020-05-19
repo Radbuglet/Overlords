@@ -1,4 +1,4 @@
-namespace Overlords.helpers.csharp
+namespace Overlords.helpers
 {
     public static class SceneTreeSignals
     {
@@ -7,5 +7,6 @@ namespace Overlords.helpers.csharp
         public const string NetworkPeerConnected = "network_peer_connected";
         public const string NetworkPeerDisconnected = "network_peer_disconnected";
         public const string ServerDisconnected = "server_disconnected";
+        public const string NodeAdded = "node_added";
     }
 }

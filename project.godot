@@ -19,6 +19,10 @@ config/name="Overlords"
 run/main_scene="res://menu/MainMenu.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Services="*res://services/Services.tscn"
+
 [input]
 
 fps_forward={

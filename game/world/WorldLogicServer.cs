@@ -1,13 +1,20 @@
 ﻿using Godot;
 using Overlords.game.entities.player;
+using Overlords.helpers;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.interfaceBehaviors;
 using Overlords.helpers.tree.trackingGroups;
 
 namespace Overlords.game.world
 {
+    public interface IEntityCatchupEmitter
+    {
+        object SerializeConstructor(int target);
+    }
+    
     public class WorldLogicServer : Node
     {
         [Export]
@@ -24,8 +31,12 @@ namespace Overlords.game.world
         public override void _Ready()
         {
             this.InitializeBehavior();
-            EntityContainer.SerializeInstance = (target, entity) => null;
-
+            EntityContainer.SerializeInstance = (target, entity) => new Protocol.ReplicatedEntity
+            {
+                TypeIndex = SharedLogic.TypeRegistrar.GetTypeFromNode(entity).Index,
+                Constructor = entity.GetImplementation<IEntityCatchupEmitter>().SerializeConstructor(target)
+            };
+            
             var tree = GetTree();
             tree.Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));
             tree.Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerLeft));

@@ -6,8 +6,6 @@ namespace Overlords.helpers.tree.conditionals
 {
     public abstract class ConditionalNode : Node
     {
-        [Export] private readonly Array<NodePath> _parallelTargets = new Array<NodePath>();
-        
         protected abstract bool ShouldExist();
 
         public override void _EnterTree()
@@ -19,7 +17,6 @@ namespace Overlords.helpers.tree.conditionals
         public void ConditionallyPurgeNow(bool removeSelf)
         {
             if (ShouldExist()) return;
-            NodePurging.PurgeParallel(_parallelTargets.ConvertToNodeIterator(this));
             this.PurgeWhileLocked(removeSelf);
         }
     }

@@ -1,11 +1,10 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=8 format=2]
 
-[ext_resource path="res://game/world/WorldControllerShared.cs" type="Script" id=1]
-[ext_resource path="res://game/world/WorldControllerServer.cs" type="Script" id=2]
-[ext_resource path="res://game/world/WorldControllerClient.cs" type="Script" id=3]
-[ext_resource path="res://helpers/network/replication/EntityContainer.cs" type="Script" id=4]
-[ext_resource path="res://game/entity/player/Player.tscn" type="PackedScene" id=5]
-[ext_resource path="res://helpers/tree/conditionals/NetworkConditionalNode.cs" type="Script" id=6]
+[ext_resource path="res://helpers/tree/conditionals/MultiNetworkConditionalNode.cs" type="Script" id=1]
+[ext_resource path="res://game/world/WorldLogicShared.cs" type="Script" id=2]
+[ext_resource path="res://helpers/network/replication/ListReplicator.cs" type="Script" id=3]
+[ext_resource path="res://game/world/WorldLogicClient.cs" type="Script" id=4]
+[ext_resource path="res://game/world/WorldLogicServer.cs" type="Script" id=5]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -38,26 +37,19 @@ shadow_enabled = true
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 300.0
 
+[node name="NetworkConditional" type="Node" parent="."]
+script = ExtResource( 1 )
+_clientNodes = [ NodePath("../WorldLogicClient") ]
+_serverNodes = [ NodePath("../WorldLogicServer") ]
+
 [node name="EntityContainer" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="WorldLogicShared" type="Node" parent="."]
+script = ExtResource( 2 )
+
+[node name="WorldLogicClient" type="Node" parent="."]
 script = ExtResource( 4 )
 
-[node name="Shared" type="Node" parent="."]
-
-[node name="WorldControllerShared" type="Node" parent="Shared"]
-script = ExtResource( 1 )
-_playerPrefab = ExtResource( 5 )
-
-[node name="Server" type="Node" parent="."]
-script = ExtResource( 6 )
-
-[node name="WorldControllerServer" type="Node" parent="Server"]
-script = ExtResource( 2 )
-_pathToControllerShared = NodePath("../../Shared/WorldControllerShared")
-PlayerPrefab = ExtResource( 5 )
-
-[node name="Client" type="Node" parent="."]
-script = ExtResource( 6 )
-_desiredNetworkMode = 1
-
-[node name="WorldControllerClient" type="Node" parent="Client"]
-script = ExtResource( 3 )
+[node name="WorldLogicServer" type="Node" parent="."]
+script = ExtResource( 5 )

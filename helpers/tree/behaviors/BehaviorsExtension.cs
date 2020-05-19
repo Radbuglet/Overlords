@@ -18,7 +18,7 @@ namespace Overlords.helpers.tree.behaviors
                 {
                     Debug.Assert(gameObject != null, "Attempted to use behavior linking in non-behavior initialization!");
                     var requiredBehavior = gameObject.GetBehaviorDynamic(field.FieldType);
-                    field.SetValueSafe(thisType, requiredBehavior);
+                    field.SetValueSafe(initializedNode, requiredBehavior);
                 }
 
                 // Parent linking

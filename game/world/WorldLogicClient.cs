@@ -14,7 +14,7 @@ namespace Overlords.game.world
             this.InitializeBehavior();
             EntityContainer.BuildRemoteInstance = instance =>
             {
-                
+                GD.Print("Building remote instance: ", instance);
             };
         }
     }

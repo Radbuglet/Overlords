@@ -40,5 +40,10 @@ namespace Overlords.helpers.tree.interfaceBehaviors
                 router.DeclareImplementation(iface, impl);
             }
         }
+
+        public static TImpl GetImplementation<TImpl>(this Node root)
+        {
+            return root.GetBehavior<InterfaceBehaviorRouter>().GetImplementation<TImpl>();
+        }
     }
 }

@@ -54,17 +54,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
+    <Compile Include="game\entities\player\PlayerLogicServer.cs" />
     <Compile Include="game\entities\player\PlayerLogicShared.cs" />
+    <Compile Include="game\world\Protocol.cs" />
     <Compile Include="game\world\WorldLogicClient.cs" />
     <Compile Include="game\world\WorldLogicServer.cs" />
     <Compile Include="game\world\WorldLogicShared.cs" />
-    <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
+    <Compile Include="helpers\GodotSignalNames.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
+    <Compile Include="helpers\network\replication\EntityTypeRegistrar.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />
     <Compile Include="helpers\network\replication\StateReplicator.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
@@ -78,8 +81,8 @@
     <Compile Include="helpers\tree\behaviors\LinkNodeEditor.cs" />
     <Compile Include="helpers\tree\behaviors\RequireBehavior.cs" />
     <Compile Include="helpers\tree\behaviors\RequireParent.cs" />
-    <Compile Include="helpers\tree\conditionals\MultiNetworkNode.cs" />
     <Compile Include="helpers\tree\conditionals\ConditionalNode.cs" />
+    <Compile Include="helpers\tree\conditionals\MultiNetworkConditionalNode.cs" />
     <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
     <Compile Include="helpers\tree\interfaceBehaviors\InterfaceBehaviorRouter.cs" />
     <Compile Include="helpers\tree\NodeUtils.cs" />
@@ -89,6 +92,7 @@
     <Compile Include="menu\StartClientButton.cs" />
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="services\EarlyTriggerService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
