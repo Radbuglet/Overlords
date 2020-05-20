@@ -18,12 +18,15 @@ namespace Overlords.game.entities.player
         public int OwnerPeerId;
         public StateReplicator.StateField<int> BalanceValue;
 
-        public void SetupPreEntry(SceneTree tree, int peerId)
+        public Node WorldRoot;
+
+        public void SetupPreEntry(SceneTree tree, Node worldRoot, int peerId)
         {
             this.InitializeBehavior();
             
             // Setup shared
             PlayerRoot.Name = $"player_{peerId}";
+            WorldRoot = worldRoot;
             OwnerPeerId = peerId;
             
             // Create RVals

@@ -37,12 +37,12 @@ namespace Overlords.game.world
             
             // Create and setup player
             var newPlayer = SharedLogic.PlayerPrefab.Instance();
-            newPlayer.GetBehavior<PlayerLogicShared>().SetupPreEntry(GetTree(), peerId);
+            newPlayer.GetBehavior<PlayerLogicShared>().SetupPreEntry(GetTree(), GetParent(), peerId);
             entityContainer.AddChild(newPlayer);
             RegisterAutoCatchup(newPlayer);
             
             // Replicate player
-            entityContainer.SvReplicateInstance(SharedLogic.GroupPlayers.IterateGroupKeys(), newPlayer);
+            entityContainer.SvReplicateInstance(SharedLogic.GetPlayerPeers(), newPlayer);
             SharedLogic.GroupPlayers.AddToGroup(peerId, newPlayer);
             entityContainer.SvReplicateInstances(peerId, GroupAutoCatchup.IterateGroupMembers());
         }
@@ -56,7 +56,7 @@ namespace Overlords.game.world
             if (player == null) return;
             
             playerNodeGroup.RemoveFromGroup(player);
-            SharedLogic.EntityContainer.SvDeReplicateInstances(playerNodeGroup.IterateGroupKeys(), player.AsEnumerable());
+            SharedLogic.EntityContainer.SvDeReplicateInstances(SharedLogic.GetPlayerPeers(), player.AsEnumerable());
             player.Purge();
         }
     }

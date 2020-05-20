@@ -4,6 +4,7 @@ using System.Diagnostics;
 using Godot;
 using Godot.Collections;
 using Overlords.helpers.network.serialization;
+using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.helpers.network.replication
 {
@@ -17,9 +18,9 @@ namespace Overlords.helpers.network.replication
             void DeserializeRemoteValue(object raw);
         }
         
-        public class StateField<TValue>: IStateField
+        public class StateField<TValue>: Node, IStateField
         {
-            public event Action<TValue, TValue> OnValueRemotelyChanged;
+            [Signal] public delegate void ValueChangedRemotely(TValue newValue, TValue oldValue);
             
             private readonly ISerializer<TValue> _serializer;
             private TValue _value;
@@ -39,6 +40,7 @@ namespace Overlords.helpers.network.replication
             public StateField(ISerializer<TValue> serializer)
             {
                 _serializer = serializer;
+                this.AddUserSignals();  // Because of Godot jank, the signal attribute isn't applied on anonymous nodes.
             }
 
             public object SerializeData()
@@ -51,7 +53,7 @@ namespace Overlords.helpers.network.replication
                 if (!_serializer.TryDeserializedOrWarn(raw, out var newValue)) return;
                 var oldValue = Value;
                 Value = newValue;
-                OnValueRemotelyChanged?.Invoke(newValue, oldValue);
+                EmitSignal(nameof(ValueChangedRemotely), newValue, oldValue);
             }
         }
 
@@ -60,7 +62,7 @@ namespace Overlords.helpers.network.replication
         public StateField<TVal> MakeField<TVal>(ISerializer<TVal> serializer)
         {
             var stateField = new StateField<TVal>(serializer);
-            Debug.Assert(stateField.FieldIndex == -1);
+            AddChild(stateField);
             stateField.FieldIndex = _fields.Count;
             _fields.Add(stateField);
             return stateField;

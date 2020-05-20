@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Reflection;
 using Godot;
@@ -117,6 +117,19 @@ namespace Overlords.helpers.tree.behaviors
         public static TBehavior GetBehavior<TBehavior>(this Node gameObject) where TBehavior : Node
         {
             return (TBehavior) GetBehaviorDynamic(gameObject, typeof(TBehavior));
+        }
+
+        public static void AddUserSignals(this Node node)
+        {
+            var type = node.GetType();
+            foreach (var delegateMaybe in type.GetNestedTypes())
+            {
+                if (delegateMaybe.GetCustomAttribute<SignalAttribute>() != null)
+                {
+                    Debug.Assert(!node.HasUserSignal(delegateMaybe.Name));
+                    node.AddUserSignal(delegateMaybe.Name);
+                }
+            }
         }
     }
 }

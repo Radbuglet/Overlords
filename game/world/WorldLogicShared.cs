@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System.Collections.Generic;
+using Godot;
 using Overlords.game.entities.player;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
@@ -23,11 +24,16 @@ namespace Overlords.game.world
                 (instance, container, constructor) =>
                 {
                     var sharedLogic = instance.GetBehavior<PlayerLogicShared>();
-                    sharedLogic.SetupPreEntry(GetTree(), constructor.OwnerPeerId);
+                    sharedLogic.SetupPreEntry(GetTree(), GetParent(), constructor.OwnerPeerId);
                     sharedLogic.StateReplicator.LoadValues(constructor.ReplicatedState);
                     container.AddChild(instance);
                 },
                 (target, instance) => instance.GetBehavior<PlayerLogicServer>().MakeConstructor(target));
+        }
+
+        public IEnumerable<int> GetPlayerPeers()
+        {
+            return GroupPlayers.IterateGroupKeys();
         }
     }
 }
