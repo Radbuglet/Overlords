@@ -1,7 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Godot;
-using Overlords.helpers.network;
+using Overlords.game.entities.player.client;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
 
@@ -27,25 +26,8 @@ namespace Overlords.game.entities.player
             OwnerPeerId = peerId;
 
             // Setup variant
-            {
-                var networkMode = tree.GetNetworkMode();
-                var gameObject = this.GetGameObject<Node>();
-                switch (networkMode)
-                {
-                    case NetworkUtils.NetworkMode.None:
-                        GD.PushWarning("Player created on non-networked scene tree!");
-                        break;
-                    case NetworkUtils.NetworkMode.Client:
-                        gameObject.GetBehavior<PlayerLogicServer>().Purge();
-                        break;
-                    case NetworkUtils.NetworkMode.Server:
-                        if (OwnerPeerId != tree.GetNetworkUniqueId())
-                            gameObject.GetBehavior<PlayerLogicLocal>().Purge();
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
+            PlayerUtils.InitializeControlledVariant(tree, this.GetGameObject<Node>(), peerId, typeof(PlayerLogicServer),
+                typeof(PlayerLogicClient), typeof(PlayerLogicLocal), typeof(PlayerLogicPuppet));
             
             // Setup shared
             Balance = state.Balance;

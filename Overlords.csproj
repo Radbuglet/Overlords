@@ -54,10 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
-    <Compile Include="game\entities\player\PlayerLogicLocal.cs" />
+    <Compile Include="game\entities\player\client\PlayerLogicClient.cs" />
+    <Compile Include="game\entities\player\client\PlayerLogicLocal.cs" />
+    <Compile Include="game\entities\player\client\PlayerLogicPuppet.cs" />
     <Compile Include="game\entities\player\PlayerLogicServer.cs" />
     <Compile Include="game\entities\player\PlayerLogicShared.cs" />
-    <Compile Include="game\entities\player\PlayerProtocol.cs" />
+    <Compile Include="game\entities\player\PlayerMisc.cs" />
     <Compile Include="game\world\WorldProtocol.cs" />
     <Compile Include="game\world\WorldLogicClient.cs" />
     <Compile Include="game\world\WorldLogicServer.cs" />

@@ -1,11 +1,13 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://helpers/tree/trackingGroups/NodeGroupMemberTracker.cs" type="Script" id=1]
 [ext_resource path="res://helpers/tree/interfaceBehaviors/InterfaceBehaviorRouter.cs" type="Script" id=2]
 [ext_resource path="res://game/entities/player/PlayerLogicShared.cs" type="Script" id=3]
 [ext_resource path="res://game/entities/player/PlayerLogicServer.cs" type="Script" id=4]
-[ext_resource path="res://game/entities/player/PlayerLogicLocal.cs" type="Script" id=6]
+[ext_resource path="res://game/entities/player/client/PlayerLogicLocal.cs" type="Script" id=5]
+[ext_resource path="res://game/entities/player/client/PlayerLogicClient.cs" type="Script" id=6]
 [ext_resource path="res://game/entities/player/character/Character.tscn" type="PackedScene" id=7]
+[ext_resource path="res://game/entities/player/client/PlayerLogicPuppet.cs" type="Script" id=8]
 
 [node name="PlayerPrefab" type="Spatial"]
 
@@ -22,5 +24,11 @@ _characterPrefab = ExtResource( 7 )
 [node name="PlayerLogicServer" type="Node" parent="."]
 script = ExtResource( 4 )
 
-[node name="PlayerLogicLocal" type="Node" parent="."]
+[node name="PlayerLogicClient" type="Node" parent="."]
 script = ExtResource( 6 )
+
+[node name="PlayerLogicLocal" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="PlayerLogicPuppet" type="Node" parent="."]
+script = ExtResource( 8 )

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Godot;
 using Overlords.game.entities.player;
+using Overlords.game.entities.player.client;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;

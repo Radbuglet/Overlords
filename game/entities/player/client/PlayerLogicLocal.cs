@@ -1,7 +1,7 @@
 using Godot;
 using Overlords.helpers.tree.behaviors;
 
-namespace Overlords.game.entities.player
+namespace Overlords.game.entities.player.client
 {
     public class PlayerLogicLocal: Node
     {
