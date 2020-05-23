@@ -40,7 +40,6 @@ namespace Overlords.game.world
             newPlayer.GetBehavior<PlayerLogicShared>().SetupPreEntry(GetTree(), GetParent(), peerId, new PlayerProtocol.PlayerInitialState
             {
                 Balance = 0,
-                HasCharacter = true,
                 CharacterState = new PlayerProtocol.CharacterInitialState
                 {
                     Position = new Vector3((float) GD.RandRange(-10, 10), 0, (float) GD.RandRange(-10, 10))

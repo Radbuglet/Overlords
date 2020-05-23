@@ -27,10 +27,6 @@ namespace Overlords.helpers.network.serialization
         {
             if (!(raw is TElem casted))
                 throw new DeserializationException("Deserialized primitive doesn't match expected primitive type.");
-            
-            if (!_customValidate(casted))
-                throw new DeserializationException("Deserialized primitive didn't conform to the custom format.");
-
             return casted;
         }
     }

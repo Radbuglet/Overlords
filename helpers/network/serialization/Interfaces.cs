@@ -34,9 +34,11 @@ namespace Overlords.helpers.network.serialization
 
         public object SerializeUnTyped(object data)
         {
+            if (data == null) return Serialize(default);
+            
             if (!(data is T dataCasted))
                 throw new SerializationException("Data provided to non-typed serialization variant was of an invalid C# type! " +
-                                                 $"Provided type: {(data == null ? "<null>" : data.GetType().Name)} Expected type: {typeof(T).Name}");
+                                                 $"Provided type: {data.GetType().Name} Expected type: {typeof(T).Name}");
             return Serialize(dataCasted);
         }
 

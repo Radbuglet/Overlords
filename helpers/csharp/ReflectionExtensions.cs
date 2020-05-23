@@ -8,8 +8,7 @@ namespace Overlords.helpers.csharp
     {
         public static void SetValueSafe(this FieldInfo fieldInfo, object instance, object value)
         {
-            Debug.Assert(fieldInfo.FieldType.IsInstanceOfType(value),
-                $"Invalid reflection field assignment: {(value == null ? "null" : value.GetType().Name)} is not assignable to {fieldInfo.FieldType.Name}");
+            Debug.Assert(instance != null, "Can't set value on null instance!");
             fieldInfo.SetValue(instance, value);
         }
 

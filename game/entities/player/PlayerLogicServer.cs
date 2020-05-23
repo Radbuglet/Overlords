@@ -20,7 +20,6 @@ namespace Overlords.game.entities.player
                 State = new PlayerProtocol.PlayerInitialState
                 {
                     Balance = LogicShared.Balance,
-                    HasCharacter = LogicShared.HasCharacter(),
                     CharacterState = LogicShared.HasCharacter() ? new PlayerProtocol.CharacterInitialState
                     {
                         Position = LogicShared.CharacterRoot.Translation

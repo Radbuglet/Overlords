@@ -27,16 +27,10 @@ namespace Overlords.game.entities.player
                 new Dictionary<string, ISerializerRaw>
                 {
                     [nameof(Balance)] = new PrimitiveSerializer<int>(),
-                    [nameof(HasCharacter)] = new PrimitiveSerializer<bool>(),
-                    [nameof(CharacterState)] = CharacterInitialState.Serializer
-                }, data =>
-                {
-                    if (data.HasCharacter != (data.CharacterState != null))
-                        throw new DeserializationException("HasCharacter doesn't agree with CharacterState presence!");
+                    [nameof(CharacterState)] = new OptionalSerializer<CharacterInitialState>(CharacterInitialState.Serializer)
                 });
 
             public int Balance;
-            public bool HasCharacter;
             public CharacterInitialState CharacterState;
         }
         

@@ -49,7 +49,7 @@ namespace Overlords.game.entities.player
             
             // Setup shared
             Balance = state.Balance;
-            if (state.HasCharacter)
+            if (state.CharacterState != null)
             {
                 BuildCharacter(state.CharacterState);
             }

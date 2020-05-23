@@ -74,6 +74,7 @@
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
     <Compile Include="helpers\network\serialization\Interfaces.cs" />
     <Compile Include="helpers\network\serialization\ListSerializer.cs" />
+    <Compile Include="helpers\network\serialization\OptionalSerializer.cs" />
     <Compile Include="helpers\network\serialization\PrimitiveSerializer.cs" />
     <Compile Include="helpers\network\serialization\StructSerializer.cs" />
     <Compile Include="helpers\tree\behaviors\BehaviorsExtension.cs" />
