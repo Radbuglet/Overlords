@@ -8,7 +8,7 @@ namespace Overlords.helpers.network
 		public delegate void FiredRemotely();
 
 		[Remote]
-		public void HandleRemote(object data)
+		private void HandleRemote(object data)
 		{
 			var tree = GetTree();
 			var senderId = tree.GetRpcSenderId();

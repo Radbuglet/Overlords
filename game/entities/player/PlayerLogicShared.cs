@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using Godot;
 using Overlords.helpers.network;
-using Overlords.helpers.network.replication;
-using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
 
@@ -14,26 +12,20 @@ namespace Overlords.game.entities.player
         [FieldNotNull] [Export] private PackedScene _characterPrefab;
         
         [RequireParent] public Spatial PlayerRoot;
-        
-        [LinkNodeStatic("../ReplicatedState")]
-        public StateReplicator StateReplicator;
-        
+
         public int OwnerPeerId;
-        public StateField<int> BalanceValue;
-        public StateField<bool> HasCharacterValue;
-
         public Node WorldRoot;
+        
         public Spatial CharacterRoot;
+        public int Balance;
 
-        public void SetupPreEntry(SceneTree tree, Node worldRoot, int peerId)
+        public void SetupPreEntry(SceneTree tree, Node worldRoot, int peerId, PlayerProtocol.PlayerInitialState state)
         {
             this.InitializeBehavior();
             PlayerRoot.Name = $"player_{peerId}";
             WorldRoot = worldRoot;
             OwnerPeerId = peerId;
-            BalanceValue = StateReplicator.MakeField(new PrimitiveSerializer<int>());
-            HasCharacterValue = StateReplicator.MakeField(new PrimitiveSerializer<bool>());
-            
+
             // Setup variant
             {
                 var networkMode = tree.GetNetworkMode();
@@ -47,31 +39,27 @@ namespace Overlords.game.entities.player
                         gameObject.GetBehavior<PlayerLogicServer>().Purge();
                         break;
                     case NetworkUtils.NetworkMode.Server:
-                        gameObject.GetBehavior<PlayerLogicLocal>().Purge();
+                        if (OwnerPeerId != tree.GetNetworkUniqueId())
+                            gameObject.GetBehavior<PlayerLogicLocal>().Purge();
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
             }
+            
+            // Setup shared
+            Balance = state.Balance;
+            if (state.HasCharacter)
+            {
+                BuildCharacter(state.CharacterState);
+            }
         }
 
-        public override void _Ready()
-        {
-            // TODO: This should be a client only thing.
-            SetCharacterBuiltState(HasCharacterValue.Value);
-        }
-
-        public void SetCharacterBuiltState(bool state)
-        {
-            if (state == (CharacterRoot != null)) return;
-            if (state) BuildCharacter(); else DestroyCharacter();
-        }
-        
-        public void BuildCharacter()
+        public void BuildCharacter(PlayerProtocol.CharacterInitialState initialState)
         {
             Debug.Assert(CharacterRoot == null);
             CharacterRoot = (Spatial) _characterPrefab.Instance();
-            CharacterRoot.Translation = new Vector3((float) GD.RandRange(-10, 10), 0, (float) GD.RandRange(-10, 10));
+            CharacterRoot.Translation = initialState.Position;
             AddChild(CharacterRoot);
         }
 
@@ -79,6 +67,12 @@ namespace Overlords.game.entities.player
         {
             Debug.Assert(CharacterRoot != null);
             CharacterRoot.Purge();
+            CharacterRoot = null;
+        }
+
+        public bool HasCharacter()
+        {
+            return CharacterRoot != null;
         }
     }
 }

@@ -1,5 +1,6 @@
-﻿using Godot.Collections;
+﻿using System;
 using Overlords.helpers.csharp;
+using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.network.serialization
 {
@@ -7,11 +8,19 @@ namespace Overlords.helpers.network.serialization
     {
         private readonly ObjectFactory<TStruct> _structFactory;
         private readonly System.Collections.Generic.Dictionary<string, ISerializerRaw> _fields;
+        private readonly Action<TStruct> _validator;
 
         public StructSerializer(ObjectFactory<TStruct> structFactory, System.Collections.Generic.Dictionary<string, ISerializerRaw> fields)
         {
             _structFactory = structFactory;
             _fields = fields;
+        }
+        
+        public StructSerializer(ObjectFactory<TStruct> structFactory, System.Collections.Generic.Dictionary<string, ISerializerRaw> fields, Action<TStruct> validator)
+        {
+            _structFactory = structFactory;
+            _fields = fields;
+            _validator = validator;
         }
         
         public override object Serialize(TStruct data)
@@ -29,7 +38,7 @@ namespace Overlords.helpers.network.serialization
         public override TStruct Deserialize(object raw)
         {
             if (!(raw is Array serializedStructRoot) || _fields.Count != serializedStructRoot.Count)
-                throw new DeserializationException($"Invalid primitive root type for struct.");
+                throw new DeserializationException($"Invalid primitive root type for struct. Expected array, got {(raw == null ? "<null>" : raw.GetType().Name)}");
             var deserializedStruct = _structFactory();
 
             var index = 0;
@@ -40,6 +49,7 @@ namespace Overlords.helpers.network.serialization
                 index++;
             }
 
+            _validator?.Invoke(deserializedStruct);
             return deserializedStruct;
         }
     }
