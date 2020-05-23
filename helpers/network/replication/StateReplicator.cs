@@ -1,62 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
+using Overlords.helpers.csharp;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.helpers.network.replication
 {
+    public interface IStateField
+    {
+        int FieldIndex { get; }
+            
+        object SerializeData();
+        void DeserializeRemoteValue(object raw);
+    }
+    
+    public class StateField<TValue>: Node, IStateField
+    {
+        [Signal] public delegate void ValueChangedRemotely(TValue newValue, TValue oldValue);
+            
+        private readonly ISerializer<TValue> _serializer;
+        private TValue _value;
+            
+        public int FieldIndex { get; set; } = -1;
+        public bool IsValueSet { get; private set; }
+        public TValue Value
+        {
+            get => _value;
+            set
+            {
+                IsValueSet = true;
+                _value = value;
+            }
+        }
+
+        public StateField(ISerializer<TValue> serializer)
+        {
+            _serializer = serializer;
+            this.AddUserSignals();  // Because of Godot jank, the signal attribute isn't applied on anonymous nodes.
+        }
+
+        public object SerializeData()
+        {
+            return _serializer.Serialize(Value);
+        }
+
+        public void DeserializeRemoteValue(object raw)
+        {
+            if (!_serializer.TryDeserializedOrWarn(raw, out var newValue)) return;
+            var oldValue = Value;
+            Value = newValue;
+            EmitSignal(nameof(ValueChangedRemotely), newValue, oldValue);
+        }
+    }
+    
     public class StateReplicator: Node
     {
-        public interface IStateField
-        {
-            int FieldIndex { get; }
-            
-            object SerializeData();
-            void DeserializeRemoteValue(object raw);
-        }
-        
-        public class StateField<TValue>: Node, IStateField
-        {
-            [Signal] public delegate void ValueChangedRemotely(TValue newValue, TValue oldValue);
-            
-            private readonly ISerializer<TValue> _serializer;
-            private TValue _value;
-            
-            public int FieldIndex { get; set; } = -1;
-            public bool IsValueSet { get; private set; }
-            public TValue Value
-            {
-                get => _value;
-                set
-                {
-                    IsValueSet = true;
-                    _value = value;
-                }
-            }
-
-            public StateField(ISerializer<TValue> serializer)
-            {
-                _serializer = serializer;
-                this.AddUserSignals();  // Because of Godot jank, the signal attribute isn't applied on anonymous nodes.
-            }
-
-            public object SerializeData()
-            {
-                return _serializer.Serialize(Value);
-            }
-
-            public void DeserializeRemoteValue(object raw)
-            {
-                if (!_serializer.TryDeserializedOrWarn(raw, out var newValue)) return;
-                var oldValue = Value;
-                Value = newValue;
-                EmitSignal(nameof(ValueChangedRemotely), newValue, oldValue);
-            }
-        }
-
         private readonly List<IStateField> _fields = new List<IStateField>();
 
         public StateField<TVal> MakeField<TVal>(ISerializer<TVal> serializer)
@@ -68,6 +67,12 @@ namespace Overlords.helpers.network.replication
             return stateField;
         }
 
+        public void SetValueReplicated<T>(IEnumerable<int> targets, StateField<T> field, T value, bool reliable)
+        {
+            field.Value = value;
+            ReplicateValues(targets, field.AsEnumerable(), reliable);
+        }
+
         public void ReplicateValues(IEnumerable<int> targets, IEnumerable<IStateField> fields, bool reliable)
         {
             var serialized = SerializeValues(fields);
@@ -75,9 +80,9 @@ namespace Overlords.helpers.network.replication
             foreach (var target in targets)
             {
                 if (reliable)
-                    RpcId(target, nameof(RemotelySetValues), serialized);
+                    RpcId(target, nameof(_ValueRemotelySet), serialized);
                 else
-                    RpcUnreliableId(target, nameof(RemotelySetValues), serialized);
+                    RpcUnreliableId(target, nameof(_ValueRemotelySet), serialized);
             }
         }
 
@@ -112,11 +117,11 @@ namespace Overlords.helpers.network.replication
         }
 
         [Puppet]
-        private void RemotelySetValues(object raw)
+        private void _ValueRemotelySet(object raw)
         {
             if (!(raw is Dictionary rawDictionary))
             {
-                GD.PushWarning($"Invalid packet root type for {nameof(RemotelySetValues)}.");
+                GD.PushWarning($"Invalid packet root type for {nameof(_ValueRemotelySet)}.");
                 return;
             }
 

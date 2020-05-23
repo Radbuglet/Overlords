@@ -1,6 +1,7 @@
 ﻿using Godot;
 using Overlords.game.world;
 using Overlords.helpers.csharp;
+using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player
@@ -13,15 +14,14 @@ namespace Overlords.game.entities.player
         {
             this.InitializeBehavior();
             LogicShared.BalanceValue.Value = (int) GD.RandRange(0, 128);
+            LogicShared.HasCharacterValue.Value = true;
+            LogicShared.BuildCharacter();
         }
 
         public override void _Process(float delta)
         {
             if (!(GD.RandRange(0, 100) > 99)) return;
-            LogicShared.BalanceValue.Value = (int) GD.RandRange(0, 128);
-            LogicShared.StateReplicator.ReplicateValues(
-                LogicShared.WorldRoot.GetBehavior<WorldLogicShared>().GetPlayerPeers(),
-                LogicShared.BalanceValue.AsEnumerable(), true);
+            SetValueBroadcasted(LogicShared.BalanceValue, (int) GD.RandRange(0, 100), true);
         }
 
         public PlayerProtocol.NetworkConstructor MakeConstructor(int target)
@@ -31,6 +31,14 @@ namespace Overlords.game.entities.player
                 OwnerPeerId = LogicShared.OwnerPeerId,
                 ReplicatedState = LogicShared.StateReplicator.SerializeValues()
             };
+        }
+
+        public void SetValueBroadcasted<T>(StateField<T> field, T value, bool reliable)
+        {
+            field.Value = value;
+            LogicShared.StateReplicator.ReplicateValues(
+                LogicShared.WorldRoot.GetBehavior<WorldLogicShared>().GetPlayingPeers(),
+                field.AsEnumerable(), reliable);
         }
     }
 }

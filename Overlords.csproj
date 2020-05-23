@@ -54,11 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\InputNames.cs" />
-    <Compile Include="game\constants\Protocol.cs" />
     <Compile Include="game\entities\player\PlayerLogicLocal.cs" />
     <Compile Include="game\entities\player\PlayerLogicServer.cs" />
     <Compile Include="game\entities\player\PlayerLogicShared.cs" />
     <Compile Include="game\entities\player\PlayerProtocol.cs" />
+    <Compile Include="game\world\WorldProtocol.cs" />
     <Compile Include="game\world\WorldLogicClient.cs" />
     <Compile Include="game\world\WorldLogicServer.cs" />
     <Compile Include="game\world\WorldLogicShared.cs" />
@@ -94,6 +94,9 @@
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="services\EarlyTriggerService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="game\entities\player\character" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

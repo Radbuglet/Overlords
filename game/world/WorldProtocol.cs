@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Overlords.helpers.network.serialization;
 
-namespace Overlords.game.constants
+namespace Overlords.game.world
 {
-    public static class Protocol
+    public static class WorldProtocol
     {
         public class ReplicatedEntity
         {

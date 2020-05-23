@@ -13,14 +13,19 @@ namespace Overlords.game.world
         public PackedScene PlayerPrefab;
         
         [LinkNodeStatic("../EntityContainer")]
-        public ListReplicator EntityContainer;
+        public ListReplicator Entities;
         
-        public readonly NodeGroup<int, Node> GroupPlayers = new NodeGroup<int, Node>();
+        public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
 
+        public IEnumerable<int> GetPlayingPeers()
+        {
+            return Players.IterateGroupKeys();
+        }
+        
         public override void _Ready()
         {
             this.InitializeBehavior();
-            EntityContainer.RegisterEntityType(PlayerPrefab, PlayerProtocol.NetworkConstructor.Serializer,
+            Entities.RegisterEntityType(PlayerPrefab, PlayerProtocol.NetworkConstructor.Serializer,
                 (instance, container, constructor) =>
                 {
                     var sharedLogic = instance.GetBehavior<PlayerLogicShared>();
@@ -29,11 +34,6 @@ namespace Overlords.game.world
                     container.AddChild(instance);
                 },
                 (target, instance) => instance.GetBehavior<PlayerLogicServer>().MakeConstructor(target));
-        }
-
-        public IEnumerable<int> GetPlayerPeers()
-        {
-            return GroupPlayers.IterateGroupKeys();
         }
     }
 }

@@ -13,7 +13,7 @@ namespace Overlords.game.entities.player
             this.InitializeBehavior();
             GD.Print("Hi, I'm a client! ", LogicShared.BalanceValue.Value);
 
-            LogicShared.BalanceValue.Connect(nameof(StateReplicator.StateField<int>.ValueChangedRemotely), this, nameof(_BalanceChangedRemotely));
+            LogicShared.BalanceValue.Connect(nameof(StateField<int>.ValueChangedRemotely), this, nameof(_BalanceChangedRemotely));
         }
 
         private void _BalanceChangedRemotely(int newBalance, int oldBalance)
