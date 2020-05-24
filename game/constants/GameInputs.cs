@@ -1,35 +1,36 @@
 ﻿namespace Overlords.game.constants
 {
-    public static class InputNames
+    public static class GameInputs
     {
         public static readonly Action FpsForward = new Action("fps_forward");
         public static readonly Action FpsBackward = new Action("fps_backward");
         public static readonly Action FpsLeftward = new Action("fps_leftward");
         public static readonly Action FpsRightward = new Action("fps_rightward");
         public static readonly Action FpsJump = new Action("fps_jump");
+        public static readonly Action DebugAttachControl = new Action("debug_attach_control");
         
         public class Action
         {
-            private readonly string _actionName;
+            public readonly string Id;
 
-            public Action(string actionName)
+            public Action(string id)
             {
-                _actionName = actionName;
+                Id = id;
             }
 
             public bool IsPressed()
             {
-                return Godot.Input.IsActionPressed(_actionName);
+                return Godot.Input.IsActionPressed(Id);
             }
 
             public bool WasJustPressed()
             {
-                return Godot.Input.IsActionJustPressed(_actionName);
+                return Godot.Input.IsActionJustPressed(Id);
             }
             
             public bool WasJustReleased()
             {
-                return Godot.Input.IsActionJustReleased(_actionName);
+                return Godot.Input.IsActionJustReleased(Id);
             }
         }
     }

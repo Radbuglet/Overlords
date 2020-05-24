@@ -53,13 +53,15 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="game\constants\InputNames.cs" />
+    <Compile Include="game\constants\GameInputs.cs" />
+    <Compile Include="game\entities\player\character\CharacterLogicLocal.cs" />
+    <Compile Include="game\entities\player\character\CharacterLogicShared.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicClient.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicLocal.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicPuppet.cs" />
     <Compile Include="game\entities\player\PlayerLogicServer.cs" />
     <Compile Include="game\entities\player\PlayerLogicShared.cs" />
-    <Compile Include="game\entities\player\PlayerMisc.cs" />
+    <Compile Include="game\entities\player\PlayerProtocol.cs" />
     <Compile Include="game\world\WorldProtocol.cs" />
     <Compile Include="game\world\WorldLogicClient.cs" />
     <Compile Include="game\world\WorldLogicServer.cs" />
@@ -70,6 +72,7 @@
     <Compile Include="helpers\GodotSignalNames.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
+    <Compile Include="helpers\network\NetworkVariantUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />
     <Compile Include="helpers\network\replication\StateReplicator.cs" />
@@ -97,9 +100,6 @@
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="services\EarlyTriggerService.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="game\entities\player\character" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
