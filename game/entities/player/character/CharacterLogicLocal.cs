@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.constants;
+using Overlords.helpers.gameplay;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player.character
@@ -8,25 +9,20 @@ namespace Overlords.game.entities.player.character
     {
         [RequireParent] public KinematicBody Body;
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
+        [RequireBehavior] public HumanoidBodyController BodyController;
         
         public float Sensitivity => -Mathf.Deg2Rad(0.1F);
         public bool HasControl;
         
         public float RotHorizontal;
         public float RotVertical;
-        public Vector3 Velocity;
 
-        public float FrictionCoef = 0.7F;
-        public const float MaxSpeed = 100F;
-        public float MovementImpulse;
-        
         public override void _Ready()
         {
             this.InitializeBehavior();
             GD.Print("This is our player!!! :)");
             Camera.Current = true;
             ApplyRotation();
-            MovementImpulse = -(MaxSpeed * (Mathf.Log(FrictionCoef) / Mathf.Log(10))) / FrictionCoef;  // TODO: Fix my math!
         }
 
         public override void _Input(InputEvent ev)
@@ -46,7 +42,9 @@ namespace Overlords.game.entities.player.character
                 HasControl = !HasControl;
                 Input.SetMouseMode(HasControl ? Input.MouseMode.Captured : Input.MouseMode.Visible);
             }
-
+            
+            Vector3 desiredVelocity;
+            bool isActuated;
             if (HasControl)
             {
                 var heading = new Vector3();
@@ -54,11 +52,19 @@ namespace Overlords.game.entities.player.character
                 if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
                 if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
-                Velocity += heading.Normalized().Rotated(Vector3.Up, RotHorizontal) * MovementImpulse;
+                desiredVelocity = heading.Normalized().Rotated(Vector3.Up, RotHorizontal) * 50;
+                isActuated = desiredVelocity.LengthSquared() > Mathf.Epsilon;
+                
+                if (GameInputs.FpsJump.IsPressed() && Body.IsOnFloor())
+                    BodyController.ApplyImpulse(new Vector3(0, 50, 0));
             }
-            Velocity *= FrictionCoef;
-            Velocity = Body.MoveAndSlide(Velocity, Vector3.Up);
-            GD.Print(Velocity.Length());
+            else
+            {
+                desiredVelocity = new Vector3(0, 0, 0);
+                isActuated = false;
+            }
+            
+            BodyController.Process(desiredVelocity, isActuated ? 10 : 5);
         }
 
         private void ApplyRotation()
