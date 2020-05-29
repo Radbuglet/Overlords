@@ -6,22 +6,22 @@ namespace Overlords.game.entities.player.character
 {
     public class CharacterLogicLocal: Node
     {
-        [RequireParent] public KinematicBody Body;
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
         [RequireBehavior] public HumanoidMover Mover;
         
         public float Sensitivity => -Mathf.Deg2Rad(0.1F);
         public bool HasControl;
+        private Vector3 _initialCameraPos;
         
         public float RotHorizontal;
         public float RotVertical;
-        public Vector3 Velocity;
 
         public override void _Ready()
         {
             this.InitializeBehavior();
             GD.Print("This is our player!!! :)");
             Camera.Current = true;
+            _initialCameraPos = Camera.Translation;
             ApplyRotation();
         }
 
@@ -52,7 +52,11 @@ namespace Overlords.game.entities.player.character
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }
-            Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), HasControl && GameInputs.FpsSneak.IsPressed(), heading);
+
+            var isSneaking = HasControl && GameInputs.FpsSneak.IsPressed();
+            Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
+            
+            Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
         }
 
         private void ApplyRotation()

@@ -8,7 +8,8 @@ namespace Overlords.game.entities.player.character
         [RequireParent] public KinematicBody Body;
         
         [Export] public Vector3 Velocity;
-        [Export] public float TimeToAccelerate;
+        [Export] public float AccelTimeGround;
+        [Export] public float AccelTimeAir;
         [Export] public float FullSpeed;
         [Export] public float SneakSpeed;
         
@@ -22,10 +23,11 @@ namespace Overlords.game.entities.player.character
 
         public void Move(float delta, bool isJumping, bool isSneaking, Vector3 horizontalHeading)
         {
-            // TODO: Make acceleration a bit more realistic
+            // TODO: Add acceleration curves; integrate positions to avoid FPS based de-syncs
             horizontalHeading.y = 0;
             var velocityHorizontal = Velocity.MoveToward(
-                horizontalHeading.Normalized() * (isSneaking ? SneakSpeed : FullSpeed), FullSpeed / TimeToAccelerate * delta);
+                horizontalHeading.Normalized() * (isSneaking ? SneakSpeed : FullSpeed),
+                FullSpeed / (Body.IsOnFloor() ? AccelTimeGround : AccelTimeAir) * delta);
             Velocity.x = velocityHorizontal.x;
             Velocity.z = velocityHorizontal.z;
 
