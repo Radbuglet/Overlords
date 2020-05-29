@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://helpers/tree/conditionals/MultiNetworkConditionalNode.cs" type="Script" id=1]
 [ext_resource path="res://game/world/WorldLogicShared.cs" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://game/world/WorldLogicClient.cs" type="Script" id=4]
 [ext_resource path="res://game/world/WorldLogicServer.cs" type="Script" id=5]
 [ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
+[ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=7]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -24,7 +25,7 @@ transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 14, 23 )
 [node name="Ground" type="MeshInstance" parent="Map"]
 transform = Transform( 1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, 0, 0 )
 mesh = SubResource( 1 )
-material/0 = null
+material/0 = ExtResource( 7 )
 __meta__ = {
 "_edit_lock_": true
 }

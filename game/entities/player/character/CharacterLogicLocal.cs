@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.constants;
+using Overlords.helpers.network;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player.character
@@ -8,6 +9,9 @@ namespace Overlords.game.entities.player.character
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
         [RequireBehavior] public HumanoidMover Mover;
+        [RequireBehavior] public CharacterLogicShared LogicShared;
+        
+        public RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound> RemoteEventHub;
         
         public float Sensitivity => -Mathf.Deg2Rad(0.1F);
         public bool HasControl;
@@ -19,10 +23,13 @@ namespace Overlords.game.entities.player.character
         public override void _Ready()
         {
             this.InitializeBehavior();
+            ApplyRotation();
+            
             GD.Print("This is our player!!! :)");
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
-            ApplyRotation();
+            RemoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(
+                LogicShared.RemoteEvent);
         }
 
         public override void _Input(InputEvent ev)
@@ -57,6 +64,8 @@ namespace Overlords.game.entities.player.character
             Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
             
             Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
+            RemoteEventHub.Fire(null, false, CharacterProtocol.ServerBound.SetPosition,
+                Mover.Body.Translation);
         }
 
         private void ApplyRotation()

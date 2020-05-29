@@ -55,7 +55,9 @@
   <ItemGroup>
     <Compile Include="game\constants\GameInputs.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicLocal.cs" />
+    <Compile Include="game\entities\player\character\CharacterLogicServer.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicShared.cs" />
+    <Compile Include="game\entities\player\character\CharacterProtocol.cs" />
     <Compile Include="game\entities\player\character\HumanoidMover.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicClient.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicLocal.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="helpers\network\NetworkUtils.cs" />
     <Compile Include="helpers\network\NetworkVariantUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
+    <Compile Include="helpers\network\RemoteEventHub.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />
     <Compile Include="helpers\network\replication\StateReplicator.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />

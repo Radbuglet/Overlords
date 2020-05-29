@@ -6,11 +6,13 @@ namespace Overlords.game.entities.player.character
 {
     public class CharacterLogicShared: Node
     {
+        [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
+        
         public void SetupVariant(NetworkVariantUtils.ObjectVariant variant)
         {
             this.InitializeBehavior();
             this.GetGameObject<Node>().ApplyNetworkVariant(variant,
-                null, null, typeof(CharacterLogicLocal), null);
+                typeof(CharacterLogicServer), null, typeof(CharacterLogicLocal), null);
         }
     }
 }
