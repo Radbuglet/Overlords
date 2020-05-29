@@ -2,7 +2,7 @@
 
 [ext_resource path="res://game/entities/player/character/CharacterLogicShared.cs" type="Script" id=1]
 [ext_resource path="res://game/entities/player/character/CharacterLogicLocal.cs" type="Script" id=2]
-[ext_resource path="res://helpers/gameplay/HumanoidBodyController.cs" type="Script" id=3]
+[ext_resource path="res://game/entities/player/character/HumanoidMover.cs" type="Script" id=3]
 
 [sub_resource type="CapsuleMesh" id=1]
 mid_height = 2.0
@@ -26,12 +26,16 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
 fov = 90.0
 far = 1000.0
 
+[node name="HumanoidMover" type="Node" parent="."]
+script = ExtResource( 3 )
+TimeToAccelerate = 0.187
+FullSpeed = 20.0
+SneakSpeed = 12.0
+Gravity = 80.0
+JumpMagnitude = 20.0
+
 [node name="CharacterLogicShared" type="Node" parent="."]
 script = ExtResource( 1 )
 
 [node name="CharacterLogicLocal" type="Node" parent="."]
 script = ExtResource( 2 )
-
-[node name="HumanoidBodyController" type="Node" parent="."]
-script = ExtResource( 3 )
-Gravity = Vector3( 0, -7.724, 0 )

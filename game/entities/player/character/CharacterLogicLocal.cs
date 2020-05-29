@@ -1,6 +1,5 @@
 ﻿using Godot;
 using Overlords.game.constants;
-using Overlords.helpers.gameplay;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player.character
@@ -9,13 +8,14 @@ namespace Overlords.game.entities.player.character
     {
         [RequireParent] public KinematicBody Body;
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
-        [RequireBehavior] public HumanoidBodyController BodyController;
+        [RequireBehavior] public HumanoidMover Mover;
         
         public float Sensitivity => -Mathf.Deg2Rad(0.1F);
         public bool HasControl;
         
         public float RotHorizontal;
         public float RotVertical;
+        public Vector3 Velocity;
 
         public override void _Ready()
         {
@@ -43,28 +43,16 @@ namespace Overlords.game.entities.player.character
                 Input.SetMouseMode(HasControl ? Input.MouseMode.Captured : Input.MouseMode.Visible);
             }
             
-            Vector3 desiredVelocity;
-            bool isActuated;
+            var heading = new Vector3();
             if (HasControl)
             {
-                var heading = new Vector3();
                 if (GameInputs.FpsForward.IsPressed()) heading += Vector3.Forward;
                 if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
                 if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
-                desiredVelocity = heading.Normalized().Rotated(Vector3.Up, RotHorizontal) * 50;
-                isActuated = desiredVelocity.LengthSquared() > Mathf.Epsilon;
-                
-                if (GameInputs.FpsJump.IsPressed() && Body.IsOnFloor())
-                    BodyController.ApplyImpulse(new Vector3(0, 50, 0));
+                heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }
-            else
-            {
-                desiredVelocity = new Vector3(0, 0, 0);
-                isActuated = false;
-            }
-            
-            BodyController.Process(desiredVelocity, isActuated ? 10 : 5);
+            Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), HasControl && GameInputs.FpsSneak.IsPressed(), heading);
         }
 
         private void ApplyRotation()

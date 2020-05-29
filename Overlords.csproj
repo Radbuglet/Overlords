@@ -56,6 +56,7 @@
     <Compile Include="game\constants\GameInputs.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicLocal.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicShared.cs" />
+    <Compile Include="game\entities\player\character\HumanoidMover.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicClient.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicLocal.cs" />
     <Compile Include="game\entities\player\client\PlayerLogicPuppet.cs" />
@@ -69,7 +70,6 @@
     <Compile Include="helpers\csharp\Delegates.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
-    <Compile Include="helpers\gameplay\HumanoidBodyController.cs" />
     <Compile Include="helpers\GodotSignalNames.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
