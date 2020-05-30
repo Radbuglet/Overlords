@@ -17,35 +17,34 @@ namespace Overlords.game.entities.player
         public int OwnerPeerId;
         public Node WorldRoot;
         
-        public Spatial CharacterRoot;
+        public Node CharacterRoot;
         public int Balance;
 
-        public void SetupPreEntry(SceneTree tree, Node worldRoot, int peerId, PlayerProtocol.PlayerInitialState state)
+        public void Initialize(SceneTree tree, Node worldRoot, int ownerPeerId, PlayerProtocol.InitialState initialState)
         {
             this.InitializeBehavior();
-            var networkVariant = tree.GetNetworkVariant(peerId);
-            PlayerRoot.Name = $"player_{peerId}";
+            var networkVariant = tree.GetNetworkVariant(ownerPeerId);
+            PlayerRoot.Name = $"player_{ownerPeerId}";
             WorldRoot = worldRoot;
-            OwnerPeerId = peerId;
+            OwnerPeerId = ownerPeerId;
 
             // Setup variant
             this.GetGameObject<Node>().ApplyNetworkVariant(networkVariant, typeof(PlayerLogicServer),
                 typeof(PlayerLogicClient), typeof(PlayerLogicLocal), typeof(PlayerLogicPuppet));
 
             // Setup shared
-            Balance = state.Balance;
-            if (state.CharacterState != null)
+            Balance = initialState.Balance;
+            if (initialState.CharacterState != null)
             {
-                BuildCharacter(state.CharacterState, networkVariant);
+                BuildCharacter(networkVariant, initialState.CharacterState);
             }
         }
 
-        public void BuildCharacter(PlayerProtocol.CharacterInitialState initialState, NetworkVariantUtils.ObjectVariant variant)
+        public void BuildCharacter(NetworkUtils.ObjectVariant variant, CharacterProtocol.InitialState initialState)
         {
             Debug.Assert(CharacterRoot == null);
-            CharacterRoot = (Spatial) _characterPrefab.Instance();
-            CharacterRoot.Translation = initialState.Position;
-            CharacterRoot.GetBehavior<CharacterLogicShared>().SetupVariant(variant);
+            CharacterRoot = _characterPrefab.Instance();
+            CharacterRoot.GetBehavior<CharacterLogicShared>().Initialize(variant, initialState);
             AddChild(CharacterRoot);
         }
 

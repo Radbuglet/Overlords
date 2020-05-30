@@ -64,8 +64,7 @@ namespace Overlords.game.entities.player.character
             Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
             
             Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
-            RemoteEventHub.Fire(null, false, CharacterProtocol.ServerBound.SetPosition,
-                Mover.Body.Translation);
+            RemoteEventHub.FireId(1, (SetPosition: CharacterProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
         }
 
         private void ApplyRotation()

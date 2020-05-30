@@ -15,12 +15,20 @@ namespace Overlords.game.entities.player.character
         {
             this.InitializeBehavior();
             RemoteEventHub = new RemoteEventHub<CharacterProtocol.ServerBound, CharacterProtocol.ClientBound>(LogicShared.RemoteEvent);
-            RemoteEventHub.BindHandler(CharacterProtocol.ServerBound.SetPosition, new PrimitiveSerializer<Vector3>(),
+            RemoteEventHub.BindHandler(CharacterProtocol.ServerBound.PerformMovement, new PrimitiveSerializer<Vector3>(),
                 (sender, position) =>
                 {
                     // TODO: Better protocol; ensure proper owner
                     Body.Translation = position;
                 });
+        }
+
+        public CharacterProtocol.InitialState MakeConstructor(int target)
+        {
+            return new CharacterProtocol.InitialState
+            {
+                Position = Body.Translation
+            };
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Overlords.game.world
                 (instance, container, constructor) =>
                 {
                     var sharedLogic = instance.GetBehavior<PlayerLogicShared>();
-                    sharedLogic.SetupPreEntry(GetTree(), GetParent(), constructor.OwnerPeerId, constructor.State);
+                    sharedLogic.Initialize(GetTree(), GetParent(), constructor.OwnerPeerId, constructor.State);
                     container.AddChild(instance);
                 },
                 (target, instance) => instance.GetBehavior<PlayerLogicServer>().MakeConstructor(target));

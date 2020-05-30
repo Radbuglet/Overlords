@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.entities.player;
+using Overlords.game.entities.player.character;
 using Overlords.helpers;
 using Overlords.helpers.csharp;
 using Overlords.helpers.tree;
@@ -37,10 +38,10 @@ namespace Overlords.game.world
             
             // Create and setup player
             var newPlayer = SharedLogic.PlayerPrefab.Instance();
-            newPlayer.GetBehavior<PlayerLogicShared>().SetupPreEntry(GetTree(), GetParent(), peerId, new PlayerProtocol.PlayerInitialState
+            newPlayer.GetBehavior<PlayerLogicShared>().Initialize(GetTree(), GetParent(), peerId, new PlayerProtocol.InitialState
             {
                 Balance = 0,
-                CharacterState = new PlayerProtocol.CharacterInitialState
+                CharacterState = new CharacterProtocol.InitialState
                 {
                     Position = new Vector3((float) GD.RandRange(-10, 10), 0, (float) GD.RandRange(-10, 10))
                 }

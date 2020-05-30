@@ -5,7 +5,7 @@ using Overlords.helpers.network.serialization;
 
 namespace Overlords.helpers.network
 {
-    public class RemoteEventHub<TInbound, TOutbound>: Node where TInbound: Enum where TOutbound: Enum
+    public class RemoteEventHub<TInbound, TOutbound>: Node, IGenericRpc<(TOutbound, object)> where TInbound: Enum where TOutbound: Enum
     {
         private class HubPacket
         {
@@ -81,12 +81,13 @@ namespace Overlords.helpers.network
             });
         }
 
-        public void Fire(int? target, bool reliable, TOutbound packetType, object packetData)
+        public void GenericFire(int? target, bool reliable, (TOutbound, object) data)
         {
+            var (packetType, packedData) = data;
             _remoteEvent.GenericFire(target, reliable, new HubPacket
             {
                 EventType = packetType.SerializeEnum(),
-                EventArg = packetData
+                EventArg = packedData
             }.Serialize());
         }
     }

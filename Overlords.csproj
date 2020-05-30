@@ -65,7 +65,6 @@
     <Compile Include="game\entities\player\PlayerLogicServer.cs" />
     <Compile Include="game\entities\player\PlayerLogicShared.cs" />
     <Compile Include="game\entities\player\PlayerProtocol.cs" />
-    <Compile Include="game\world\WorldProtocol.cs" />
     <Compile Include="game\world\WorldLogicClient.cs" />
     <Compile Include="game\world\WorldLogicServer.cs" />
     <Compile Include="game\world\WorldLogicShared.cs" />
@@ -75,7 +74,6 @@
     <Compile Include="helpers\GodotSignalNames.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkUtils.cs" />
-    <Compile Include="helpers\network\NetworkVariantUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
     <Compile Include="helpers\network\RemoteEventHub.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />

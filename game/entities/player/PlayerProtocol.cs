@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Godot;
+using Overlords.game.entities.player.character;
 using Overlords.helpers.network.serialization;
 
 namespace Overlords.game.entities.player
@@ -13,37 +14,25 @@ namespace Overlords.game.entities.player
                 new Dictionary<string, ISerializerRaw>
                 {
                     [nameof(OwnerPeerId)] = new PrimitiveSerializer<int>(),
-                    [nameof(State)] = PlayerInitialState.Serializer
+                    [nameof(State)] = InitialState.Serializer
                 });
 
             public int OwnerPeerId;
-            public PlayerInitialState State;
+            public InitialState State;
         }
         
-        public class PlayerInitialState
+        public class InitialState
         {
-            public static readonly StructSerializer<PlayerInitialState> Serializer = new StructSerializer<PlayerInitialState>(
-                () => new PlayerInitialState(),
+            public static readonly StructSerializer<InitialState> Serializer = new StructSerializer<InitialState>(
+                () => new InitialState(),
                 new Dictionary<string, ISerializerRaw>
                 {
                     [nameof(Balance)] = new PrimitiveSerializer<int>(),
-                    [nameof(CharacterState)] = new OptionalSerializer<CharacterInitialState>(CharacterInitialState.Serializer)
+                    [nameof(CharacterState)] = new OptionalSerializer<CharacterProtocol.InitialState>(CharacterProtocol.InitialState.Serializer)
                 });
 
             public int Balance;
-            public CharacterInitialState CharacterState;
-        }
-        
-        public class CharacterInitialState
-        {
-            public static readonly StructSerializer<CharacterInitialState> Serializer = new StructSerializer<CharacterInitialState>(
-                () => new CharacterInitialState(),
-                new Dictionary<string, ISerializerRaw>
-                {
-                    [nameof(Position)] = new PrimitiveSerializer<Vector3>()
-                });
-
-            public Vector3 Position;
+            public CharacterProtocol.InitialState CharacterState;
         }
     }
 }

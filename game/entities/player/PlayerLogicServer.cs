@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Overlords.game.entities.player.character;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player
@@ -17,13 +18,11 @@ namespace Overlords.game.entities.player
             return new PlayerProtocol.NetworkConstructor
             {
                 OwnerPeerId = LogicShared.OwnerPeerId,
-                State = new PlayerProtocol.PlayerInitialState
+                State = new PlayerProtocol.InitialState
                 {
                     Balance = LogicShared.Balance,
-                    CharacterState = LogicShared.HasCharacter() ? new PlayerProtocol.CharacterInitialState
-                    {
-                        Position = LogicShared.CharacterRoot.Translation
-                    } : null
+                    CharacterState = LogicShared.HasCharacter() ?
+                        LogicShared.CharacterRoot.GetBehavior<CharacterLogicServer>().MakeConstructor(target) : null 
                 }
             };
         }

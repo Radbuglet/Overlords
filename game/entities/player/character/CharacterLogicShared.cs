@@ -8,7 +8,7 @@ namespace Overlords.game.entities.player.character
     {
         [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
         
-        public void SetupVariant(NetworkVariantUtils.ObjectVariant variant)
+        public void Initialize(NetworkUtils.ObjectVariant variant, CharacterProtocol.InitialState initialState)
         {
             this.InitializeBehavior();
             this.GetGameObject<Node>().ApplyNetworkVariant(variant,
