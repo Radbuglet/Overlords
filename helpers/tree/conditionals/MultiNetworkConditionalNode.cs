@@ -14,7 +14,7 @@ namespace Overlords.helpers.tree.conditionals
         public void _EarlyEditorTrigger(SceneTree tree)
         {
             NodePurging.PurgeParallel(
-                (tree.GetNetworkMode() == NetworkUtils.NetworkMode.Server ? _clientNodes : _serverNodes)
+                (tree.GetNetworkMode() == NetworkTypeUtils.NetworkMode.Server ? _clientNodes : _serverNodes)
                 .ConvertToNodeIterator(this));
             this.Purge();  // We're not locked thanks to _EarlyEditorTrigger()
         }

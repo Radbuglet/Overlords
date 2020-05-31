@@ -37,17 +37,15 @@ namespace Overlords.helpers.network.replication
             public Func<int, Node, object> SerializeConstructor;
         }
         
-        
         private readonly List<RegisteredEntityType> _registeredEntityTypes = new List<RegisteredEntityType>();
         private readonly Dictionary<string, RegisteredEntityType> _fileToEntityType = new Dictionary<string, RegisteredEntityType>();
         
         public delegate void RemoteEntityInitializer<in TConstructor>(Node root, Node container, TConstructor constructor);
         public delegate TConstructor EntityStateEmitter<out TConstructor>(int targetPeer, Node root);
-
-
+        
         public override void _Ready()
         {
-            if (this.GetNetworkMode() == NetworkUtils.NetworkMode.None)
+            if (this.GetNetworkMode() == NetworkTypeUtils.NetworkMode.None)
                 GD.PushWarning("EntityContainer created in a non-networked scene tree!");
         }
         
@@ -118,16 +116,7 @@ namespace Overlords.helpers.network.replication
             {
                 packet.Add(instance.Name);
             }
-
-            if (targets == null)
-                Rpc(nameof(_ClInstancesDeReplicated), packet);
-            else
-            {
-                foreach (var peer in targets)
-                {
-                    RpcId(peer, nameof(_ClInstancesDeReplicated), packet);
-                }
-            }
+            this.RpcGeneric(targets, nameof(_ClInstancesDeReplicated), true, packet);
         }
 
         [Puppet]

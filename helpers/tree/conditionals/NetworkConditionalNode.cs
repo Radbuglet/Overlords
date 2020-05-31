@@ -5,7 +5,7 @@ namespace Overlords.helpers.tree.conditionals
 {
     public class NetworkConditionalNode: ConditionalNode
     {
-        [Export] private readonly NetworkUtils.NetworkMode _desiredNetworkMode;
+        [Export] private readonly NetworkTypeUtils.NetworkMode _desiredNetworkMode;
         
         protected override bool ShouldExist()
         {

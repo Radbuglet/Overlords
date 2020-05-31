@@ -74,7 +74,7 @@
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\GodotSignalNames.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />
-    <Compile Include="helpers\network\NetworkUtils.cs" />
+    <Compile Include="helpers\network\NetworkTypeUtils.cs" />
     <Compile Include="helpers\network\RemoteEvent.cs" />
     <Compile Include="helpers\network\RemoteEventHub.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />

@@ -40,7 +40,7 @@ namespace Overlords.game.entities.player
             }
         }
 
-        public void BuildCharacter(NetworkUtils.ObjectVariant variant, CharacterProtocol.InitialState initialState)
+        public void BuildCharacter(NetworkTypeUtils.ObjectVariant variant, CharacterProtocol.InitialState initialState)
         {
             Debug.Assert(CharacterRoot == null);
             CharacterRoot = _characterPrefab.Instance();

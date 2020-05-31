@@ -13,7 +13,7 @@ namespace Overlords.game.entities.player.character
         
         public PlayerLogicShared PlayerShared;
 
-        public void Initialize(PlayerLogicShared playerLogicShared, NetworkUtils.ObjectVariant variant,
+        public void Initialize(PlayerLogicShared playerLogicShared, NetworkTypeUtils.ObjectVariant variant,
             CharacterProtocol.InitialState initialState)
         {
             PlayerShared = playerLogicShared;
@@ -22,7 +22,7 @@ namespace Overlords.game.entities.player.character
                 typeof(CharacterLogicServer), null, typeof(CharacterLogicLocal), typeof(CharacterLogicPuppet));
 
             Body.Translation = initialState.Position;
-            if (variant != NetworkUtils.ObjectVariant.LocalAuthoritative)
+            if (variant != NetworkTypeUtils.ObjectVariant.LocalAuthoritative)
             {
                 GetNode<Camera>("../FpsCamera").Purge();
             }

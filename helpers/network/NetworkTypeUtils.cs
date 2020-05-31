@@ -5,7 +5,7 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.helpers.network
 {
-    public static class NetworkUtils
+    public static class NetworkTypeUtils
     {
         public static Error StartServer(this SceneTree tree, int port, int maxConnections)
         {
@@ -54,7 +54,7 @@ namespace Overlords.helpers.network
 
         public static ObjectVariant GetNetworkVariant(this SceneTree tree, int ownerPeerId)
         {
-            return tree.GetNetworkMode() == NetworkUtils.NetworkMode.Server
+            return tree.GetNetworkMode() == NetworkTypeUtils.NetworkMode.Server
                 ? ObjectVariant.Server
                 : ownerPeerId == tree.GetNetworkUniqueId()
                     ? ObjectVariant.LocalAuthoritative

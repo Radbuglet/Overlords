@@ -12,6 +12,32 @@ namespace Overlords.helpers.network
 
     public static class GenericRpcAliases
     {
+        // Extension to RPC
+        public static void RpcGeneric(this Node self, IEnumerable<int> targets, string methodName, bool reliable, object args)
+        {
+            if (targets == null)
+            {
+                if (reliable)
+                    self.Rpc(methodName, args);
+                else
+                    self.RpcUnreliable(methodName, args);
+            }
+            else if (reliable)
+            {
+                foreach (var target in targets)
+                {
+                    self.RpcId(target, methodName, args);
+                }
+            }
+            else
+            {
+                foreach (var target in targets)
+                {
+                    self.RpcUnreliableId(target, methodName, args);
+                }
+            }
+        }
+        
         // Primitives
         public static void Fire<TSelf, TData>(this TSelf self, TData data) where TSelf: Node, IGenericRpc<TData>
         {
@@ -47,13 +73,13 @@ namespace Overlords.helpers.network
         // Server
         public static void FireServer<TSelf, TData>(this TSelf self, TData data) where TSelf: Node, IGenericRpc<TData>
         {
-            Debug.Assert(self.GetNetworkMode() == NetworkUtils.NetworkMode.Client);
+            Debug.Assert(self.GetNetworkMode() == NetworkTypeUtils.NetworkMode.Client);
             self.FireId(1, data);
         }
         
         public static void FireUnreliableServer<TSelf, TData>(this TSelf self, TData data) where TSelf: Node, IGenericRpc<TData>
         {
-            Debug.Assert(self.GetNetworkMode() == NetworkUtils.NetworkMode.Client);
+            Debug.Assert(self.GetNetworkMode() == NetworkTypeUtils.NetworkMode.Client);
             self.FireUnreliableId(1, data);
         }
     }
