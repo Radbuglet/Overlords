@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Godot;
 
 namespace Overlords.helpers.network
@@ -20,9 +21,32 @@ namespace Overlords.helpers.network
 			EmitSignal(nameof(FiredRemotely), senderId, data);
 		}
 
-		public void GenericFire(int? target, bool reliable, object data)
+		public void GenericFire(IEnumerable<int> targets, bool reliable, object args)
 		{
-			this.RpcGeneric(nameof(HandleRemote), target, reliable, data);
+			if (targets == null)
+			{
+				if (reliable)
+					Rpc(nameof(HandleRemote), args);
+				else
+					RpcUnreliable(nameof(HandleRemote), args);
+			}
+			else
+			{
+				if (reliable)
+				{
+					foreach (var target in targets)
+					{
+						RpcId(target, nameof(HandleRemote), args);
+					}
+				}
+				else
+				{
+					foreach (var target in targets)
+					{
+						RpcUnreliableId(target, nameof(HandleRemote), args);
+					}
+				}
+			}
 		}
 	}
 }

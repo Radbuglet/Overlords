@@ -81,10 +81,10 @@ namespace Overlords.helpers.network
             });
         }
 
-        public void GenericFire(int? target, bool reliable, (TOutbound, object) data)
+        public void GenericFire(IEnumerable<int> targets, bool reliable, (TOutbound, object) data)
         {
             var (packetType, packedData) = data;
-            _remoteEvent.GenericFire(target, reliable, new HubPacket
+            _remoteEvent.GenericFire(targets, reliable, new HubPacket
             {
                 EventType = packetType.SerializeEnum(),
                 EventArg = packedData

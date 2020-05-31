@@ -44,7 +44,7 @@ namespace Overlords.game.entities.player
         {
             Debug.Assert(CharacterRoot == null);
             CharacterRoot = _characterPrefab.Instance();
-            CharacterRoot.GetBehavior<CharacterLogicShared>().Initialize(variant, initialState);
+            CharacterRoot.GetBehavior<CharacterLogicShared>().Initialize(this, variant, initialState);
             AddChild(CharacterRoot);
         }
 

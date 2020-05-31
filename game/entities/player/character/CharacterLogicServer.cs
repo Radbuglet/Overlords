@@ -18,8 +18,14 @@ namespace Overlords.game.entities.player.character
             RemoteEventHub.BindHandler(CharacterProtocol.ServerBound.PerformMovement, new PrimitiveSerializer<Vector3>(),
                 (sender, position) =>
                 {
-                    // TODO: Better protocol; ensure proper owner
+                    if (sender != LogicShared.PlayerShared.OwnerPeerId)
+                    {
+                        GD.PushWarning("Non-owning player tried to send a movement packet!");
+                        return;
+                    }
                     Body.Translation = position;
+                    RemoteEventHub.FireId(LogicShared.GetWorldShared().GetPlayingPeers(sender),
+                        (CharacterProtocol.ClientBound.PuppetSetPos, (object) position));
                 });
         }
 

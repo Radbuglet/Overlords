@@ -45,24 +45,6 @@ namespace Overlords.helpers.network
             return node.GetTree().GetNetworkMode();
         }
 
-        public static void RpcGeneric(this Node from, string targetFunc, int? targetPeer, bool reliable, params object[] args)
-        {
-            if (targetPeer == null)
-            {
-                if (reliable)
-                    from.Rpc(targetFunc, args);
-                else
-                    from.RpcUnreliable(targetFunc, args);
-            }
-            else
-            {
-                if (reliable)
-                    from.RpcId(targetPeer.Value, targetFunc, args);
-                else
-                    from.RpcUnreliableId(targetPeer.Value, targetFunc, args);
-            }
-        }
-        
         public enum ObjectVariant
         {
             Server,

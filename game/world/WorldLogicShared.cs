@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Overlords.game.entities.player;
 using Overlords.game.entities.player.client;
@@ -21,6 +22,11 @@ namespace Overlords.game.world
         public IEnumerable<int> GetPlayingPeers()
         {
             return Players.IterateGroupKeys();
+        }
+        
+        public IEnumerable<int> GetPlayingPeers(int ignorePeerId)
+        {
+            return GetPlayingPeers().Where(peerId => ignorePeerId != peerId);
         }
         
         public override void _Ready()

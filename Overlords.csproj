@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="game\constants\GameInputs.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicLocal.cs" />
+    <Compile Include="game\entities\player\character\CharacterLogicPuppet.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicServer.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicShared.cs" />
     <Compile Include="game\entities\player\character\CharacterProtocol.cs" />

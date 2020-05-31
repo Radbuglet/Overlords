@@ -47,7 +47,7 @@ namespace Overlords.helpers.network.replication
 
         public override void _Ready()
         {
-            if (GetTree().GetNetworkMode() == NetworkUtils.NetworkMode.None)
+            if (this.GetNetworkMode() == NetworkUtils.NetworkMode.None)
                 GD.PushWarning("EntityContainer created in a non-networked scene tree!");
         }
         

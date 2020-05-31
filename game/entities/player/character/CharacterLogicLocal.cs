@@ -11,7 +11,7 @@ namespace Overlords.game.entities.player.character
         [RequireBehavior] public HumanoidMover Mover;
         [RequireBehavior] public CharacterLogicShared LogicShared;
         
-        public RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound> RemoteEventHub;
+        private RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound> _remoteEventHub;
         
         public float Sensitivity => -Mathf.Deg2Rad(0.1F);
         public bool HasControl;
@@ -25,11 +25,11 @@ namespace Overlords.game.entities.player.character
             this.InitializeBehavior();
             ApplyRotation();
             
-            GD.Print("This is our player!!! :)");
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
-            RemoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(
+            _remoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(
                 LogicShared.RemoteEvent);
+            AddChild(_remoteEventHub);
         }
 
         public override void _Input(InputEvent ev)
@@ -64,7 +64,7 @@ namespace Overlords.game.entities.player.character
             Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
             
             Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
-            RemoteEventHub.FireId(1, (SetPosition: CharacterProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
+            _remoteEventHub.FireServer((CharacterProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
         }
 
         private void ApplyRotation()
