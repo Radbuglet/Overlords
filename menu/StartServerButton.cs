@@ -3,7 +3,7 @@ using Overlords.helpers.network;
 
 namespace Overlords.menu
 {
-    public class StartServerButton: Button
+    public class StartServerButton : Button
     {
         public override void _Pressed()
         {
@@ -13,6 +13,7 @@ namespace Overlords.menu
                 OS.Alert($"Failed to create server! Error code: Error.{result}");
                 return;
             }
+
             GetTree().ChangeScene("res://game/TestWorld.tscn");
         }
     }

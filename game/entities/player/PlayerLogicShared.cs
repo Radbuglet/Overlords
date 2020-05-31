@@ -8,19 +8,18 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player
 {
-    public class PlayerLogicShared: Node
+    public class PlayerLogicShared : Node
     {
+        [RequireParent] public Spatial PlayerRoot;
         [FieldNotNull] [Export] private PackedScene _characterPrefab;
         
-        [RequireParent] public Spatial PlayerRoot;
-
         public int OwnerPeerId;
         public Node WorldRoot;
-        
         public Node CharacterRoot;
         public int Balance;
-
-        public void Initialize(SceneTree tree, Node worldRoot, int ownerPeerId, PlayerProtocol.InitialState initialState)
+        
+        public void Initialize(SceneTree tree, Node worldRoot, int ownerPeerId,
+            PlayerProtocol.InitialState initialState)
         {
             this.InitializeBehavior();
             var networkVariant = tree.GetNetworkVariant(ownerPeerId);
@@ -34,10 +33,7 @@ namespace Overlords.game.entities.player
 
             // Setup shared
             Balance = initialState.Balance;
-            if (initialState.CharacterState != null)
-            {
-                BuildCharacter(networkVariant, initialState.CharacterState);
-            }
+            if (initialState.CharacterState != null) BuildCharacter(networkVariant, initialState.CharacterState);
         }
 
         public void BuildCharacter(NetworkTypeUtils.ObjectVariant variant, CharacterProtocol.InitialState initialState)

@@ -11,11 +11,9 @@ namespace Overlords.game.world
 {
     public class WorldLogicServer : Node
     {
-        [RequireBehavior]
-        public WorldLogicShared SharedLogic;
-
+        [RequireBehavior] public WorldLogicShared SharedLogic;
         public readonly NodeGroup<string, Node> GroupAutoCatchup = new NodeGroup<string, Node>();
-        
+
         public override void _Ready()
         {
             this.InitializeBehavior();
@@ -35,26 +33,27 @@ namespace Overlords.game.world
             GD.Print($"{peerId} joined!");
 
             var entityContainer = SharedLogic.Entities;
-            
+
             // Create and setup player
             var newPlayer = SharedLogic.PlayerPrefab.Instance();
-            newPlayer.GetBehavior<PlayerLogicShared>().Initialize(GetTree(), GetParent(), peerId, new PlayerProtocol.InitialState
-            {
-                Balance = 0,
-                CharacterState = new CharacterProtocol.InitialState
+            newPlayer.GetBehavior<PlayerLogicShared>().Initialize(GetTree(), GetParent(), peerId,
+                new PlayerProtocol.InitialState
                 {
-                    Position = new Vector3((float) GD.RandRange(-10, 10), 0, (float) GD.RandRange(-10, 10))
-                }
-            });
+                    Balance = 0,
+                    CharacterState = new CharacterProtocol.InitialState
+                    {
+                        Position = new Vector3((float) GD.RandRange(-10, 10), 0, (float) GD.RandRange(-10, 10))
+                    }
+                });
             entityContainer.AddChild(newPlayer);
             RegisterAutoCatchup(newPlayer);
-            
+
             // Replicate player
             entityContainer.SvReplicateInstance(SharedLogic.GetPlayingPeers(), newPlayer);
             SharedLogic.Players.AddToGroup(peerId, newPlayer);
             entityContainer.SvReplicateInstances(peerId, GroupAutoCatchup.IterateGroupMembers());
         }
-        
+
         private void _PeerLeft(int peerId)
         {
             GD.Print($"{peerId} left!");
@@ -62,7 +61,7 @@ namespace Overlords.game.world
             var playerNodeGroup = SharedLogic.Players;
             var player = playerNodeGroup.GetMemberOfGroup<Node>(peerId, this);
             if (player == null) return;
-            
+
             playerNodeGroup.RemoveFromGroup(player);
             SharedLogic.Entities.SvDeReplicateInstances(SharedLogic.GetPlayingPeers(), player.AsEnumerable());
             player.Purge();

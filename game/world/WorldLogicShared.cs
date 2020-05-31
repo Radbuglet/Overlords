@@ -2,33 +2,28 @@
 using System.Linq;
 using Godot;
 using Overlords.game.entities.player;
-using Overlords.game.entities.player.client;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;
 
 namespace Overlords.game.world
 {
-    public class WorldLogicShared: Node
+    public class WorldLogicShared : Node
     {
-        [Export][FieldNotNull]
-        public PackedScene PlayerPrefab;
-        
-        [LinkNodeStatic("../EntityContainer")]
-        public ListReplicator Entities;
-        
+        [LinkNodeStatic("../EntityContainer")] public ListReplicator Entities;
+        [Export] [FieldNotNull] public PackedScene PlayerPrefab;
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
 
         public IEnumerable<int> GetPlayingPeers()
         {
             return Players.IterateGroupKeys();
         }
-        
+
         public IEnumerable<int> GetPlayingPeers(int ignorePeerId)
         {
             return GetPlayingPeers().Where(peerId => ignorePeerId != peerId);
         }
-        
+
         public override void _Ready()
         {
             this.InitializeBehavior();

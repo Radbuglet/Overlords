@@ -6,10 +6,10 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.helpers.tree.interfaceBehaviors
 {
-    public class InterfaceBehaviorRouter: Node
+    public class InterfaceBehaviorRouter : Node
     {
         private readonly Dictionary<Type, object> _implementations = new Dictionary<Type, object>();
-        
+
         public override void _Ready()
         {
             this.InitializeBehavior();
@@ -35,10 +35,7 @@ namespace Overlords.helpers.tree.interfaceBehaviors
         public static void DeclareImplementation(this Node impl, IEnumerable<Type> interfaces)
         {
             var router = impl.GetGameObject<Node>().GetBehavior<InterfaceBehaviorRouter>();
-            foreach (var iface in interfaces)
-            {
-                router.DeclareImplementation(iface, impl);
-            }
+            foreach (var iface in interfaces) router.DeclareImplementation(iface, impl);
         }
 
         public static TImpl GetImplementation<TImpl>(this Node root)

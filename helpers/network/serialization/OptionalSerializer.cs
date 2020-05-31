@@ -1,6 +1,6 @@
 ﻿namespace Overlords.helpers.network.serialization
 {
-    public class OptionalSerializer<T>: AbstractSerializer<T>
+    public class OptionalSerializer<T> : AbstractSerializer<T>
     {
         private readonly ISerializer<T> _serializer;
 

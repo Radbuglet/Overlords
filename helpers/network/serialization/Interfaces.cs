@@ -3,18 +3,28 @@ using Godot;
 
 namespace Overlords.helpers.network.serialization
 {
-    public class SerializationException: Exception
+    public class SerializationException : Exception
     {
-        public SerializationException() {}
-        public SerializationException(string reason): base(reason) {}
+        public SerializationException()
+        {
+        }
+
+        public SerializationException(string reason) : base(reason)
+        {
+        }
     }
-    
-    public class DeserializationException: Exception
+
+    public class DeserializationException : Exception
     {
-        public DeserializationException() {}
-        public DeserializationException(string reason): base(reason) {}
+        public DeserializationException()
+        {
+        }
+
+        public DeserializationException(string reason) : base(reason)
+        {
+        }
     }
-    
+
     public interface ISerializer<T>
     {
         object Serialize(T data);
@@ -27,7 +37,7 @@ namespace Overlords.helpers.network.serialization
         object DeserializeUnTyped(object raw);
     }
 
-    public abstract class AbstractSerializer<T>: ISerializer<T>, ISerializerRaw
+    public abstract class AbstractSerializer<T> : ISerializer<T>, ISerializerRaw
     {
         public abstract object Serialize(T data);
         public abstract T Deserialize(object raw);
@@ -35,10 +45,11 @@ namespace Overlords.helpers.network.serialization
         public object SerializeUnTyped(object data)
         {
             if (data == null) return Serialize(default);
-            
+
             if (!(data is T dataCasted))
-                throw new SerializationException("Data provided to non-typed serialization variant was of an invalid C# type! " +
-                                                 $"Provided type: {data.GetType().Name} Expected type: {typeof(T).Name}");
+                throw new SerializationException(
+                    "Data provided to non-typed serialization variant was of an invalid C# type! " +
+                    $"Provided type: {data.GetType().Name} Expected type: {typeof(T).Name}");
             return Serialize(dataCasted);
         }
 
@@ -50,7 +61,8 @@ namespace Overlords.helpers.network.serialization
 
     public static class SerializationExtensions
     {
-        public static bool TryDeserialize<TVal>(this ISerializer<TVal> serializer, object raw, out TVal deserialized, out DeserializationException exception)
+        public static bool TryDeserialize<TVal>(this ISerializer<TVal> serializer, object raw, out TVal deserialized,
+            out DeserializationException exception)
         {
             try
             {
@@ -66,13 +78,11 @@ namespace Overlords.helpers.network.serialization
             }
         }
 
-        public static bool TryDeserializedOrWarn<TVal>(this ISerializer<TVal> serializer, object raw, out TVal deserialized)
+        public static bool TryDeserializedOrWarn<TVal>(this ISerializer<TVal> serializer, object raw,
+            out TVal deserialized)
         {
             var success = serializer.TryDeserialize(raw, out deserialized, out var error);
-            if (!success)
-            {
-                GD.PushWarning($"Failed to deserialize: {error.Message}");
-            }
+            if (!success) GD.PushWarning($"Failed to deserialize: {error.Message}");
 
             return success;
         }

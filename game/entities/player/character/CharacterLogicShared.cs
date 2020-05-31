@@ -6,11 +6,10 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player.character
 {
-    public class CharacterLogicShared: Node
+    public class CharacterLogicShared : Node
     {
         [RequireParent] public KinematicBody Body;
         [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
-        
         public PlayerLogicShared PlayerShared;
 
         public void Initialize(PlayerLogicShared playerLogicShared, NetworkTypeUtils.ObjectVariant variant,
@@ -22,10 +21,7 @@ namespace Overlords.game.entities.player.character
                 typeof(CharacterLogicServer), null, typeof(CharacterLogicLocal), typeof(CharacterLogicPuppet));
 
             Body.Translation = initialState.Position;
-            if (variant != NetworkTypeUtils.ObjectVariant.LocalAuthoritative)
-            {
-                GetNode<Camera>("../FpsCamera").Purge();
-            }
+            if (variant != NetworkTypeUtils.ObjectVariant.LocalAuthoritative) GetNode<Camera>("../FpsCamera").Purge();
         }
 
         public WorldLogicShared GetWorldShared()

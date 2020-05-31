@@ -9,11 +9,16 @@ namespace Overlords.helpers.tree.trackingGroups
     {
         void InternalRemoveFromGroup(object key);
     }
-    
-    public class NodeGroup<TKey, TEntityBase>: INodeGroupTypeless where TEntityBase: Node
+
+    public class NodeGroup<TKey, TEntityBase> : INodeGroupTypeless where TEntityBase : Node
     {
         private readonly Dictionary<TKey, TEntityBase> _members = new Dictionary<TKey, TEntityBase>();
-        
+
+        public void InternalRemoveFromGroup(object key)
+        {
+            _members.Remove((TKey) key);
+        }
+
         public void AddToGroup(TKey key, TEntityBase entity)
         {
             Debug.Assert(!_members.ContainsKey(key), "NodeGroup already contains a member with that ID!");
@@ -28,9 +33,8 @@ namespace Overlords.helpers.tree.trackingGroups
             _members.Remove(key);
             removedMember.GetBehavior<NodeGroupMemberTracker>()
                 .UnregisterNodeFromGroup(this);
-
         }
-        
+
         public void RemoveFromGroup(TEntityBase groupMember)
         {
             var memberTracker = groupMember.GetBehavior<NodeGroupMemberTracker>();
@@ -38,27 +42,21 @@ namespace Overlords.helpers.tree.trackingGroups
             memberTracker.UnregisterNodeFromGroup(this);
         }
 
-        public T GetMemberOfGroup<T>(TKey key, T fallback) where T: TEntityBase
+        public T GetMemberOfGroup<T>(TKey key, T fallback) where T : TEntityBase
         {
-            return _members.TryGetValue(key, out var memberRaw) && memberRaw is T memberCast ?
-                memberCast : fallback;
-        }
-
-        public void InternalRemoveFromGroup(object key)
-        {
-            _members.Remove((TKey) key);
+            return _members.TryGetValue(key, out var memberRaw) && memberRaw is T memberCast ? memberCast : fallback;
         }
 
         public IEnumerable<KeyValuePair<TKey, TEntityBase>> IterateGroupEntries()
         {
             return _members;
         }
-        
+
         public IEnumerable<TKey> IterateGroupKeys()
         {
             return _members.Keys;
         }
-        
+
         public IEnumerable<TEntityBase> IterateGroupMembers()
         {
             return _members.Values;

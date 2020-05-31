@@ -4,10 +4,10 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player
 {
-    public class PlayerLogicServer: Node
+    public class PlayerLogicServer : Node
     {
         [RequireBehavior] public PlayerLogicShared LogicShared;
-        
+
         public override void _Ready()
         {
             this.InitializeBehavior();
@@ -21,8 +21,9 @@ namespace Overlords.game.entities.player
                 State = new PlayerProtocol.InitialState
                 {
                     Balance = LogicShared.Balance,
-                    CharacterState = LogicShared.HasCharacter() ?
-                        LogicShared.CharacterRoot.GetBehavior<CharacterLogicServer>().MakeConstructor(target) : null 
+                    CharacterState = LogicShared.HasCharacter()
+                        ? LogicShared.CharacterRoot.GetBehavior<CharacterLogicServer>().MakeConstructor(target)
+                        : null
                 }
             };
         }

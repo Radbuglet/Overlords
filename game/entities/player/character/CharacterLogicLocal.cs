@@ -5,26 +5,23 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player.character
 {
-    public class CharacterLogicLocal: Node
+    public class CharacterLogicLocal : Node
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
-        [RequireBehavior] public HumanoidMover Mover;
         [RequireBehavior] public CharacterLogicShared LogicShared;
-        
+        [RequireBehavior] public HumanoidMover Mover;
         private RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound> _remoteEventHub;
-        
-        public float Sensitivity => -Mathf.Deg2Rad(0.1F);
-        public bool HasControl;
         private Vector3 _initialCameraPos;
-        
+        public bool HasControl;
         public float RotHorizontal;
         public float RotVertical;
+        public float Sensitivity => -Mathf.Deg2Rad(0.1F);
 
         public override void _Ready()
         {
             this.InitializeBehavior();
             ApplyRotation();
-            
+
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
             _remoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(
@@ -49,7 +46,7 @@ namespace Overlords.game.entities.player.character
                 HasControl = !HasControl;
                 Input.SetMouseMode(HasControl ? Input.MouseMode.Captured : Input.MouseMode.Visible);
             }
-            
+
             var heading = new Vector3();
             if (HasControl)
             {
@@ -62,9 +59,11 @@ namespace Overlords.game.entities.player.character
 
             var isSneaking = HasControl && GameInputs.FpsSneak.IsPressed();
             Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
-            
-            Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
-            _remoteEventHub.FireServer((CharacterProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
+
+            Camera.Translation =
+                (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
+            _remoteEventHub.FireServer((CharacterProtocol.ServerBound.PerformMovement,
+                (object) Mover.Body.Translation));
         }
 
         private void ApplyRotation()

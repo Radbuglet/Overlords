@@ -3,7 +3,7 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.world
 {
-    public class WorldLogicClient: Node
+    public class WorldLogicClient : Node
     {
         [RequireBehavior] public WorldLogicShared LogicShared;
 

@@ -2,7 +2,7 @@
 
 namespace Overlords.helpers.network.serialization
 {
-    public class PrimitiveSerializer<TElem>: AbstractSerializer<TElem>
+    public class PrimitiveSerializer<TElem> : AbstractSerializer<TElem>
     {
         private readonly Func<TElem, bool> _customValidate;
 

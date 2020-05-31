@@ -10,20 +10,27 @@ namespace Overlords.helpers.network.replication
     public interface IStateField
     {
         int FieldIndex { get; }
-            
+
         object SerializeData();
         void DeserializeRemoteValue(object raw);
     }
-    
-    public class StateField<TValue>: Node, IStateField
+
+    public class StateField<TValue> : Node, IStateField
     {
-        [Signal] public delegate void ValueChangedRemotely(TValue newValue, TValue oldValue);
-            
+        [Signal]
+        public delegate void ValueChangedRemotely(TValue newValue, TValue oldValue);
+
         private readonly ISerializer<TValue> _serializer;
         private TValue _value;
-            
-        public int FieldIndex { get; set; } = -1;
+
+        public StateField(ISerializer<TValue> serializer)
+        {
+            _serializer = serializer;
+            this.AddUserSignals(); // Because of Godot jank, the signal attribute isn't applied on anonymous nodes.
+        }
+
         public bool IsValueSet { get; private set; }
+
         public TValue Value
         {
             get => _value;
@@ -34,11 +41,7 @@ namespace Overlords.helpers.network.replication
             }
         }
 
-        public StateField(ISerializer<TValue> serializer)
-        {
-            _serializer = serializer;
-            this.AddUserSignals();  // Because of Godot jank, the signal attribute isn't applied on anonymous nodes.
-        }
+        public int FieldIndex { get; set; } = -1;
 
         public object SerializeData()
         {
@@ -53,8 +56,8 @@ namespace Overlords.helpers.network.replication
             EmitSignal(nameof(ValueChangedRemotely), newValue, oldValue);
         }
     }
-    
-    public class StateReplicator: Node
+
+    public class StateReplicator : Node
     {
         private readonly List<IStateField> _fields = new List<IStateField>();
 
@@ -76,23 +79,18 @@ namespace Overlords.helpers.network.replication
         public void ReplicateValues(IEnumerable<int> targets, IEnumerable<IStateField> fields, bool reliable)
         {
             var serialized = SerializeValues(fields);
-            
+
             foreach (var target in targets)
-            {
                 if (reliable)
                     RpcId(target, nameof(_ValueRemotelySet), serialized);
                 else
                     RpcUnreliableId(target, nameof(_ValueRemotelySet), serialized);
-            }
         }
 
         public Dictionary SerializeValues(IEnumerable<IStateField> fields)
         {
             var serialized = new Godot.Collections.Dictionary<int, object>();
-            foreach (var field in fields)
-            {
-                serialized.Add(field.FieldIndex, field.SerializeData());
-            }
+            foreach (var field in fields) serialized.Add(field.FieldIndex, field.SerializeData());
 
             return (Dictionary) serialized;
         }
@@ -111,7 +109,7 @@ namespace Overlords.helpers.network.replication
                     GD.PushWarning("Failed to deserialize fieldIndex for state set.");
                     continue;
                 }
-                
+
                 _fields[fieldIndex].DeserializeRemoteValue(rawDictionary[key]);
             }
         }

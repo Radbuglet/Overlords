@@ -9,8 +9,8 @@ namespace Overlords.services
     {
         void _EarlyEditorTrigger(SceneTree tree);
     }
-    
-    public class EarlyTriggerService: Node
+
+    public class EarlyTriggerService : Node
     {
         public override void _Ready()
         {
@@ -22,9 +22,7 @@ namespace Overlords.services
         {
             var tree = GetTree();
             foreach (var child in instance.EnumerateChildren())
-            {
                 (child as IParentEnterTrigger)?._EarlyEditorTrigger(tree);
-            }
         }
     }
 }

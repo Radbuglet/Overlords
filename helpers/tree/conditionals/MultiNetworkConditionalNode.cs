@@ -16,7 +16,7 @@ namespace Overlords.helpers.tree.conditionals
             NodePurging.PurgeParallel(
                 (tree.GetNetworkMode() == NetworkTypeUtils.NetworkMode.Server ? _clientNodes : _serverNodes)
                 .ConvertToNodeIterator(this));
-            this.Purge();  // We're not locked thanks to _EarlyEditorTrigger()
+            this.Purge(); // We're not locked thanks to _EarlyEditorTrigger()
         }
     }
 }

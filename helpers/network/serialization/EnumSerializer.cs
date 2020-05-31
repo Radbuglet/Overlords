@@ -9,7 +9,7 @@ namespace Overlords.helpers.network.serialization
             return (int) (object) value;
         }
 
-        public static TEnum DeserializeEnum<TEnum>(this object serializedData) where TEnum: Enum
+        public static TEnum DeserializeEnum<TEnum>(this object serializedData) where TEnum : Enum
         {
             return serializedData is TEnum value ? value : throw new DeserializationException("Invalid enum value.");
         }

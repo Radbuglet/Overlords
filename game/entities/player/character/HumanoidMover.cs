@@ -3,18 +3,17 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player.character
 {
-    public class HumanoidMover: Node
+    public class HumanoidMover : Node
     {
         [RequireParent] public KinematicBody Body;
         
-        [Export] public Vector3 Velocity;
-        [Export] public float AccelTimeGround;
         [Export] public float AccelTimeAir;
+        [Export] public float AccelTimeGround;
         [Export] public float FullSpeed;
-        [Export] public float SneakSpeed;
-        
         [Export] public float Gravity;
         [Export] public float JumpMagnitude;
+        [Export] public float SneakSpeed;
+        [Export] public Vector3 Velocity;
 
         public override void _Ready()
         {
@@ -33,7 +32,7 @@ namespace Overlords.game.entities.player.character
 
             Velocity.y -= Gravity * delta;
             Velocity = Body.MoveAndSlide(Velocity, Vector3.Up);
-            
+
             // ReSharper disable once InvertIf
             if (Body.IsOnFloor())
             {

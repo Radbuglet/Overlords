@@ -16,7 +16,8 @@ namespace Overlords.helpers.tree.behaviors
                 // Behavior linking
                 if (field.GetCustomAttribute<RequireBehavior>() != null)
                 {
-                    Debug.Assert(gameObject != null, "Attempted to use behavior linking in non-behavior initialization!");
+                    Debug.Assert(gameObject != null,
+                        "Attempted to use behavior linking in non-behavior initialization!");
                     var requiredBehavior = gameObject.GetBehaviorDynamic(field.FieldType);
                     field.SetValueSafe(initializedNode, requiredBehavior);
                 }
@@ -37,13 +38,14 @@ namespace Overlords.helpers.tree.behaviors
                     if (attribLinkNodePath != null)
                     {
                         var nodePath = initializedNode.Get(attribLinkNodePath.ExportedPropName);
-                        Debug.Assert(nodePath != null, $"Failed to link NodePath: nodePath in field \"{field.Name}\" is null.");
+                        Debug.Assert(nodePath != null,
+                            $"Failed to link NodePath: nodePath in field \"{field.Name}\" is null.");
                         Debug.Assert(nodePath is NodePath,
                             $"LinkNodePath attribute placed on non-NodePath field named \"{field.Name}\".");
                         var instance = initializedNode.GetNode((NodePath) nodePath);
                         field.SetValueSafe(initializedNode, instance);
                     }
-                    
+
                     var attribLinkNode = field.GetCustomAttribute<LinkNodeStatic>();
                     if (attribLinkNode != null)
                     {
@@ -51,10 +53,11 @@ namespace Overlords.helpers.tree.behaviors
                         field.SetValueSafe(initializedNode, instance);
                     }
                 }
-                
+
                 // Field not null (debug only)
                 // ReSharper disable scope InvertIf
-                Debug.Assert(field.GetCustomAttribute<FieldNotNull>() == null || field.GetValue(initializedNode) != null,
+                Debug.Assert(
+                    field.GetCustomAttribute<FieldNotNull>() == null || field.GetValue(initializedNode) != null,
                     $"Field {field.Name} is marked as not allowed to be null during init but is null anyway.");
             }
         }
@@ -91,15 +94,15 @@ namespace Overlords.helpers.tree.behaviors
             var path = node.IsInsideTree() ? node.GetPath().ToString() : "{Outside tree}";
             return $"<{node.Name}@{path}>";
         }
-        
+
         public static TGameObject GetGameObject<TGameObject>(this Node behavior) where TGameObject : Node
         {
             Debug.Assert(behavior != null);
             var gameObject = behavior.GetParentOrNull<TGameObject>();
             Debug.Assert(gameObject != null,
                 $"Failed to get GameObject for behavior {behavior.GetNodeDebugInfo()}!");
-            
-            
+
+
             return gameObject;
         }
 
@@ -123,13 +126,11 @@ namespace Overlords.helpers.tree.behaviors
         {
             var type = node.GetType();
             foreach (var delegateMaybe in type.GetNestedTypes())
-            {
                 if (delegateMaybe.GetCustomAttribute<SignalAttribute>() != null)
                 {
                     Debug.Assert(!node.HasUserSignal(delegateMaybe.Name));
                     node.AddUserSignal(delegateMaybe.Name);
                 }
-            }
         }
     }
 }

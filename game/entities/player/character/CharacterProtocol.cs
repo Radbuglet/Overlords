@@ -10,12 +10,12 @@ namespace Overlords.game.entities.player.character
         {
             PuppetSetPos
         }
-        
+
         public enum ServerBound
         {
             PerformMovement
         }
-        
+
         public class InitialState
         {
             public static readonly StructSerializer<InitialState> Serializer = new StructSerializer<InitialState>(

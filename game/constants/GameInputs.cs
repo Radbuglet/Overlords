@@ -1,3 +1,5 @@
+using Godot;
+
 namespace Overlords.game.constants
 {
     public static class GameInputs
@@ -9,7 +11,7 @@ namespace Overlords.game.constants
         public static readonly Action FpsJump = new Action("fps_jump");
         public static readonly Action FpsSneak = new Action("fps_sneak");
         public static readonly Action DebugAttachControl = new Action("debug_attach_control");
-        
+
         public class Action
         {
             public readonly string Id;
@@ -21,17 +23,17 @@ namespace Overlords.game.constants
 
             public bool IsPressed()
             {
-                return Godot.Input.IsActionPressed(Id);
+                return Input.IsActionPressed(Id);
             }
 
             public bool WasJustPressed()
             {
-                return Godot.Input.IsActionJustPressed(Id);
+                return Input.IsActionJustPressed(Id);
             }
-            
+
             public bool WasJustReleased()
             {
-                return Godot.Input.IsActionJustReleased(Id);
+                return Input.IsActionJustReleased(Id);
             }
         }
     }
