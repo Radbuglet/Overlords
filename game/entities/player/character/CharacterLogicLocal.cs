@@ -24,8 +24,7 @@ namespace Overlords.game.entities.player.character
 
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
-            _remoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(
-                LogicShared.RemoteEvent);
+            _remoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(LogicShared.RemoteEvent);
             AddChild(_remoteEventHub);
         }
 
@@ -54,16 +53,18 @@ namespace Overlords.game.entities.player.character
                 if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
                 if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
+                if (GameInputs.FpsInteract.IsPressed())
+                {
+                    _remoteEventHub.FireServer((CharacterProtocol.ServerBound.Interact, (object) Vector3.Up));
+                }
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }
 
             var isSneaking = HasControl && GameInputs.FpsSneak.IsPressed();
             Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
-
-            Camera.Translation =
-                (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
-            _remoteEventHub.FireServer((CharacterProtocol.ServerBound.PerformMovement,
-                (object) Mover.Body.Translation));
+            
+            Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
+            _remoteEventHub.FireUnreliableServer((CharacterProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
         }
 
         private void ApplyRotation()

@@ -2,6 +2,9 @@ using Godot;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
+using _PlayerRemoteEventHub = Overlords.helpers.network.RemoteEventHub<
+    Overlords.game.entities.player.character.CharacterProtocol.ServerBound,
+    Overlords.game.entities.player.character.CharacterProtocol.ClientBound>;
 
 namespace Overlords.game.entities.player.character
 {
@@ -9,27 +12,38 @@ namespace Overlords.game.entities.player.character
     {
         [RequireParent] public KinematicBody Body;
         [RequireBehavior] public CharacterLogicShared LogicShared;
-        public RemoteEventHub<CharacterProtocol.ServerBound, CharacterProtocol.ClientBound> RemoteEventHub;
+        public _PlayerRemoteEventHub RemoteEventHub;
 
         public override void _Ready()
         {
             this.InitializeBehavior();
-            RemoteEventHub =
-                new RemoteEventHub<CharacterProtocol.ServerBound, CharacterProtocol.ClientBound>(
-                    LogicShared.RemoteEvent);
-            RemoteEventHub.BindHandler(CharacterProtocol.ServerBound.PerformMovement,
+            RemoteEventHub = new _PlayerRemoteEventHub(LogicShared.RemoteEvent);
+            void BindOwnerHandler<T>(CharacterProtocol.ServerBound type, ISerializer<T> serializer, _PlayerRemoteEventHub.PacketHandler<T> handler)
+            {
+               RemoteEventHub.BindHandler(type, serializer, (sender, packet) =>
+               {
+                   if (sender != LogicShared.PlayerShared.OwnerPeerId)
+                   {
+                       GD.PushWarning("Non-owning player tried to send an owner-only packet!");
+                       return;
+                   }
+                   handler(sender, packet);
+               }); 
+            }
+
+            BindOwnerHandler(CharacterProtocol.ServerBound.PerformMovement,
                 new PrimitiveSerializer<Vector3>(),
                 (sender, position) =>
                 {
-                    if (sender != LogicShared.PlayerShared.OwnerPeerId)
-                    {
-                        GD.PushWarning("Non-owning player tried to send a movement packet!");
-                        return;
-                    }
-
                     Body.Translation = position;
                     RemoteEventHub.FireId(LogicShared.GetWorldShared().GetPlayingPeers(sender),
                         (CharacterProtocol.ClientBound.PuppetSetPos, (object) position));
+                });
+            
+            BindOwnerHandler(CharacterProtocol.ServerBound.Interact,
+                new PrimitiveSerializer<Vector3>(), (sender, selectedPos) =>
+                {
+                    GD.Print("Interact!!!");
                 });
         }
 

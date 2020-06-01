@@ -10,6 +10,7 @@ namespace Overlords.game.constants
         public static readonly Action FpsRightward = new Action("fps_rightward");
         public static readonly Action FpsJump = new Action("fps_jump");
         public static readonly Action FpsSneak = new Action("fps_sneak");
+        public static readonly Action FpsInteract = new Action("fps_interact");
         public static readonly Action DebugAttachControl = new Action("debug_attach_control");
 
         public class Action

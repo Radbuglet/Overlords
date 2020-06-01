@@ -3,7 +3,7 @@ using Godot;
 
 namespace Overlords.helpers.tree
 {
-    public static class NodePurging // TODO: What about freeing?
+    public static class NodePurging
     {
         public static void Purge(this Node node)
         {

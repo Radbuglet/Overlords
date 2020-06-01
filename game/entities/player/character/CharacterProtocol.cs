@@ -13,7 +13,8 @@ namespace Overlords.game.entities.player.character
 
         public enum ServerBound
         {
-            PerformMovement
+            PerformMovement,
+            Interact
         }
 
         public class InitialState
@@ -26,6 +27,20 @@ namespace Overlords.game.entities.player.character
                 });
 
             public Vector3 Position;
+        }
+        
+        public class InteractPacket: Reference
+        {
+            public static readonly StructSerializer<InteractPacket> Serializer = new StructSerializer<InteractPacket>(
+                () => new InteractPacket(),
+                new Dictionary<string, ISerializerRaw>
+                {
+                    [nameof(RotHorizontal)] = new PrimitiveSerializer<float>(),
+                    [nameof(RotVertical)] = new PrimitiveSerializer<float>()
+                });
+
+            public float RotHorizontal;
+            public float RotVertical;
         }
     }
 }

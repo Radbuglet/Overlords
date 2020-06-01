@@ -23,11 +23,11 @@ namespace Overlords.helpers.network
 
         public static Error StartServer(this SceneTree tree, int port, int maxConnections)
         {
-            var peer = new NetworkedMultiplayerENet();
+            var peer = new NetworkedMultiplayerENet {ServerRelay = false};
             var err = peer.CreateServer(port, maxConnections);
             if (err != Error.Ok)
                 return err;
-            tree.NetworkPeer = peer; // TODO: Disable server relay
+            tree.NetworkPeer = peer;
             return Error.Ok;
         }
 
