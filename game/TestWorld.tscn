@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://helpers/tree/conditionals/MultiNetworkConditionalNode.cs" type="Script" id=1]
 [ext_resource path="res://game/world/WorldLogicShared.cs" type="Script" id=2]
@@ -7,13 +7,15 @@
 [ext_resource path="res://game/world/WorldLogicServer.cs" type="Script" id=5]
 [ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=7]
+[ext_resource path="res://game/entities/shared/InteractionReceiver.cs" type="Script" id=8]
 
 [sub_resource type="PlaneMesh" id=1]
 
 [sub_resource type="BoxShape" id=2]
 
-[sub_resource type="CapsuleMesh" id=3]
-mid_height = 2.0
+[sub_resource type="BoxShape" id=3]
+
+[sub_resource type="CubeMesh" id=4]
 
 [node name="TestWorld" type="Spatial"]
 
@@ -21,6 +23,7 @@ mid_height = 2.0
 
 [node name="DefaultCamera" type="Camera" parent="Map"]
 transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 14, 23 )
+far = 1000.0
 
 [node name="Ground" type="MeshInstance" parent="Map"]
 transform = Transform( 1000, 0, 0, 0, 1, 0, 0, 0, 1000, 0, 0, 0 )
@@ -42,10 +45,18 @@ shadow_enabled = true
 directional_shadow_blend_splits = true
 directional_shadow_max_distance = 300.0
 
-[node name="FakePerson" type="MeshInstance" parent="Map"]
+[node name="TestBox" type="StaticBody" parent="Map"]
 transform = Transform( 1, 0, 0, 0, 2.98023e-08, 1, 0, -1, 2.98023e-08, 0, 2, 17 )
-mesh = SubResource( 3 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Map/TestBox"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Map/TestBox"]
+mesh = SubResource( 4 )
 material/0 = null
+
+[node name="InteractionReceiver" type="Node" parent="Map/TestBox"]
+script = ExtResource( 8 )
 
 [node name="NetworkConditional" type="Node" parent="."]
 script = ExtResource( 1 )

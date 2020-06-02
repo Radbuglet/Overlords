@@ -13,12 +13,13 @@ namespace Overlords.game.entities.player.character
         public override void _Ready()
         {
             this.InitializeBehavior();
-            _remoteEventHub =
-                new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(
-                    LogicShared.RemoteEvent);
-            AddChild(_remoteEventHub);
+            _remoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(LogicShared.RemoteEvent);
             _remoteEventHub.BindHandler(CharacterProtocol.ClientBound.PuppetSetPos, new PrimitiveSerializer<Vector3>(),
-                (sender, position) => { LogicShared.Body.Translation = position; });
+                (sender, position) =>
+                {
+                    LogicShared.Body.Translation = position;
+                });
+            AddChild(_remoteEventHub);
         }
     }
 }

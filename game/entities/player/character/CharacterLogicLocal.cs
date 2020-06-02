@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.constants;
+using Overlords.game.entities.shared;
 using Overlords.helpers.network;
 using Overlords.helpers.tree.behaviors;
 
@@ -8,6 +9,7 @@ namespace Overlords.game.entities.player.character
     public class CharacterLogicLocal : Node
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
+        [LinkNodeStatic("../FpsCamera/RayCast")] public RayCast LookRayCast;
         [RequireBehavior] public CharacterLogicShared LogicShared;
         [RequireBehavior] public HumanoidMover Mover;
         private RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound> _remoteEventHub;
@@ -55,7 +57,13 @@ namespace Overlords.game.entities.player.character
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
                 if (GameInputs.FpsInteract.IsPressed())
                 {
-                    _remoteEventHub.FireServer((CharacterProtocol.ServerBound.Interact, (object) Vector3.Up));
+                    var (target, point) = RayCast(6);
+                    var interactionReceiver = target?.GetBehavior<InteractionReceiver>(false);
+                    if (interactionReceiver != null)
+                    {
+                        interactionReceiver.OnTrigger();
+                        _remoteEventHub.FireServer((CharacterProtocol.ServerBound.Interact, (object) point));
+                    }
                 }
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }
@@ -72,6 +80,14 @@ namespace Overlords.game.entities.player.character
             Camera.Transform = new Transform(
                 Basis.Identity.Rotated(Vector3.Right, RotVertical).Rotated(Vector3.Up, RotHorizontal),
                 Camera.Transform.origin);
+        }
+
+        private (Node target, Vector3 point) RayCast(float distance)
+        {
+            LookRayCast.CastTo = Vector3.Forward * distance;
+            LookRayCast.ForceRaycastUpdate();
+            return LookRayCast.GetCollider() is Node collider ? (collider, LookRayCast.GetCollisionPoint()) :
+                (null, LookRayCast.GetCollisionPoint());
         }
     }
 }

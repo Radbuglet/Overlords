@@ -106,20 +106,26 @@ namespace Overlords.helpers.tree.behaviors
             return gameObject;
         }
 
-        public static Node GetBehaviorDynamic(this Node gameObject, Type behaviorType)
+        public static Node GetBehaviorDynamic(this Node gameObject, Type behaviorType, bool required = true)
         {
             Debug.Assert(gameObject != null, "Failed to get behavior for GameObject because it was null!");
             var behavior = gameObject.GetNodeOrNull(GetBehaviorNodeName(behaviorType));
-            Debug.Assert(behavior != null,
+            if (required)
+            {
+                Debug.Assert(behavior != null,
                 $"Failed to get behavior of type \"{behaviorType.Name}\" for GameObject {gameObject.GetNodeDebugInfo()}!");
-            Debug.Assert(behaviorType.IsInstanceOfType(behavior),
-                $"Behavior at {behavior.GetNodeDebugInfo()} isn't of valid type!");
+            }
+            if (behavior != null)
+            {
+                Debug.Assert(behaviorType.IsInstanceOfType(behavior),
+                    $"Behavior at {behavior.GetNodeDebugInfo()} isn't of valid type!");
+            }
             return behavior;
         }
 
-        public static TBehavior GetBehavior<TBehavior>(this Node gameObject) where TBehavior : Node
+        public static TBehavior GetBehavior<TBehavior>(this Node gameObject, bool required = true) where TBehavior : Node
         {
-            return (TBehavior) GetBehaviorDynamic(gameObject, typeof(TBehavior));
+            return (TBehavior) GetBehaviorDynamic(gameObject, typeof(TBehavior), required);
         }
 
         public static void AddUserSignals(this Node node)
