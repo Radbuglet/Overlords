@@ -14,7 +14,7 @@ namespace Overlords.menu
                 return;
             }
 
-            GetTree().ChangeScene("res://game/TestWorld.tscn");
+            GetTree().ChangeScene("res://game/world/TestWorld.tscn");
         }
     }
 }

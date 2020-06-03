@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Reflection;
 using Godot;
 using Overlords.helpers.csharp;
+using Overlords.helpers.tree.interfaceBehaviors;
 
 namespace Overlords.helpers.tree.behaviors
 {
@@ -59,6 +60,16 @@ namespace Overlords.helpers.tree.behaviors
                 Debug.Assert(
                     field.GetCustomAttribute<FieldNotNull>() == null || field.GetValue(initializedNode) != null,
                     $"Field {field.Name} is marked as not allowed to be null during init but is null anyway.");
+            }
+
+            foreach (var method in thisType.GetMethods(
+                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                var attribute = method.GetCustomAttribute<BindEntitySignal>();
+                if (attribute != null)
+                {
+                    initializedNode.ConnectEntitySignal(attribute.SignalName, method.Name);
+                }
             }
         }
 

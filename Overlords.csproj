@@ -54,6 +54,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\constants\GameInputs.cs" />
+    <Compile Include="game\constants\GameSignals.cs" />
+    <Compile Include="game\entities\shop\ShopClient.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicLocal.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicPuppet.cs" />
     <Compile Include="game\entities\player\character\CharacterLogicServer.cs" />
@@ -66,7 +68,6 @@
     <Compile Include="game\entities\player\PlayerLogicServer.cs" />
     <Compile Include="game\entities\player\PlayerLogicShared.cs" />
     <Compile Include="game\entities\player\PlayerProtocol.cs" />
-    <Compile Include="game\entities\shared\InteractionReceiver.cs" />
     <Compile Include="game\world\WorldLogicClient.cs" />
     <Compile Include="game\world\WorldLogicServer.cs" />
     <Compile Include="game\world\WorldLogicShared.cs" />
@@ -86,12 +87,8 @@
     <Compile Include="helpers\network\serialization\OptionalSerializer.cs" />
     <Compile Include="helpers\network\serialization\PrimitiveSerializer.cs" />
     <Compile Include="helpers\network\serialization\StructSerializer.cs" />
+    <Compile Include="helpers\tree\behaviors\Attributes.cs" />
     <Compile Include="helpers\tree\behaviors\BehaviorsExtension.cs" />
-    <Compile Include="helpers\tree\behaviors\FieldNotNull.cs" />
-    <Compile Include="helpers\tree\behaviors\LinkNodeStatic.cs" />
-    <Compile Include="helpers\tree\behaviors\LinkNodeEditor.cs" />
-    <Compile Include="helpers\tree\behaviors\RequireBehavior.cs" />
-    <Compile Include="helpers\tree\behaviors\RequireParent.cs" />
     <Compile Include="helpers\tree\conditionals\ConditionalNode.cs" />
     <Compile Include="helpers\tree\conditionals\MultiNetworkConditionalNode.cs" />
     <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
