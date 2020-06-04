@@ -14,11 +14,13 @@ namespace Overlords.game.entities.player
                     new Dictionary<string, ISerializerRaw>
                     {
                         [nameof(OwnerPeerId)] = new PrimitiveSerializer<int>(),
-                        [nameof(State)] = InitialState.Serializer
+                        [nameof(State)] = InitialState.Serializer,
+                        [nameof(ReplicatedValues)] = new PrimitiveSerializer<Godot.Collections.Array>()
                     });
 
             public int OwnerPeerId;
             public InitialState State;
+            public Godot.Collections.Array ReplicatedValues;
         }
 
         public class InitialState
@@ -27,13 +29,11 @@ namespace Overlords.game.entities.player
                 () => new InitialState(),
                 new Dictionary<string, ISerializerRaw>
                 {
-                    [nameof(Balance)] = new PrimitiveSerializer<int>(),
                     [nameof(CharacterState)] =
                         new OptionalSerializer<CharacterProtocol.InitialState>(
                             CharacterProtocol.InitialState.Serializer)
                 });
-
-            public int Balance;
+            
             public CharacterProtocol.InitialState CharacterState;
         }
     }

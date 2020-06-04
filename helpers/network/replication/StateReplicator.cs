@@ -12,16 +12,16 @@ namespace Overlords.helpers.network.replication
         int FieldIndex { get; }
 
         object SerializeData();
-        void DeserializeRemoteValue(object raw);
+        bool DeserializeRemoteValue(object raw);
     }
 
     public class StateField<TValue> : Node, IStateField
     {
         [Signal]
         public delegate void ValueChangedRemotely(TValue newValue, TValue oldValue);
-
+        public int FieldIndex { get; set; } = -1;
+        public TValue Value;
         private readonly ISerializer<TValue> _serializer;
-        private TValue _value;
 
         public StateField(ISerializer<TValue> serializer)
         {
@@ -29,31 +29,18 @@ namespace Overlords.helpers.network.replication
             this.AddUserSignals(); // Because of Godot jank, the signal attribute isn't applied on anonymous nodes.
         }
 
-        public bool IsValueSet { get; private set; }
-
-        public TValue Value
-        {
-            get => _value;
-            set
-            {
-                IsValueSet = true;
-                _value = value;
-            }
-        }
-
-        public int FieldIndex { get; set; } = -1;
-
         public object SerializeData()
         {
             return _serializer.Serialize(Value);
         }
 
-        public void DeserializeRemoteValue(object raw)
+        public bool DeserializeRemoteValue(object raw)
         {
-            if (!_serializer.TryDeserializedOrWarn(raw, out var newValue)) return;
+            if (!_serializer.TryDeserializedOrWarn(raw, out var newValue)) return false;
             var oldValue = Value;
             Value = newValue;
             EmitSignal(nameof(ValueChangedRemotely), newValue, oldValue);
+            return true;
         }
     }
 
@@ -100,6 +87,16 @@ namespace Overlords.helpers.network.replication
             return SerializeValues(_fields);
         }
 
+        public Array SerializeValuesCatchup()
+        {
+            var serialized = new Array();
+            foreach (var field in _fields)
+            {
+                serialized.Add(field.SerializeData());
+            }
+            return serialized;
+        }
+
         public void LoadValues(Dictionary rawDictionary)
         {
             foreach (var key in rawDictionary.Keys)
@@ -112,6 +109,24 @@ namespace Overlords.helpers.network.replication
 
                 _fields[fieldIndex].DeserializeRemoteValue(rawDictionary[key]);
             }
+        }
+
+        public bool LoadValuesCatchup(Array array)
+        {
+            if (array.Count != _fields.Count)
+            {
+                GD.Print("Mismatched StateReplicator catchup packet length.");
+                return false;
+            }
+
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            for (var index = 0; index < _fields.Count; index++)
+            {
+                if (!_fields[index].DeserializeRemoteValue(array[index]))
+                    return false;
+            }
+
+            return true;
         }
 
         [Puppet]

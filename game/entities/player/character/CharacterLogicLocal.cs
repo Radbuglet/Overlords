@@ -3,6 +3,7 @@ using Overlords.game.constants;
 using Overlords.helpers.network;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.interfaceBehaviors;
+using Overlords.helpers.tree.trackingGroups;
 
 namespace Overlords.game.entities.player.character
 {
@@ -55,10 +56,19 @@ namespace Overlords.game.entities.player.character
                 if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
                 if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
-                if (GameInputs.FpsInteract.IsPressed())
+                if (GameInputs.FpsInteract.WasJustPressed())
                 {
                     var (target, point) = RayCast(6);
-                    target?.FireEntitySignal(nameof(GameSignals.OnEntityInteracted));
+                    var interactionId = target?.GetIdInGroup(LogicShared.WorldShared.Targets, null);
+                    if (interactionId != null)
+                    {
+                        target.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), this.GetGameObject<Node>());
+                        GD.Print($"Interacted with {target.Name}");
+                    }
+                    else
+                    {
+                        GD.Print("No interaction ID or it just doesn't exist!");
+                    }
                 }
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }

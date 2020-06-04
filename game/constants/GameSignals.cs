@@ -1,7 +1,9 @@
-﻿namespace Overlords.game.constants
+﻿using Godot;
+
+namespace Overlords.game.constants
 {
     public static class GameSignals
     {
-        public delegate void OnEntityInteracted();
+        public delegate void OnEntityInteracted(Node playerRoot);
     }
 }

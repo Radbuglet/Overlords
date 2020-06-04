@@ -53,6 +53,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="game\constants\GameGdGroups.cs" />
     <Compile Include="game\constants\GameInputs.cs" />
     <Compile Include="game\constants\GameSignals.cs" />
     <Compile Include="game\entities\shop\ShopClient.cs" />

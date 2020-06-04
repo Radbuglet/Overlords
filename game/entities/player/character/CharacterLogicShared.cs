@@ -11,6 +11,7 @@ namespace Overlords.game.entities.player.character
         [RequireParent] public KinematicBody Body;
         [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
         public PlayerLogicShared PlayerShared;
+        public WorldLogicShared WorldShared => PlayerShared.WorldRoot.GetBehavior<WorldLogicShared>();
 
         public void Initialize(PlayerLogicShared playerLogicShared, NetworkTypeUtils.ObjectVariant variant,
             CharacterProtocol.InitialState initialState)

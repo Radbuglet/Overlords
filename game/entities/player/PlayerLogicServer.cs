@@ -20,11 +20,11 @@ namespace Overlords.game.entities.player
                 OwnerPeerId = LogicShared.OwnerPeerId,
                 State = new PlayerProtocol.InitialState
                 {
-                    Balance = LogicShared.Balance,
                     CharacterState = LogicShared.HasCharacter()
                         ? LogicShared.CharacterRoot.GetBehavior<CharacterLogicServer>().MakeConstructor(target)
                         : null
-                }
+                },
+                ReplicatedValues = LogicShared.StateReplicator.SerializeValuesCatchup()
             };
         }
     }

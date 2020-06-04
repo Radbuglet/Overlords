@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Overlords.game.constants;
 using Overlords.game.entities.player;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
@@ -13,6 +14,7 @@ namespace Overlords.game.world
         [LinkNodeStatic("../EntityContainer")] public ListReplicator Entities;
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
+        public readonly NodeGroup<string, Node> Targets = new NodeGroup<string, Node>();
 
         public IEnumerable<int> GetPlayingPeers()
         {
@@ -32,9 +34,12 @@ namespace Overlords.game.world
                 {
                     var sharedLogic = instance.GetBehavior<PlayerLogicShared>();
                     sharedLogic.Initialize(GetTree(), GetParent(), constructor.OwnerPeerId, constructor.State);
+                    sharedLogic.CatchupState(constructor.ReplicatedValues);
                     container.AddChild(instance);
                 },
                 (target, instance) => instance.GetBehavior<PlayerLogicServer>().MakeConstructor(target));
+
+            // TODO: Auto register static interaction targets
         }
     }
 }

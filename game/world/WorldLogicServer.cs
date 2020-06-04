@@ -36,15 +36,16 @@ namespace Overlords.game.world
 
             // Create and setup player
             var newPlayer = SharedLogic.PlayerPrefab.Instance();
-            newPlayer.GetBehavior<PlayerLogicShared>().Initialize(GetTree(), GetParent(), peerId,
+            var sharedLogic = newPlayer.GetBehavior<PlayerLogicShared>();
+            sharedLogic.Initialize(GetTree(), GetParent(), peerId,
                 new PlayerProtocol.InitialState
                 {
-                    Balance = 0,
                     CharacterState = new CharacterProtocol.InitialState
                     {
                         Position = new Vector3((float) GD.RandRange(-10, 10), 0, (float) GD.RandRange(-10, 10))
                     }
                 });
+            sharedLogic.Balance.Value = (int) GD.RandRange(0, 100);
             entityContainer.AddChild(newPlayer);
             RegisterAutoCatchup(newPlayer);
 

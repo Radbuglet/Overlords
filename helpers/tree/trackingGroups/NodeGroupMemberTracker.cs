@@ -39,5 +39,20 @@ namespace Overlords.helpers.tree.trackingGroups
 			Debug.Assert(foundGroupId, "Failed to get group member id.");
 			return id;
 		}
+		
+		public TKey GetNodeIdForGroup<TKey, TBaseEnt>(NodeGroup<TKey, TBaseEnt> @group, TKey fallback) where TBaseEnt: Node
+		{
+			return _containedInGroups.TryGetValue(@group, out var id) ? (TKey) id : fallback;
+		}
+	}
+
+	public static class NodeGroupTrackingExtensions
+	{
+		public static TKey GetIdInGroup<TKey, TBaseEnt>(this Node entity, NodeGroup<TKey, TBaseEnt> nodeGroup, TKey fallback)
+			where TBaseEnt : Node
+		{
+			var groupTracker = entity.GetBehavior<NodeGroupMemberTracker>(false);
+			return groupTracker == null ? fallback : groupTracker.GetNodeIdForGroup(nodeGroup, fallback);
+		}
 	}
 }

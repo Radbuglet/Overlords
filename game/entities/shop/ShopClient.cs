@@ -1,5 +1,6 @@
 using Godot;
 using Overlords.game.constants;
+using Overlords.game.entities.player.character;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.shop
@@ -12,9 +13,11 @@ namespace Overlords.game.entities.shop
 		}
 
 		[BindEntitySignal(nameof(GameSignals.OnEntityInteracted))]
-		private void _OnInteracted()
+		private void _OnInteracted(Node characterRoot)
 		{
-			GD.Print("Shop interacted with!");
+			var characterShared = characterRoot.GetBehavior<CharacterLogicShared>();
+			var playerShared = characterShared.PlayerShared;
+			GD.Print($"Shop interacted with. Their balance: {playerShared.Balance.Value}");
 		}
 	}
 }
