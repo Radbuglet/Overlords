@@ -14,7 +14,7 @@ namespace Overlords.game.world
         [LinkNodeStatic("../EntityContainer")] public ListReplicator Entities;
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
-        public readonly NodeGroup<string, Node> Targets = new NodeGroup<string, Node>();
+        public readonly NodeGroup<string, Spatial> Targets = new NodeGroup<string, Spatial>();
 
         public IEnumerable<int> GetPlayingPeers()
         {
@@ -39,7 +39,11 @@ namespace Overlords.game.world
                 },
                 (target, instance) => instance.GetBehavior<PlayerLogicServer>().MakeConstructor(target));
 
-            // TODO: Auto register static interaction targets
+            // Auto register static interaction targets (happens on both)
+            foreach (var node in GetTree().GetNodesInGroup(GameGdGroups.StaticInteractionTarget).Cast<Spatial>())
+            {
+                Targets.AddToGroup($"static_{node.Name}", node);
+            }
         }
     }
 }

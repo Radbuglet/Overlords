@@ -70,7 +70,7 @@ script = ExtResource( 6 )
 [node name="CharacterLogicShared" type="Node" parent="."]
 script = ExtResource( 1 )
 
-[node name="CharacterLogicServer" type="Node" parent="."]
+[node name="CharacterLogicServer" type="Spatial" parent="."]
 script = ExtResource( 7 )
 
 [node name="CharacterLogicLocal" type="Node" parent="."]

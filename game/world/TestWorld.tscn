@@ -44,6 +44,12 @@ directional_shadow_max_distance = 300.0
 [node name="Shop" parent="Map" instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0 )
 
+[node name="Shop2" parent="Map" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 4 )
+
+[node name="Shop3" parent="Map" instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -4 )
+
 [node name="NetworkConditional" type="Node" parent="."]
 script = ExtResource( 1 )
 _clientNodes = [ NodePath("../WorldLogicClient") ]

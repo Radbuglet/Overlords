@@ -74,6 +74,7 @@
     <Compile Include="game\world\WorldLogicShared.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
+    <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\GodotSignalNames.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />

@@ -35,12 +35,17 @@ namespace Overlords.game.entities.player.character
                 () => new InteractPacket(),
                 new Dictionary<string, ISerializerRaw>
                 {
-                    [nameof(RotHorizontal)] = new PrimitiveSerializer<float>(),
-                    [nameof(RotVertical)] = new PrimitiveSerializer<float>()
+                    [nameof(TargetId)] = new PrimitiveSerializer<string>(),
+                    [nameof(InteractPoint)] = new PrimitiveSerializer<Vector3>()
                 });
 
-            public float RotHorizontal;
-            public float RotVertical;
+            public string TargetId;
+            public Vector3 InteractPoint;
+
+            public object Serialize()
+            {
+                return Serializer.Serialize(this);
+            }
         }
     }
 }

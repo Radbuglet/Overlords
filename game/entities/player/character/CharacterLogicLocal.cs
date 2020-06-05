@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.constants;
+using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.interfaceBehaviors;
@@ -58,16 +59,16 @@ namespace Overlords.game.entities.player.character
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
                 if (GameInputs.FpsInteract.WasJustPressed())
                 {
-                    var (target, point) = RayCast(6);
+                    var (target, point) = RayCast(CharacterLogicShared.InteractDistance);
                     var interactionId = target?.GetIdInGroup(LogicShared.WorldShared.Targets, null);
                     if (interactionId != null)
                     {
                         target.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), this.GetGameObject<Node>());
-                        GD.Print($"Interacted with {target.Name}");
-                    }
-                    else
-                    {
-                        GD.Print("No interaction ID or it just doesn't exist!");
+                        _remoteEventHub.FireServer((CharacterProtocol.ServerBound.Interact, new CharacterProtocol.InteractPacket
+                        {
+                            TargetId = interactionId,
+                            InteractPoint = point - ((Spatial) target).GetGlobalPosition()
+                        }.Serialize()));
                     }
                 }
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);

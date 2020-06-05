@@ -12,6 +12,7 @@ namespace Overlords.game.entities.player.character
         [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
         public PlayerLogicShared PlayerShared;
         public WorldLogicShared WorldShared => PlayerShared.WorldRoot.GetBehavior<WorldLogicShared>();
+        public const float InteractDistance = 6;
 
         public void Initialize(PlayerLogicShared playerLogicShared, NetworkTypeUtils.ObjectVariant variant,
             CharacterProtocol.InitialState initialState)
@@ -22,7 +23,8 @@ namespace Overlords.game.entities.player.character
                 typeof(CharacterLogicServer), null, typeof(CharacterLogicLocal), typeof(CharacterLogicPuppet));
 
             Body.Translation = initialState.Position;
-            if (variant != NetworkTypeUtils.ObjectVariant.LocalAuthoritative) GetNode<Camera>("../FpsCamera").Purge();
+            if (variant != NetworkTypeUtils.ObjectVariant.LocalAuthoritative)
+                GetNode<Control>("../FpsCamera/Hud").Purge();
         }
 
         public WorldLogicShared GetWorldShared()
