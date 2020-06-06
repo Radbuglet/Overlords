@@ -1,5 +1,7 @@
-﻿using Godot;
+﻿using System.Collections.Generic;
+using Godot;
 using Overlords.game.entities.player.character;
+using Overlords.game.world;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player
@@ -26,6 +28,17 @@ namespace Overlords.game.entities.player
                 },
                 ReplicatedValues = LogicShared.StateReplicator.SerializeValuesCatchup()
             };
+        }
+
+        private IEnumerable<int> GetPlayingPeers()
+        {
+            return LogicShared.WorldRoot.GetBehavior<WorldLogicShared>().GetPlayingPeers();
+        }
+
+        public void SetBalanceReplicated(int newBalance)
+        {
+            GD.Print($"Setting balance from {LogicShared.Balance.Value} to {newBalance}...");
+            LogicShared.StateReplicator.SetValueReplicated(GetPlayingPeers(), LogicShared.Balance, newBalance, true);
         }
     }
 }

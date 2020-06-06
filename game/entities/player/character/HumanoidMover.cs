@@ -5,7 +5,7 @@ namespace Overlords.game.entities.player.character
 {
     public class HumanoidMover : Node
     {
-        [RequireParent] public KinematicBody Body;
+        public KinematicBody Body => this.GetGameObject<KinematicBody>();
         
         [Export] public float AccelTimeAir;
         [Export] public float AccelTimeGround;

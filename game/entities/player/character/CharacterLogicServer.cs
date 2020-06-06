@@ -14,7 +14,7 @@ namespace Overlords.game.entities.player.character
 {
     public class CharacterLogicServer : Spatial
     {
-        [RequireParent] public KinematicBody Body;
+        private KinematicBody Body => this.GetGameObject<KinematicBody>();
         [RequireBehavior] public CharacterLogicShared LogicShared;
         [LinkNodeStatic("../FpsCamera/RayCast")]
         public Spatial RayCastOrigin;
@@ -28,7 +28,7 @@ namespace Overlords.game.entities.player.character
             {
                RemoteEventHub.BindHandler(type, serializer, (sender, packet) =>
                {
-                   if (sender != LogicShared.PlayerShared.OwnerPeerId)
+                   if (sender != LogicShared.PlayerRoot.GetBehavior<PlayerLogicShared>().OwnerPeerId)
                    {
                        GD.PushWarning("Non-owning player tried to send an owner-only packet!");
                        return;
@@ -42,7 +42,7 @@ namespace Overlords.game.entities.player.character
                 (sender, position) =>
                 {
                     Body.Translation = position;
-                    RemoteEventHub.FireId(LogicShared.GetWorldShared().GetPlayingPeers(sender),
+                    RemoteEventHub.FireId(LogicShared.WorldShared.GetPlayingPeers(sender),
                         (CharacterProtocol.ClientBound.PuppetSetPos, (object) position));
                 });
             

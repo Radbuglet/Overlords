@@ -23,15 +23,6 @@ namespace Overlords.helpers.tree.behaviors
                     field.SetValueSafe(initializedNode, requiredBehavior);
                 }
 
-                // Parent linking
-                if (field.GetCustomAttribute<RequireParent>() != null)
-                {
-                    var parent = initializedNode.GetParent();
-                    Debug.Assert(field.FieldType.IsInstanceOfType(parent),
-                        $"Failed to link required parent to node {GetNodeDebugInfo(initializedNode)}: Invalid parent type!");
-                    field.SetValueSafe(initializedNode, parent);
-                }
-
                 // Node path linking
                 if (field.GetValue(initializedNode) == null)
                 {

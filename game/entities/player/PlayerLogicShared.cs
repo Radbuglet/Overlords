@@ -13,7 +13,7 @@ namespace Overlords.game.entities.player
 {
     public class PlayerLogicShared : Node
     {
-        [RequireParent] public Spatial PlayerRoot;
+        private Spatial PlayerRoot => this.GetGameObject<Spatial>();
         [LinkNodeStatic("../StateReplicator")] public StateReplicator StateReplicator;
         [FieldNotNull] [Export] private PackedScene _characterPrefab;
         public int OwnerPeerId;
@@ -52,7 +52,7 @@ namespace Overlords.game.entities.player
         {
             Debug.Assert(CharacterRoot == null);
             CharacterRoot = _characterPrefab.Instance();
-            CharacterRoot.GetBehavior<CharacterLogicShared>().Initialize(this, variant, initialState);
+            CharacterRoot.GetBehavior<CharacterLogicShared>().Initialize(this.GetGameObject<Node>(), variant, initialState);
             AddChild(CharacterRoot);
         }
 

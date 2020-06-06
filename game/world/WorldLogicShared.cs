@@ -11,7 +11,7 @@ namespace Overlords.game.world
 {
     public class WorldLogicShared : Node
     {
-        [LinkNodeStatic("../EntityContainer")] public ListReplicator Entities;
+        [LinkNodeStatic("../EntityContainer")] public ListReplicator EntityReplicator;
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
         public readonly NodeGroup<string, Spatial> Targets = new NodeGroup<string, Spatial>();
@@ -29,11 +29,11 @@ namespace Overlords.game.world
         public override void _Ready()
         {
             this.InitializeBehavior();
-            Entities.RegisterEntityType(PlayerPrefab, PlayerProtocol.NetworkConstructor.Serializer,
+            EntityReplicator.RegisterEntityType(PlayerPrefab, PlayerProtocol.NetworkConstructor.Serializer,
                 (instance, container, constructor) =>
                 {
                     var sharedLogic = instance.GetBehavior<PlayerLogicShared>();
-                    sharedLogic.Initialize(GetTree(), GetParent(), constructor.OwnerPeerId, constructor.State);
+                    sharedLogic.Initialize(GetTree(), this.GetGameObject<Node>(), constructor.OwnerPeerId, constructor.State);
                     sharedLogic.CatchupState(constructor.ReplicatedValues);
                     container.AddChild(instance);
                 },

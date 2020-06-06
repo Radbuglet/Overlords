@@ -12,7 +12,7 @@ namespace Overlords.game.world
     public class WorldLogicServer : Node
     {
         [RequireBehavior] public WorldLogicShared SharedLogic;
-        public readonly NodeGroup<string, Node> GroupAutoCatchup = new NodeGroup<string, Node>();
+        private readonly NodeGroup<string, Node> _groupAutoCatchup = new NodeGroup<string, Node>();
 
         public override void _Ready()
         {
@@ -25,19 +25,19 @@ namespace Overlords.game.world
 
         private void RegisterAutoCatchup(Node node)
         {
-            GroupAutoCatchup.AddToGroup(node.Name, node);
+            _groupAutoCatchup.AddToGroup(node.Name, node);
         }
 
         private void _PeerJoined(int peerId)
         {
             GD.Print($"{peerId} joined!");
 
-            var entityContainer = SharedLogic.Entities;
+            var entityContainer = SharedLogic.EntityReplicator;
 
             // Create and setup player
             var newPlayer = SharedLogic.PlayerPrefab.Instance();
             var sharedLogic = newPlayer.GetBehavior<PlayerLogicShared>();
-            sharedLogic.Initialize(GetTree(), GetParent(), peerId,
+            sharedLogic.Initialize(GetTree(), this.GetGameObject<Node>(), peerId,
                 new PlayerProtocol.InitialState
                 {
                     CharacterState = new CharacterProtocol.InitialState
@@ -52,7 +52,7 @@ namespace Overlords.game.world
             // Replicate player
             entityContainer.SvReplicateInstance(SharedLogic.GetPlayingPeers(), newPlayer);
             SharedLogic.Players.AddToGroup(peerId, newPlayer);
-            entityContainer.SvReplicateInstances(peerId, GroupAutoCatchup.IterateGroupMembers());
+            entityContainer.SvReplicateInstances(peerId, _groupAutoCatchup.IterateGroupMembers());
         }
 
         private void _PeerLeft(int peerId)
@@ -64,7 +64,7 @@ namespace Overlords.game.world
             if (player == null) return;
 
             playerNodeGroup.RemoveFromGroup(player);
-            SharedLogic.Entities.SvDeReplicateInstances(SharedLogic.GetPlayingPeers(), player.AsEnumerable());
+            SharedLogic.EntityReplicator.SvDeReplicateInstances(SharedLogic.GetPlayingPeers(), player.AsEnumerable());
             player.Purge();
         }
     }
