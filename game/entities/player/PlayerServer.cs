@@ -1,48 +1,54 @@
-using Godot;
-using Godot.Collections;
-using Overlords.game.constants;
-using Overlords.helpers.csharp;
+﻿using Godot;
+using Overlords.game.entities.common;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
-using Overlords.helpers.tree.interfaceBehaviors;
-using _PlayerRemoteEventHub = Overlords.helpers.network.RemoteEventHub<
-    Overlords.game.entities.player.character.CharacterProtocol.ServerBound,
-    Overlords.game.entities.player.character.CharacterProtocol.ClientBound>;
+using _EventHub = Overlords.helpers.network.RemoteEventHub<
+    Overlords.game.entities.player.PlayerProtocol.ServerBound,
+    Overlords.game.entities.player.PlayerProtocol.ClientBound>;
 
-namespace Overlords.game.entities.player.character
+namespace Overlords.game.entities.player
 {
-    public class CharacterLogicServer : Spatial
+    public class PlayerServer: Spatial
     {
-        private KinematicBody Body => this.GetGameObject<KinematicBody>();
-        [RequireBehavior] public CharacterLogicShared LogicShared;
-        [LinkNodeStatic("../FpsCamera/RayCast")]
-        public Spatial RayCastOrigin;
-        public _PlayerRemoteEventHub RemoteEventHub;
+        private KinematicBody Body => LogicShared.GetBody();
+        [RequireBehavior] public PlayerShared LogicShared;
+        [LinkNodeStatic("../FpsCamera/RayCast")] public Spatial RayCastOrigin;
+        public _EventHub RemoteEventHub;
 
         public override void _Ready()
         {
             this.InitializeBehavior();
-            RemoteEventHub = new _PlayerRemoteEventHub(LogicShared.RemoteEvent);
-            void BindOwnerHandler<T>(CharacterProtocol.ServerBound type, ISerializer<T> serializer, _PlayerRemoteEventHub.PacketHandler<T> handler)
+            RemoteEventHub = new _EventHub(LogicShared.RemoteEvent);
+            void BindOwnerHandler<T>(PlayerProtocol.ServerBound type, ISerializer<T> serializer, _EventHub.PacketHandler<T> handler)
             {
                RemoteEventHub.BindHandler(type, serializer, (sender, packet) =>
                {
-                   if (sender != LogicShared.PlayerRoot.GetBehavior<PlayerLogicShared>().OwnerPeerId)
+                   if (sender != LogicShared.OwnerPeerId)
                    {
                        GD.PushWarning("Non-owning player tried to send an owner-only packet!");
                        return;
                    }
                    handler(sender, packet);
-               }); 
+               });
             }
-
-            BindOwnerHandler(CharacterProtocol.ServerBound.PerformMovement,
+            
+            // TODO: Re-implement server logic
+            BindOwnerHandler(PlayerProtocol.ServerBound.PerformMovement,
                 new PrimitiveSerializer<Vector3>(),
                 (sender, position) =>
                 {
                     Body.Translation = position;
-                    RemoteEventHub.FireId(LogicShared.WorldShared.GetPlayingPeers(sender),
+                    RemoteEventHub.FireId(LogicShared.GetWorldShared().GetPlayingPeers(sender),
+                        (PlayerProtocol.ClientBound.PuppetSetPos, (object) position));
+                });
+
+            /*BindOwnerHandler(PlayerProtocol.ServerBound.PerformMovement,
+                new PrimitiveSerializer<Vector3>(),
+                (sender, position) =>
+                {
+                    Body.Translation = position;
+                    RemoteEventHub.FireId(LogicShared.World.GetPlayingPeers(sender),
                         (CharacterProtocol.ClientBound.PuppetSetPos, (object) position));
                 });
             
@@ -72,14 +78,19 @@ namespace Overlords.game.entities.player.character
                         return;
                     }
                     interactionTarget.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), this.GetGameObject<Node>());
-                });
+                });*/
         }
 
-        public CharacterProtocol.InitialState MakeConstructor(int target)
+        public PlayerProtocol.NetworkConstructor MakeConstructor(int target)
         {
-            return new CharacterProtocol.InitialState
+            return new PlayerProtocol.NetworkConstructor
             {
-                Position = Body.Translation
+                OwnerPeerId = LogicShared.OwnerPeerId,
+                InitialState = new PlayerProtocol.InitialState
+                {
+                    Position = LogicShared.Position
+                },
+                ReplicatedValues = LogicShared.StateReplicator.SerializeValuesCatchup()
             };
         }
     }

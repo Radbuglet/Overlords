@@ -1,12 +1,12 @@
 ﻿using Godot;
 using Overlords.helpers.tree.behaviors;
 
-namespace Overlords.game.entities.player.character
+namespace Overlords.game.entities.common
 {
     public class HumanoidMover : Node
     {
         public KinematicBody Body => this.GetGameObject<KinematicBody>();
-        
+
         [Export] public float AccelTimeAir;
         [Export] public float AccelTimeGround;
         [Export] public float FullSpeed;

@@ -1,11 +1,40 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Godot;
 using Overlords.helpers.network.serialization;
 
-namespace Overlords.game.entities.player.character
+namespace Overlords.game.entities.player
 {
-    public static class CharacterProtocol
+    public static class PlayerProtocol
     {
+        // Construction
+        public class NetworkConstructor
+        {
+            public static readonly StructSerializer<NetworkConstructor> Serializer = new StructSerializer<NetworkConstructor>(
+                () => new NetworkConstructor(),
+                new Dictionary<string, ISerializerRaw>
+                {
+                    [nameof(OwnerPeerId)] = new PrimitiveSerializer<int>(),
+                    [nameof(InitialState)] = InitialState.Serializer,
+                    [nameof(ReplicatedValues)] = new PrimitiveSerializer<Godot.Collections.Array>()
+                });
+
+            public int OwnerPeerId;
+            public InitialState InitialState;
+            public Godot.Collections.Array ReplicatedValues;
+        }
+        
+        public class InitialState
+        {
+            public static readonly StructSerializer<InitialState> Serializer = new StructSerializer<InitialState>(
+                () => new InitialState(),
+                new Dictionary<string, ISerializerRaw>
+                {
+                    [nameof(Position)] = new PrimitiveSerializer<Vector3>()
+                });
+            public Vector3 Position;
+        }
+        
+        // Remotes
         public enum ClientBound
         {
             PuppetSetPos
@@ -15,18 +44,6 @@ namespace Overlords.game.entities.player.character
         {
             PerformMovement,
             Interact
-        }
-
-        public class InitialState
-        {
-            public static readonly StructSerializer<InitialState> Serializer = new StructSerializer<InitialState>(
-                () => new InitialState(),
-                new Dictionary<string, ISerializerRaw>
-                {
-                    [nameof(Position)] = new PrimitiveSerializer<Vector3>()
-                });
-
-            public Vector3 Position;
         }
         
         public class InteractPacket: Reference

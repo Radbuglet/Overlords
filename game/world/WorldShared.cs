@@ -4,12 +4,13 @@ using Godot;
 using Overlords.game.constants;
 using Overlords.game.entities.player;
 using Overlords.helpers.network.replication;
+using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;
 
 namespace Overlords.game.world
 {
-    public class WorldLogicShared : Node
+    public class WorldShared : Node
     {
         [LinkNodeStatic("../EntityContainer")] public ListReplicator EntityReplicator;
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
@@ -32,12 +33,18 @@ namespace Overlords.game.world
             EntityReplicator.RegisterEntityType(PlayerPrefab, PlayerProtocol.NetworkConstructor.Serializer,
                 (instance, container, constructor) =>
                 {
-                    var sharedLogic = instance.GetBehavior<PlayerLogicShared>();
-                    sharedLogic.Initialize(GetTree(), this.GetGameObject<Node>(), constructor.OwnerPeerId, constructor.State);
-                    sharedLogic.CatchupState(constructor.ReplicatedValues);
-                    container.AddChild(instance);
+                    try
+                    {
+                        var sharedLogic = instance.GetBehavior<PlayerShared>();
+                        sharedLogic.InitializeRemote(GetTree(), this.GetGameObject<Node>(), constructor);
+                        container.AddChild(instance);
+                    }
+                    catch (DeserializationException e)
+                    {
+                        GD.PushWarning($"Failed to spawn player: {e.Message}");
+                    }
                 },
-                (target, instance) => instance.GetBehavior<PlayerLogicServer>().MakeConstructor(target));
+                (target, instance) => instance.GetBehavior<PlayerServer>().MakeConstructor(target));
 
             // Auto register static interaction targets (happens on both)
             foreach (var node in GetTree().GetNodesInGroup(GameGdGroups.StaticInteractionTarget).Cast<Spatial>())

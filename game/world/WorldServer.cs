@@ -1,17 +1,17 @@
 ﻿using Godot;
 using Overlords.game.entities.player;
-using Overlords.game.entities.player.character;
 using Overlords.helpers;
 using Overlords.helpers.csharp;
+using Overlords.helpers.network;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;
 
 namespace Overlords.game.world
 {
-    public class WorldLogicServer : Node
+    public class WorldServer : Node
     {
-        [RequireBehavior] public WorldLogicShared SharedLogic;
+        [RequireBehavior] public WorldShared SharedLogic;
         private readonly NodeGroup<string, Node> _groupAutoCatchup = new NodeGroup<string, Node>();
 
         public override void _Ready()
@@ -35,23 +35,20 @@ namespace Overlords.game.world
             var entityContainer = SharedLogic.EntityReplicator;
 
             // Create and setup player
-            var newPlayer = SharedLogic.PlayerPrefab.Instance();
-            var sharedLogic = newPlayer.GetBehavior<PlayerLogicShared>();
-            sharedLogic.Initialize(GetTree(), this.GetGameObject<Node>(), peerId,
+            var player = SharedLogic.PlayerPrefab.Instance();
+            var sharedLogic = player.GetBehavior<PlayerShared>();
+            sharedLogic.InitializeLocal(this.GetGameObject<Node>(), peerId, NetworkTypeUtils.ObjectVariant.Server,
                 new PlayerProtocol.InitialState
                 {
-                    CharacterState = new CharacterProtocol.InitialState
-                    {
-                        Position = new Vector3((float) GD.RandRange(-10, 10), 0, (float) GD.RandRange(-10, 10))
-                    }
+                    Position = new Vector3(
+                        (float) GD.RandRange(-10, 10), 10, (float) GD.RandRange(-10, 10))
                 });
-            sharedLogic.Balance.Value = (int) GD.RandRange(0, 100);
-            entityContainer.AddChild(newPlayer);
-            RegisterAutoCatchup(newPlayer);
+            entityContainer.AddChild(player);
+            RegisterAutoCatchup(player);
 
             // Replicate player
-            entityContainer.SvReplicateInstance(SharedLogic.GetPlayingPeers(), newPlayer);
-            SharedLogic.Players.AddToGroup(peerId, newPlayer);
+            entityContainer.SvReplicateInstance(SharedLogic.GetPlayingPeers(), player);
+            SharedLogic.Players.AddToGroup(peerId, player);
             entityContainer.SvReplicateInstances(peerId, _groupAutoCatchup.IterateGroupMembers());
         }
 

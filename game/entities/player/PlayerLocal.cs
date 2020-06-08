@@ -1,20 +1,23 @@
 ﻿using Godot;
 using Overlords.game.constants;
-using Overlords.helpers.csharp;
+using Overlords.game.entities.common;
 using Overlords.helpers.network;
+using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
-using Overlords.helpers.tree.interfaceBehaviors;
-using Overlords.helpers.tree.trackingGroups;
+using _EventHub = Overlords.helpers.network.RemoteEventHub<
+    Overlords.game.entities.player.PlayerProtocol.ClientBound,
+    Overlords.game.entities.player.PlayerProtocol.ServerBound>;
 
-namespace Overlords.game.entities.player.character
+namespace Overlords.game.entities.player
 {
-    public class CharacterLogicLocal : Node
+    public class PlayerLocal: Node
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
         [LinkNodeStatic("../FpsCamera/RayCast")] public RayCast LookRayCast;
-        [RequireBehavior] public CharacterLogicShared LogicShared;
+        [RequireBehavior] public PlayerShared LogicShared;
         [RequireBehavior] public HumanoidMover Mover;
-        private RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound> _remoteEventHub;
+        
+        private _EventHub _remoteEventHub;
         private Vector3 _initialCameraPos;
         public bool HasControl;
         public float RotHorizontal;
@@ -25,10 +28,9 @@ namespace Overlords.game.entities.player.character
         {
             this.InitializeBehavior();
             ApplyRotation();
-
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
-            _remoteEventHub = new RemoteEventHub<CharacterProtocol.ClientBound, CharacterProtocol.ServerBound>(LogicShared.RemoteEvent);
+            _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
             AddChild(_remoteEventHub);
         }
 
@@ -44,12 +46,14 @@ namespace Overlords.game.entities.player.character
 
         public override void _PhysicsProcess(float delta)
         {
+            // Handle pause menu
             if (GameInputs.DebugAttachControl.WasJustPressed())
             {
                 HasControl = !HasControl;
                 Input.SetMouseMode(HasControl ? Input.MouseMode.Captured : Input.MouseMode.Visible);
             }
 
+            // Generate heading; handle interact command
             var heading = new Vector3();
             if (HasControl)
             {
@@ -59,26 +63,17 @@ namespace Overlords.game.entities.player.character
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
                 if (GameInputs.FpsInteract.WasJustPressed())
                 {
-                    var (target, point) = RayCast(CharacterLogicShared.InteractDistance);
-                    var interactionId = target?.GetIdInGroup(LogicShared.WorldShared.Targets, null);
-                    if (interactionId != null)
-                    {
-                        target.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), this.GetGameObject<Node>());
-                        _remoteEventHub.FireServer((CharacterProtocol.ServerBound.Interact, new CharacterProtocol.InteractPacket
-                        {
-                            TargetId = interactionId,
-                            InteractPoint = point - ((Spatial) target).GetGlobalPosition()
-                        }.Serialize()));
-                    }
+                    // TODO
                 }
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }
-
+            
+            // Move player (with replication)
             var isSneaking = HasControl && GameInputs.FpsSneak.IsPressed();
             Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
             
             Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
-            _remoteEventHub.FireUnreliableServer((CharacterProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
+            _remoteEventHub.FireUnreliableServer((PlayerProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
         }
 
         private void ApplyRotation()

@@ -7,63 +7,25 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.helpers.network.replication
 {
-    public interface IStateField
-    {
-        int FieldIndex { get; }
-
-        object SerializeData();
-        bool DeserializeRemoteValue(object raw);
-    }
-
-    public class StateField<TValue> : Node, IStateField
-    {
-        [Signal]
-        public delegate void ValueChangedRemotely(TValue newValue, TValue oldValue);
-        public int FieldIndex { get; set; } = -1;
-        public TValue Value;
-        private readonly ISerializer<TValue> _serializer;
-
-        public StateField(ISerializer<TValue> serializer)
-        {
-            _serializer = serializer;
-            this.AddUserSignals(); // Because of Godot jank, the signal attribute isn't applied on anonymous nodes.
-        }
-
-        public object SerializeData()
-        {
-            return _serializer.Serialize(Value);
-        }
-
-        public bool DeserializeRemoteValue(object raw)
-        {
-            if (!_serializer.TryDeserializedOrWarn(raw, out var newValue)) return false;
-            var oldValue = Value;
-            Value = newValue;
-            EmitSignal(nameof(ValueChangedRemotely), newValue, oldValue);
-            return true;
-        }
-    }
-
     public class StateReplicator : Node
     {
-        private readonly List<IStateField> _fields = new List<IStateField>();
-
-        public StateField<TVal> MakeField<TVal>(ISerializer<TVal> serializer)
+        public interface IField
         {
-            var stateField = new StateField<TVal>(serializer);
-            AddChild(stateField);
-            stateField.FieldIndex = _fields.Count;
-            _fields.Add(stateField);
-            return stateField;
+            int FieldIndex { get; set; }
+
+            object SerializeData();
+            void DeserializeRemoteValue(object raw);
+        }
+        
+        private readonly List<IField> _fields = new List<IField>();
+
+        public void RegisterField(IField field)
+        {
+            field.FieldIndex = _fields.Count;
+            _fields.Add(field);
         }
 
-        public void SetValueReplicated<T>(IEnumerable<int> targets, StateField<T> field, T value, bool reliable)
-        {
-            field.Value = value;
-            ReplicateValues(targets, field.AsEnumerable(), reliable);
-        }
-
-        public void ReplicateValues(IEnumerable<int> targets, IEnumerable<IStateField> fields, bool reliable)
+        public void ReplicateValues(IEnumerable<int> targets, IEnumerable<IField> fields, bool reliable)
         {
             var serialized = SerializeValues(fields);
 
@@ -74,11 +36,11 @@ namespace Overlords.helpers.network.replication
                     RpcUnreliableId(target, nameof(_ValueRemotelySet), serialized);
         }
 
-        public Dictionary SerializeValues(IEnumerable<IStateField> fields)
+        public Dictionary SerializeValues(IEnumerable<IField> fields)
         {
             var serialized = new Godot.Collections.Dictionary<int, object>();
-            foreach (var field in fields) serialized.Add(field.FieldIndex, field.SerializeData());
-
+            foreach (var field in fields)
+                serialized.Add(field.FieldIndex, field.SerializeData());
             return (Dictionary) serialized;
         }
 
@@ -91,9 +53,7 @@ namespace Overlords.helpers.network.replication
         {
             var serialized = new Array();
             foreach (var field in _fields)
-            {
                 serialized.Add(field.SerializeData());
-            }
             return serialized;
         }
 
@@ -111,22 +71,17 @@ namespace Overlords.helpers.network.replication
             }
         }
 
-        public bool LoadValuesCatchup(Array array)
+        public void LoadValuesCatchup(Array array)
         {
             if (array.Count != _fields.Count)
             {
-                GD.Print("Mismatched StateReplicator catchup packet length.");
-                return false;
+                throw new DeserializationException("Mismatched StateReplicator catchup packet length.");
             }
-
-            // ReSharper disable once LoopCanBeConvertedToQuery
+            
             for (var index = 0; index < _fields.Count; index++)
             {
-                if (!_fields[index].DeserializeRemoteValue(array[index]))
-                    return false;
+                _fields[index].DeserializeRemoteValue(array[index]);
             }
-
-            return true;
         }
 
         [Puppet]

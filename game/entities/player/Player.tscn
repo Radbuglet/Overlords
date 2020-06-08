@@ -1,38 +1,87 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
-[ext_resource path="res://helpers/tree/trackingGroups/NodeGroupMemberTracker.cs" type="Script" id=1]
-[ext_resource path="res://helpers/tree/interfaceBehaviors/InterfaceBehaviorRouter.cs" type="Script" id=2]
-[ext_resource path="res://game/entities/player/PlayerLogicShared.cs" type="Script" id=3]
-[ext_resource path="res://game/entities/player/PlayerLogicServer.cs" type="Script" id=4]
-[ext_resource path="res://game/entities/player/client/PlayerLogicLocal.cs" type="Script" id=5]
-[ext_resource path="res://game/entities/player/client/PlayerLogicClient.cs" type="Script" id=6]
-[ext_resource path="res://game/entities/player/character/Character.tscn" type="PackedScene" id=7]
-[ext_resource path="res://game/entities/player/client/PlayerLogicPuppet.cs" type="Script" id=8]
-[ext_resource path="res://helpers/network/replication/StateReplicator.cs" type="Script" id=9]
+[ext_resource path="res://assets/ui/crosshair/crosshair_shader.tres" type="Material" id=1]
+[ext_resource path="res://assets/ui/crosshair/crosshair.png" type="Texture" id=2]
+[ext_resource path="res://game/entities/player/PlayerShared.cs" type="Script" id=3]
+[ext_resource path="res://helpers/network/replication/StateReplicator.cs" type="Script" id=4]
+[ext_resource path="res://helpers/network/RemoteEvent.cs" type="Script" id=5]
+[ext_resource path="res://game/entities/player/PlayerServer.cs" type="Script" id=6]
+[ext_resource path="res://game/entities/player/PlayerLocal.cs" type="Script" id=7]
+[ext_resource path="res://game/entities/player/PlayerPuppet.cs" type="Script" id=8]
+[ext_resource path="res://game/entities/common/HumanoidMover.cs" type="Script" id=9]
+[ext_resource path="res://helpers/tree/trackingGroups/NodeGroupMemberTracker.cs" type="Script" id=10]
 
-[node name="PlayerPrefab" type="Spatial"]
+[sub_resource type="CapsuleMesh" id=1]
+mid_height = 2.0
+
+[sub_resource type="BoxShape" id=2]
+extents = Vector3( 1, 2, 1 )
+
+[node name="Player" type="KinematicBody"]
 
 [node name="NodeGroupMemberTracker" type="Node" parent="."]
-script = ExtResource( 1 )
-
-[node name="InterfaceBehaviorRouter" type="Node" parent="."]
-script = ExtResource( 2 )
+script = ExtResource( 10 )
 
 [node name="StateReplicator" type="Node" parent="."]
-script = ExtResource( 9 )
-
-[node name="PlayerLogicShared" type="Node" parent="."]
-script = ExtResource( 3 )
-_characterPrefab = ExtResource( 7 )
-
-[node name="PlayerLogicServer" type="Node" parent="."]
 script = ExtResource( 4 )
 
-[node name="PlayerLogicClient" type="Node" parent="."]
-script = ExtResource( 6 )
-
-[node name="PlayerLogicLocal" type="Node" parent="."]
+[node name="RemoteEvent" type="Node" parent="."]
 script = ExtResource( 5 )
 
-[node name="PlayerLogicPuppet" type="Node" parent="."]
+[node name="Hud" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Crosshair" type="TextureRect" parent="Hud"]
+material = ExtResource( 1 )
+anchor_left = 0.49
+anchor_top = 0.49
+anchor_right = 0.51
+anchor_bottom = 0.51
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FpsCamera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.5441, 0 )
+fov = 90.0
+far = 1000.0
+
+[node name="RayCast" type="RayCast" parent="FpsCamera"]
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1, 0 )
+mesh = SubResource( 1 )
+material/0 = null
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+shape = SubResource( 2 )
+
+[node name="PlayerShared" type="Node" parent="."]
+script = ExtResource( 3 )
+
+[node name="PlayerLocal" type="Node" parent="."]
+script = ExtResource( 7 )
+
+[node name="PlayerPuppet" type="Node" parent="."]
 script = ExtResource( 8 )
+
+[node name="HumanoidMover" type="Node" parent="."]
+script = ExtResource( 9 )
+AccelTimeAir = 0.14
+AccelTimeGround = 0.035
+FullSpeed = 25.0
+Gravity = 80.0
+JumpMagnitude = 20.0
+SneakSpeed = 12.0
+
+[node name="PlayerServer" type="Spatial" parent="."]
+script = ExtResource( 6 )

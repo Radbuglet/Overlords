@@ -1,10 +1,12 @@
 ﻿using Godot;
 using Overlords.helpers.tree.behaviors;
 
-namespace Overlords.game.entities.player.client
+namespace Overlords.game.world
 {
-    public class PlayerLogicPuppet : Node
+    public class WorldClient : Node
     {
+        [RequireBehavior] public WorldShared LogicShared;
+
         public override void _Ready()
         {
             this.InitializeBehavior();

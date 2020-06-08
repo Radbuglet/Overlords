@@ -1,10 +1,10 @@
 [gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://helpers/tree/conditionals/MultiNetworkConditionalNode.cs" type="Script" id=1]
-[ext_resource path="res://game/world/WorldLogicShared.cs" type="Script" id=2]
+[ext_resource path="res://game/world/WorldShared.cs" type="Script" id=2]
 [ext_resource path="res://helpers/network/replication/ListReplicator.cs" type="Script" id=3]
-[ext_resource path="res://game/world/WorldLogicClient.cs" type="Script" id=4]
-[ext_resource path="res://game/world/WorldLogicServer.cs" type="Script" id=5]
+[ext_resource path="res://game/world/WorldClient.cs" type="Script" id=4]
+[ext_resource path="res://game/world/WorldServer.cs" type="Script" id=5]
 [ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=7]
 [ext_resource path="res://game/entities/shop/Shop.tscn" type="PackedScene" id=8]
@@ -15,7 +15,7 @@
 
 [node name="TestWorld" type="Spatial"]
 
-[node name="Map" type="Node" parent="."]
+[node name="Map" type="Spatial" parent="."]
 
 [node name="DefaultCamera" type="Camera" parent="Map"]
 transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 14, 23 )
@@ -50,20 +50,20 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 4 )
 [node name="Shop3" parent="Map" instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -4 )
 
-[node name="NetworkConditional" type="Node" parent="."]
-script = ExtResource( 1 )
-_clientNodes = [ NodePath("../WorldLogicClient") ]
-_serverNodes = [ NodePath("../WorldLogicServer") ]
-
-[node name="EntityContainer" type="Node" parent="."]
+[node name="EntityContainer" type="Spatial" parent="."]
 script = ExtResource( 3 )
 
-[node name="WorldLogicShared" type="Node" parent="."]
+[node name="NetworkConditional" type="Node" parent="."]
+script = ExtResource( 1 )
+_clientNodes = [ NodePath("../WorldClient") ]
+_serverNodes = [ NodePath("../WorldServer") ]
+
+[node name="WorldShared" type="Node" parent="."]
 script = ExtResource( 2 )
 PlayerPrefab = ExtResource( 6 )
 
-[node name="WorldLogicClient" type="Node" parent="."]
+[node name="WorldClient" type="Node" parent="."]
 script = ExtResource( 4 )
 
-[node name="WorldLogicServer" type="Node" parent="."]
+[node name="WorldServer" type="Node" parent="."]
 script = ExtResource( 5 )
