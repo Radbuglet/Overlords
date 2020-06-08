@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.entities.common;
+using Overlords.game.entities.player.utils;
 using Overlords.helpers.network;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.network.serialization;
@@ -15,6 +16,9 @@ namespace Overlords.game.entities.player
         
         [LinkNodeStatic("../RemoteEvent")]
         public RemoteEvent RemoteEvent;
+        
+        [LinkNodeStatic("../FpsCamera/RayCast")]
+        public RayCast InteractionRayCast;
 
         public StateFieldBoxed<int> BalanceRVal;
         

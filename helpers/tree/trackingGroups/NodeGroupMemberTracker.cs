@@ -48,11 +48,18 @@ namespace Overlords.helpers.tree.trackingGroups
 
 	public static class NodeGroupTrackingExtensions
 	{
-		public static TKey GetIdInGroup<TKey, TBaseEnt>(this Node entity, NodeGroup<TKey, TBaseEnt> nodeGroup, TKey fallback)
+		public static bool GetIdInGroup<TKey, TBaseEnt>(this Node entity, NodeGroup<TKey, TBaseEnt> nodeGroup, out TKey key)
 			where TBaseEnt : Node
 		{
 			var groupTracker = entity.GetBehavior<NodeGroupMemberTracker>(false);
-			return groupTracker == null ? fallback : groupTracker.GetNodeIdForGroup(nodeGroup, fallback);
+			if (groupTracker == null)
+			{
+				key = default;
+				return false;
+			}
+			
+			key = (TKey) groupTracker.GetNodeIdForGroup(nodeGroup);
+			return true;
 		}
 	}
 }

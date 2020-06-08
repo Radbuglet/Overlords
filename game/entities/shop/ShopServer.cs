@@ -12,9 +12,9 @@ namespace Overlords.game.entities.shop
 		}
 
 		[BindEntitySignal(nameof(GameSignals.OnEntityInteracted))]
-		private void _OnInteracted(Node characterRoot)
+		private void _OnInteracted(Node playerRoot)
 		{
-			GD.Print("Shop interacted with.");
+			GD.Print($"Shop interacted with by {playerRoot.Name}.");
 		}
 	}
 }

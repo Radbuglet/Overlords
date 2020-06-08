@@ -2,7 +2,7 @@
 using Godot;
 using Overlords.helpers.network.serialization;
 
-namespace Overlords.game.entities.player
+namespace Overlords.game.entities.player.utils
 {
     public static class PlayerProtocol
     {

@@ -3,6 +3,7 @@ using System.Linq;
 using Godot;
 using Overlords.game.constants;
 using Overlords.game.entities.player;
+using Overlords.game.entities.player.utils;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
@@ -15,7 +16,7 @@ namespace Overlords.game.world
         [LinkNodeStatic("../EntityContainer")] public ListReplicator EntityReplicator;
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
-        public readonly NodeGroup<string, Spatial> Targets = new NodeGroup<string, Spatial>();
+        public readonly NodeGroup<string, Spatial> InteractionTargets = new NodeGroup<string, Spatial>();
 
         public IEnumerable<int> GetPlayingPeers()
         {
@@ -49,7 +50,7 @@ namespace Overlords.game.world
             // Auto register static interaction targets (happens on both)
             foreach (var node in GetTree().GetNodesInGroup(GameGdGroups.StaticInteractionTarget).Cast<Spatial>())
             {
-                Targets.AddToGroup($"static_{node.Name}", node);
+                InteractionTargets.AddToGroup($"static_{node.Name}", node);
             }
         }
     }

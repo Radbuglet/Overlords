@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.entities.player;
+using Overlords.game.entities.player.utils;
 using Overlords.helpers;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;

@@ -62,7 +62,8 @@
     <Compile Include="game\entities\player\PlayerServer.cs" />
     <Compile Include="game\entities\player\PlayerShared.cs" />
     <Compile Include="game\entities\common\WorldReference.cs" />
-    <Compile Include="game\entities\player\Protocol.cs" />
+    <Compile Include="game\entities\player\utils\InteractionUtils.cs" />
+    <Compile Include="game\entities\player\utils\Protocol.cs" />
     <Compile Include="game\entities\shop\ShopServer.cs" />
     <Compile Include="game\world\WorldClient.cs" />
     <Compile Include="game\world\WorldServer.cs" />

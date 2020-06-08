@@ -1,19 +1,19 @@
 ﻿using Godot;
 using Overlords.game.constants;
 using Overlords.game.entities.common;
+using Overlords.game.entities.player.utils;
 using Overlords.helpers.network;
-using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.trackingGroups;
 using _EventHub = Overlords.helpers.network.RemoteEventHub<
-    Overlords.game.entities.player.PlayerProtocol.ClientBound,
-    Overlords.game.entities.player.PlayerProtocol.ServerBound>;
+    Overlords.game.entities.player.utils.PlayerProtocol.ClientBound,
+    Overlords.game.entities.player.utils.PlayerProtocol.ServerBound>;
 
 namespace Overlords.game.entities.player
 {
     public class PlayerLocal: Node
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
-        [LinkNodeStatic("../FpsCamera/RayCast")] public RayCast LookRayCast;
         [RequireBehavior] public PlayerShared LogicShared;
         [RequireBehavior] public HumanoidMover Mover;
         
@@ -61,9 +61,17 @@ namespace Overlords.game.entities.player
                 if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
                 if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
-                if (GameInputs.FpsInteract.WasJustPressed())
+                if (GameInputs.FpsInteract.WasJustPressed() && this.PerformInteraction(InteractionUtils.MaxInteractionDistance,
+                    out var hitBody, out var hitPointRelative))
                 {
-                    // TODO
+                    if (hitBody.GetIdInGroup(LogicShared.GetWorldShared().InteractionTargets, out var interactionKey))
+                    {
+                        _remoteEventHub.FireServer((PlayerProtocol.ServerBound.Interact, new PlayerProtocol.InteractPacket
+                        {
+                            TargetId = interactionKey,
+                            InteractPoint = hitPointRelative
+                        }.Serialize()));
+                    }
                 }
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }
@@ -81,14 +89,6 @@ namespace Overlords.game.entities.player
             Camera.Transform = new Transform(
                 Basis.Identity.Rotated(Vector3.Right, RotVertical).Rotated(Vector3.Up, RotHorizontal),
                 Camera.Transform.origin);
-        }
-
-        private (Node target, Vector3 point) RayCast(float distance)
-        {
-            LookRayCast.CastTo = Vector3.Forward * distance;
-            LookRayCast.ForceRaycastUpdate();
-            return LookRayCast.GetCollider() is Node collider ? (collider, LookRayCast.GetCollisionPoint()) :
-                (null, LookRayCast.GetCollisionPoint());
         }
     }
 }

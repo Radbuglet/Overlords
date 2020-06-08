@@ -1,11 +1,14 @@
 ﻿using Godot;
+using Overlords.game.constants;
 using Overlords.game.entities.common;
+using Overlords.game.entities.player.utils;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.interfaceBehaviors;
 using _EventHub = Overlords.helpers.network.RemoteEventHub<
-    Overlords.game.entities.player.PlayerProtocol.ServerBound,
-    Overlords.game.entities.player.PlayerProtocol.ClientBound>;
+    Overlords.game.entities.player.utils.PlayerProtocol.ServerBound,
+    Overlords.game.entities.player.utils.PlayerProtocol.ClientBound>;
 
 namespace Overlords.game.entities.player
 {
@@ -13,7 +16,6 @@ namespace Overlords.game.entities.player
     {
         private KinematicBody Body => LogicShared.GetBody();
         [RequireBehavior] public PlayerShared LogicShared;
-        [LinkNodeStatic("../FpsCamera/RayCast")] public Spatial RayCastOrigin;
         public _EventHub RemoteEventHub;
 
         public override void _Ready()
@@ -33,7 +35,6 @@ namespace Overlords.game.entities.player
                });
             }
             
-            // TODO: Re-implement server logic
             BindOwnerHandler(PlayerProtocol.ServerBound.PerformMovement,
                 new PrimitiveSerializer<Vector3>(),
                 (sender, position) =>
@@ -43,42 +44,25 @@ namespace Overlords.game.entities.player
                         (PlayerProtocol.ClientBound.PuppetSetPos, (object) position));
                 });
 
-            /*BindOwnerHandler(PlayerProtocol.ServerBound.PerformMovement,
-                new PrimitiveSerializer<Vector3>(),
-                (sender, position) =>
+            BindOwnerHandler(PlayerProtocol.ServerBound.Interact,
+                PlayerProtocol.InteractPacket.Serializer, (sender, packet) =>
                 {
-                    Body.Translation = position;
-                    RemoteEventHub.FireId(LogicShared.World.GetPlayingPeers(sender),
-                        (CharacterProtocol.ClientBound.PuppetSetPos, (object) position));
-                });
-            
-            BindOwnerHandler(CharacterProtocol.ServerBound.Interact,
-                CharacterProtocol.InteractPacket.Serializer, (sender, packet) =>
-                {
-                    var interactionTarget = LogicShared.WorldShared.Targets.GetMemberOfGroup<Spatial>(packet.TargetId, null);
+                    var interactionTarget = LogicShared.GetWorldShared().InteractionTargets.GetMemberOfGroup<Spatial>(packet.TargetId, null);
                     if (interactionTarget == null)
                     {
                         GD.PushWarning("Ignoring interact request: unknown interaction target!");
                         return;
                     }
 
-                    var rayFrom = RayCastOrigin.GetGlobalPosition();
-                    var rayTo = interactionTarget.GetGlobalPosition() + packet.InteractPoint;
-                    if (rayFrom.DistanceTo(rayTo) > CharacterLogicShared.InteractDistance)
+                    if (!this.ValidateInteraction(interactionTarget, packet.InteractPoint,
+                        InteractionUtils.MaxInteractionDistance))
                     {
-                        GD.PushWarning("Ignoring interact request: target out of range!");
+                        GD.PushWarning("Ignoring interact request: interaction isn't valid!");
                         return;
                     }
                     
-                    var intersection = GetWorld().DirectSpaceState.IntersectRay(
-                        rayFrom, rayTo + (rayTo - rayFrom).Normalized() * 0.2F, new Array{ Body });
-                    if (!intersection.Contains("collider") || intersection["collider"] != interactionTarget)
-                    {
-                        GD.PushWarning("Ignoring interact request: mismatched collider!");
-                        return;
-                    }
-                    interactionTarget.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), this.GetGameObject<Node>());
-                });*/
+                    interactionTarget.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), LogicShared.GetBody());
+                });
         }
 
         public PlayerProtocol.NetworkConstructor MakeConstructor(int target)
