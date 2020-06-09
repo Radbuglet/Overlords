@@ -11,6 +11,14 @@ namespace Overlords.game.world
             Player
         }
         
+        public enum ServerBound
+        { }
+        
+        public enum ClientBound
+        {
+            Login
+        }
+        
         public class LoginPacket
         {
             public static readonly StructSerializer<LoginPacket> Serializer = new StructSerializer<LoginPacket>(

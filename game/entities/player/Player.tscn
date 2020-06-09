@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=14 format=2]
 
 [ext_resource path="res://assets/ui/crosshair/crosshair_shader.tres" type="Material" id=1]
 [ext_resource path="res://assets/ui/crosshair/crosshair.png" type="Texture" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://game/entities/player/PlayerPuppet.cs" type="Script" id=8]
 [ext_resource path="res://game/entities/common/HumanoidMover.cs" type="Script" id=9]
 [ext_resource path="res://helpers/tree/trackingGroups/NodeGroupMemberTracker.cs" type="Script" id=10]
+[ext_resource path="res://helpers/tree/interfaceBehaviors/InterfaceBehaviorRouter.cs" type="Script" id=11]
 
 [sub_resource type="CapsuleMesh" id=1]
 mid_height = 2.0
@@ -22,11 +23,14 @@ extents = Vector3( 1, 2, 1 )
 [node name="NodeGroupMemberTracker" type="Node" parent="."]
 script = ExtResource( 10 )
 
-[node name="StateReplicator" type="Node" parent="."]
-script = ExtResource( 4 )
+[node name="InterfaceBehaviorRouter" type="Node" parent="."]
+script = ExtResource( 11 )
 
 [node name="RemoteEvent" type="Node" parent="."]
 script = ExtResource( 5 )
+
+[node name="StateReplicator" type="Node" parent="."]
+script = ExtResource( 4 )
 
 [node name="Hud" type="Control" parent="."]
 anchor_right = 1.0

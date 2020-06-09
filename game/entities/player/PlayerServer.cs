@@ -22,6 +22,7 @@ namespace Overlords.game.entities.player
         public override void _Ready()
         {
             this.InitializeBehavior();
+            this.DeclareImplementation(new []{ typeof(ISerializableEntity) });
             RemoteEventHub = new _EventHub(LogicShared.RemoteEvent);
             void BindOwnerHandler<T>(PlayerProtocol.ServerBound type, ISerializer<T> serializer, _EventHub.PacketHandler<T> handler)
             {
@@ -66,9 +67,9 @@ namespace Overlords.game.entities.player
                 });
         }
 
-        public (int typeId, object constructor) SerializeConstructor()
+        public PlayerProtocol.NetworkConstructor MakeConstructor()
         {
-            return ((int) WorldProtocol.EntityType.Player, new PlayerProtocol.NetworkConstructor
+            return new PlayerProtocol.NetworkConstructor
             {
                 OwnerPeerId = LogicShared.OwnerPeerId,
                 InitialState = new PlayerProtocol.InitialState
@@ -76,7 +77,12 @@ namespace Overlords.game.entities.player
                     Position = LogicShared.Position
                 },
                 ReplicatedValues = LogicShared.StateReplicator.SerializeValuesCatchup()
-            }.Serialize());
+            };
+        }
+
+        public (int typeId, object constructor) SerializeConstructor()
+        {
+            return ((int) WorldProtocol.EntityType.Player, MakeConstructor().Serialize());
         }
     }
 }

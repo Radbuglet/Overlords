@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://helpers/tree/conditionals/MultiNetworkConditionalNode.cs" type="Script" id=1]
 [ext_resource path="res://game/world/WorldShared.cs" type="Script" id=2]
@@ -8,6 +8,7 @@
 [ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=7]
 [ext_resource path="res://game/entities/shop/Shop.tscn" type="PackedScene" id=8]
+[ext_resource path="res://helpers/network/RemoteEvent.cs" type="Script" id=9]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -57,6 +58,9 @@ script = ExtResource( 3 )
 script = ExtResource( 1 )
 _clientNodes = [ NodePath("../WorldClient") ]
 _serverNodes = [ NodePath("../WorldServer") ]
+
+[node name="RemoteEvent" type="Node" parent="."]
+script = ExtResource( 9 )
 
 [node name="WorldShared" type="Node" parent="."]
 script = ExtResource( 2 )

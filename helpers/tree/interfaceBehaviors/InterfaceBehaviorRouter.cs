@@ -25,7 +25,7 @@ namespace Overlords.helpers.tree.interfaceBehaviors
         public TInterface GetImplementation<TInterface>()
         {
             var gotImplementation = _implementations.TryGetValue(typeof(TInterface), out var implementation);
-            Debug.Assert(gotImplementation);
+            Debug.Assert(gotImplementation, $"Entity hasn't implemented interface {typeof(TInterface).Name}!");
             return (TInterface) implementation;
         }
     }

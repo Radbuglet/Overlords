@@ -2,6 +2,7 @@
 using System.Linq;
 using Godot;
 using Overlords.game.constants;
+using Overlords.helpers.network;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;
@@ -10,8 +11,9 @@ namespace Overlords.game.world
 {
     public class WorldShared : Node
     {
-        [LinkNodeStatic("../EntityContainer")] public ListReplicator EntityReplicator;
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
+        [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
+        [LinkNodeStatic("../EntityContainer")] public ListReplicator EntityReplicator;
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
         public readonly NodeGroup<string, Spatial> InteractionTargets = new NodeGroup<string, Spatial>();
 

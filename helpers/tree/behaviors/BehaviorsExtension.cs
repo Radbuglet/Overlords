@@ -35,6 +35,7 @@ namespace Overlords.helpers.tree.behaviors
                         Debug.Assert(nodePath is NodePath,
                             $"LinkNodePath attribute placed on non-NodePath field named \"{field.Name}\".");
                         var instance = initializedNode.GetNode((NodePath) nodePath);
+                        Debug.Assert(instance != null, $"Failed to get dynamically linked node at \"{nodePath}\".");
                         field.SetValueSafe(initializedNode, instance);
                     }
 
@@ -42,6 +43,7 @@ namespace Overlords.helpers.tree.behaviors
                     if (attribLinkNode != null)
                     {
                         var instance = initializedNode.GetNode(attribLinkNode.Path);
+                        Debug.Assert(instance != null, $"Failed to get statically linked node at \"{attribLinkNode.Path}\".");
                         field.SetValueSafe(initializedNode, instance);
                     }
                 }

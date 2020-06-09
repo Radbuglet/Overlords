@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using System.Linq;
+using Godot;
 using Overlords.game.constants;
 using Overlords.game.entities.player;
 using Overlords.game.entities.player.utils;
@@ -10,18 +11,24 @@ using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.interfaceBehaviors;
 using Overlords.helpers.tree.trackingGroups;
 
+using _EventHub = Overlords.helpers.network.RemoteEventHub<
+    Overlords.game.world.WorldProtocol.ServerBound,
+    Overlords.game.world.WorldProtocol.ClientBound>;
+
 namespace Overlords.game.world
 {
     public class WorldServer : Node
     {
         [RequireBehavior] public WorldShared SharedLogic;
         private readonly NodeGroup<string, Node> _groupAutoCatchup = new NodeGroup<string, Node>();
+        private _EventHub _remoteEventHub;
 
         public override void _Ready()
         {
             this.InitializeBehavior();
 
             var tree = GetTree();
+            _remoteEventHub = new _EventHub(SharedLogic.RemoteEvent);
             tree.Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));
             tree.Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerLeft));
         }
@@ -58,7 +65,12 @@ namespace Overlords.game.world
             SharedLogic.Players.AddToGroup(peerId, player);
 
             // Send login info
-            // TODO
+            _remoteEventHub.FireId(peerId, (WorldProtocol.ClientBound.Login, new WorldProtocol.LoginPacket
+            {
+                LocalPlayer = player.GetBehavior<PlayerServer>().MakeConstructor(),
+                OtherEntities = entityContainer.SvSerializeEntities(
+                    _groupAutoCatchup.IterateGroupMembers().Select(SerializeEntity))
+            }.Serialize()));
             RegisterAutoCatchup(player);
         }
 
