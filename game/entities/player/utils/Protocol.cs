@@ -21,6 +21,11 @@ namespace Overlords.game.entities.player.utils
             public int OwnerPeerId;
             public InitialState InitialState;
             public Godot.Collections.Array ReplicatedValues;
+
+            public object Serialize()
+            {
+                return Serializer.Serialize(this);
+            }
         }
         
         public class InitialState
@@ -31,6 +36,7 @@ namespace Overlords.game.entities.player.utils
                 {
                     [nameof(Position)] = new PrimitiveSerializer<Vector3>()
                 });
+            
             public Vector3 Position;
         }
         

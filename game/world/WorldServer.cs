@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Overlords.game.constants;
 using Overlords.game.entities.player;
 using Overlords.game.entities.player.utils;
 using Overlords.helpers;
@@ -6,6 +7,7 @@ using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.interfaceBehaviors;
 using Overlords.helpers.tree.trackingGroups;
 
 namespace Overlords.game.world
@@ -29,6 +31,11 @@ namespace Overlords.game.world
             _groupAutoCatchup.AddToGroup(node.Name, node);
         }
 
+        private static (int, object) SerializeEntity(Node instance)
+        {
+            return instance.GetImplementation<ISerializableEntity>().SerializeConstructor();
+        }
+
         private void _PeerJoined(int peerId)
         {
             GD.Print($"{peerId} joined!");
@@ -45,12 +52,14 @@ namespace Overlords.game.world
                         (float) GD.RandRange(-10, 10), 10, (float) GD.RandRange(-10, 10))
                 });
             entityContainer.AddChild(player);
-            RegisterAutoCatchup(player);
 
-            // Replicate player
-            entityContainer.SvReplicateInstance(SharedLogic.GetPlayingPeers(), player);
+            // Replicate player to connected peers
+            entityContainer.SvReplicateEntities(SharedLogic.GetPlayingPeers(), SerializeEntity(player).AsEnumerable());
             SharedLogic.Players.AddToGroup(peerId, player);
-            entityContainer.SvReplicateInstances(peerId, _groupAutoCatchup.IterateGroupMembers());
+
+            // Send login info
+            // TODO
+            RegisterAutoCatchup(player);
         }
 
         private void _PeerLeft(int peerId)

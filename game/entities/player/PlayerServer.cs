@@ -2,6 +2,7 @@
 using Overlords.game.constants;
 using Overlords.game.entities.common;
 using Overlords.game.entities.player.utils;
+using Overlords.game.world;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
@@ -12,7 +13,7 @@ using _EventHub = Overlords.helpers.network.RemoteEventHub<
 
 namespace Overlords.game.entities.player
 {
-    public class PlayerServer: Spatial
+    public class PlayerServer: Spatial, ISerializableEntity
     {
         private KinematicBody Body => LogicShared.GetBody();
         [RequireBehavior] public PlayerShared LogicShared;
@@ -65,9 +66,9 @@ namespace Overlords.game.entities.player
                 });
         }
 
-        public PlayerProtocol.NetworkConstructor MakeConstructor(int target)
+        public (int typeId, object constructor) SerializeConstructor()
         {
-            return new PlayerProtocol.NetworkConstructor
+            return ((int) WorldProtocol.EntityType.Player, new PlayerProtocol.NetworkConstructor
             {
                 OwnerPeerId = LogicShared.OwnerPeerId,
                 InitialState = new PlayerProtocol.InitialState
@@ -75,7 +76,7 @@ namespace Overlords.game.entities.player
                     Position = LogicShared.Position
                 },
                 ReplicatedValues = LogicShared.StateReplicator.SerializeValuesCatchup()
-            };
+            }.Serialize());
         }
     }
 }

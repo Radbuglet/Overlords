@@ -4,7 +4,7 @@ using Godot;
 
 namespace Overlords.helpers.tree
 {
-    public static class NodeUtils
+    public static class TreeUtils
     {
         public static IEnumerable<Node> EnumerateAncestors(this Node node)
         {

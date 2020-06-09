@@ -13,6 +13,8 @@ namespace Overlords.game.entities.player
 {
     public class PlayerLocal: Node
     {
+        [Export] private NodePath _pathToMyBalance;
+        
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
         [RequireBehavior] public PlayerShared LogicShared;
         [RequireBehavior] public HumanoidMover Mover;
@@ -32,6 +34,14 @@ namespace Overlords.game.entities.player
             _initialCameraPos = Camera.Translation;
             _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
             AddChild(_remoteEventHub);
+            
+            LogicShared.BalanceRVal.OnChangedRemotely += ReRenderBalance;
+            ReRenderBalance(LogicShared.BalanceRVal.Value, default);
+        }
+
+        private void ReRenderBalance(int newBalance, int _)
+        {
+            GetNode<Label>(_pathToMyBalance).Text = $"${newBalance}";
         }
 
         public override void _Input(InputEvent ev)

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="game\constants\GameGdGroups.cs" />
     <Compile Include="game\constants\GameInputs.cs" />
+    <Compile Include="game\constants\GameInterfaces.cs" />
     <Compile Include="game\constants\GameSignals.cs" />
     <Compile Include="game\entities\common\HumanoidMover.cs" />
     <Compile Include="game\entities\player\PlayerLocal.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="game\entities\player\utils\Protocol.cs" />
     <Compile Include="game\entities\shop\ShopServer.cs" />
     <Compile Include="game\world\WorldClient.cs" />
+    <Compile Include="game\world\Protocol.cs" />
     <Compile Include="game\world\WorldServer.cs" />
     <Compile Include="game\world\WorldShared.cs" />
     <Compile Include="helpers\csharp\Delegates.cs" />
@@ -93,7 +95,7 @@
     <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
     <Compile Include="helpers\tree\interfaceBehaviors\EntitySignalExtensions.cs" />
     <Compile Include="helpers\tree\interfaceBehaviors\InterfaceBehaviorRouter.cs" />
-    <Compile Include="helpers\tree\NodeUtils.cs" />
+    <Compile Include="helpers\tree\TreeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="helpers\tree\trackingGroups\NodeGroup.cs" />
     <Compile Include="helpers\tree\trackingGroups\NodeGroupMemberTracker.cs" />
