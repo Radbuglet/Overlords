@@ -1,12 +1,12 @@
 ﻿using Godot;
 using Overlords.game.entities.common;
-using Overlords.game.entities.player.utils;
+using Overlords.game.entities.player.common;
 using Overlords.game.world;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
 using _EventHub = Overlords.helpers.network.RemoteEventHub<
-    Overlords.game.entities.player.utils.PlayerProtocol.ClientBound,
-    Overlords.game.entities.player.utils.PlayerProtocol.ServerBound>;
+    Overlords.game.entities.player.common.PlayerProtocol.ClientBound,
+    Overlords.game.entities.player.common.PlayerProtocol.ServerBound>;
 
 namespace Overlords.game.entities.player
 {

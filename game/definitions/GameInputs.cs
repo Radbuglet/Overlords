@@ -1,6 +1,6 @@
 using Godot;
 
-namespace Overlords.game.constants
+namespace Overlords.game.definitions
 {
     public static class GameInputs
     {

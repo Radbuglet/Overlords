@@ -1,5 +1,5 @@
 using Godot;
-using Overlords.game.constants;
+using Overlords.game.definitions;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.shop

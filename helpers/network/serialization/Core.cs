@@ -3,6 +3,7 @@ using Godot;
 
 namespace Overlords.helpers.network.serialization
 {
+    // TODO: Stop allocating serializers on the heap!
     public class SerializationException : Exception
     {
         public SerializationException()

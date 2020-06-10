@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Godot;
-using Overlords.game.constants;
+using Overlords.game.definitions;
 using Overlords.helpers.network;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;

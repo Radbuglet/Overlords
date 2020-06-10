@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Overlords.game.entities.player.utils;
+using Overlords.game.entities.player.common;
 using Overlords.helpers.network.serialization;
 
 namespace Overlords.game.world

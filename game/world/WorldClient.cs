@@ -1,6 +1,6 @@
 ﻿using Godot;
 using Overlords.game.entities.player;
-using Overlords.game.entities.player.utils;
+using Overlords.game.entities.player.common;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
 using _EventHub = Overlords.helpers.network.RemoteEventHub<

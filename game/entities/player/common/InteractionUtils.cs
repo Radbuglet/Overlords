@@ -2,7 +2,7 @@
 using Overlords.game.entities.player.local;
 using Overlords.helpers.csharp;
 
-namespace Overlords.game.entities.player.utils
+namespace Overlords.game.entities.player.common
 {
     public static class InteractionUtils
     {

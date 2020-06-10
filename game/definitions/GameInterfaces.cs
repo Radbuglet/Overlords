@@ -1,4 +1,4 @@
-﻿namespace Overlords.game.constants
+﻿namespace Overlords.game.definitions
 {
     public interface ISerializableEntity
     {

@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Godot;
-using Overlords.game.constants;
+using Overlords.game.definitions;
 using Overlords.game.entities.player;
-using Overlords.game.entities.player.utils;
+using Overlords.game.entities.player.common;
 using Overlords.helpers;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
