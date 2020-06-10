@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://assets/ui/crosshair/crosshair_shader.tres" type="Material" id=1]
 [ext_resource path="res://assets/ui/crosshair/crosshair.png" type="Texture" id=2]
@@ -6,11 +6,12 @@
 [ext_resource path="res://helpers/network/replication/StateReplicator.cs" type="Script" id=4]
 [ext_resource path="res://helpers/network/RemoteEvent.cs" type="Script" id=5]
 [ext_resource path="res://game/entities/player/PlayerServer.cs" type="Script" id=6]
-[ext_resource path="res://game/entities/player/PlayerLocal.cs" type="Script" id=7]
+[ext_resource path="res://game/entities/player/local/PlayerLocal.cs" type="Script" id=7]
 [ext_resource path="res://game/entities/player/PlayerPuppet.cs" type="Script" id=8]
 [ext_resource path="res://game/entities/common/HumanoidMover.cs" type="Script" id=9]
 [ext_resource path="res://helpers/tree/trackingGroups/NodeGroupMemberTracker.cs" type="Script" id=10]
 [ext_resource path="res://helpers/tree/interfaceBehaviors/InterfaceBehaviorRouter.cs" type="Script" id=11]
+[ext_resource path="res://game/entities/player/local/PlayerGuiController.cs" type="Script" id=12]
 
 [sub_resource type="CapsuleMesh" id=1]
 mid_height = 2.0
@@ -31,39 +32,6 @@ script = ExtResource( 5 )
 
 [node name="StateReplicator" type="Node" parent="."]
 script = ExtResource( 4 )
-
-[node name="Hud" type="Control" parent="."]
-anchor_right = 1.0
-anchor_bottom = 1.0
-__meta__ = {
-"_edit_lock_": true,
-"_edit_use_anchors_": false
-}
-
-[node name="Crosshair" type="TextureRect" parent="Hud"]
-material = ExtResource( 1 )
-anchor_left = 0.49
-anchor_top = 0.49
-anchor_right = 0.51
-anchor_bottom = 0.51
-texture = ExtResource( 2 )
-expand = true
-stretch_mode = 6
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Balance" type="Label" parent="Hud"]
-anchor_left = 0.0078125
-anchor_top = 0.0133333
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_colors/font_color = Color( 0, 0.141176, 0.00392157, 1 )
-text = "Something happened..."
-__meta__ = {
-"_edit_lock_": true,
-"_edit_use_anchors_": true
-}
 
 [node name="FpsCamera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.5441, 0 )
@@ -86,7 +54,49 @@ script = ExtResource( 3 )
 
 [node name="PlayerLocal" type="Node" parent="."]
 script = ExtResource( 7 )
-_pathToMyBalance = NodePath("../Hud/Balance")
+_pathToMyBalance = NodePath("")
+
+[node name="GuiController" type="Node" parent="PlayerLocal"]
+script = ExtResource( 12 )
+_pathToLeaderBoard = NodePath("../Hud/Leaderboard/VBoxContainer")
+
+[node name="Hud" type="Control" parent="PlayerLocal"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_lock_": true,
+"_edit_use_anchors_": false
+}
+
+[node name="Crosshair" type="TextureRect" parent="PlayerLocal/Hud"]
+material = ExtResource( 1 )
+anchor_left = 0.49
+anchor_top = 0.49
+anchor_right = 0.51
+anchor_bottom = 0.51
+texture = ExtResource( 2 )
+expand = true
+stretch_mode = 6
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Leaderboard" type="ColorRect" parent="PlayerLocal/Hud"]
+anchor_left = 0.899414
+anchor_top = 0.324
+anchor_right = 1.0
+anchor_bottom = 0.676
+color = Color( 0.207843, 0.207843, 0.207843, 0.513726 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayerLocal/Hud/Leaderboard"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="PlayerPuppet" type="Node" parent="."]
 script = ExtResource( 8 )

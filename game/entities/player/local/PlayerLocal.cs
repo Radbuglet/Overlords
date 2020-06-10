@@ -9,7 +9,7 @@ using _EventHub = Overlords.helpers.network.RemoteEventHub<
     Overlords.game.entities.player.utils.PlayerProtocol.ClientBound,
     Overlords.game.entities.player.utils.PlayerProtocol.ServerBound>;
 
-namespace Overlords.game.entities.player
+namespace Overlords.game.entities.player.local
 {
     public class PlayerLocal: Node
     {
@@ -25,23 +25,17 @@ namespace Overlords.game.entities.player
         public float RotHorizontal;
         public float RotVertical;
         public float Sensitivity => -Mathf.Deg2Rad(0.1F);
-
-        public override void _Ready()
+        
+        public override void _EnterTree()
         {
+            if (Engine.EditorHint) return;
+            
             this.InitializeBehavior();
             ApplyRotation();
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
             _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
             AddChild(_remoteEventHub);
-            
-            LogicShared.BalanceRVal.OnChangedRemotely += ReRenderBalance;
-            ReRenderBalance(LogicShared.BalanceRVal.Value, default);
-        }
-
-        private void ReRenderBalance(int newBalance, int _)
-        {
-            GetNode<Label>(_pathToMyBalance).Text = $"${newBalance}";
         }
 
         public override void _Input(InputEvent ev)

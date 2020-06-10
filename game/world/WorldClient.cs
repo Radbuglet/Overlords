@@ -11,6 +11,12 @@ namespace Overlords.game.world
 {
     public class WorldClient : Node
     {
+        [Signal]
+        public delegate void PuppetPlayerAdded(Node node);
+        
+        [Signal]
+        public delegate void PuppetPlayerRemoved(Node node);
+        
         [RequireBehavior] public WorldShared LogicShared;
         private _EventHub _remoteEventHub;
 
@@ -32,6 +38,7 @@ namespace Overlords.game.world
         {
             try
             {
+                // TODO: Ensure that only one localPlayer ever exists.
                 var player = LogicShared.PlayerPrefab.Instance();
                 var sharedLogic = player.GetBehavior<PlayerShared>();
                 sharedLogic.InitializeRemote(GetTree(), this.GetGameObject<Node>(), constructor);

@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.entities.common;
+using Overlords.game.entities.player.local;
 using Overlords.game.entities.player.utils;
 using Overlords.helpers.network;
 using Overlords.helpers.network.replication;
@@ -36,11 +37,6 @@ namespace Overlords.game.entities.player
             return this.GetGameObject<KinematicBody>();
         }
 
-        public Control GetHud()
-        {
-            return GetNode<Control>("../Hud");
-        }
-
         public void InitializeLocal(
             Node world, int ownerPeerId,
             NetworkTypeUtils.ObjectVariant variant, PlayerProtocol.InitialState initialState)
@@ -50,9 +46,7 @@ namespace Overlords.game.entities.player
             this.InitializeBehavior();
             playerRoot.ApplyNetworkVariant(variant, 
                 typeof(PlayerServer), null, typeof(PlayerLocal), typeof(PlayerPuppet));
-            if (variant != NetworkTypeUtils.ObjectVariant.LocalAuthoritative)
-                GetHud().Purge();
-            
+
             // Setup state
             playerRoot.Name = $"player_{ownerPeerId}";
             World = world;
