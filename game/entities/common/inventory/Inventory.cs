@@ -8,6 +8,9 @@ namespace Overlords.game.entities.common.inventory
 {
     public class Inventory : Node
     {
+        [Signal]
+        public delegate void SlotStackUpdated(int slot);
+        
         [Export] private int _size = 9 * 4;
         private ItemStack[] _stacks;
         
@@ -33,16 +36,18 @@ namespace Overlords.game.entities.common.inventory
 
         public void Clear()
         {
-            for (var index = 0; index < _stacks.Length; index++)
-            {
-                _stacks[index]?.Purge();
-                _stacks[index] = null;
-            }
+            for (var slot = 0; slot < _stacks.Length; slot++)
+                ClearSlot(slot);
         }
 
-        public void RemoveStack(int slot)
+        public void ClearSlot(int slot)
         {
-            _stacks[slot]?.Purge();
+            var stack = _stacks[slot];
+            if (stack != null)
+            {
+                EmitSignal(nameof(SlotStackUpdated), slot);
+                stack.Purge();
+            }
             _stacks[slot] = null;
         }
         
@@ -52,6 +57,7 @@ namespace Overlords.game.entities.common.inventory
             _stacks[slot] = stack;
             stack.Name = $"Stack_{slot}";
             AddChild(stack);
+            EmitSignal(nameof(SlotStackUpdated), slot);
         }
         
         public bool InsertStack(ItemStack stack)
@@ -115,7 +121,8 @@ namespace Overlords.game.entities.common.inventory
                 var removed = Math.Min(stack.Amount, amountLeft);
                 stack.Amount -= removed;
                 amountLeft -= removed;
-                if (stack.IsEmpty()) RemoveStack(slot);
+                if (stack.IsEmpty())
+                    ClearSlot(slot);
             }
         }
     }
