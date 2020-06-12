@@ -2,7 +2,7 @@
 
 namespace Overlords.game.entities.common.inventory
 {
-    public class ItemStack : Node
+    public abstract class ItemStack : Node
     {
         [Export] public int Amount;
 
@@ -11,16 +11,7 @@ namespace Overlords.game.entities.common.inventory
             return Amount == 0;
         }
 
-        public virtual int GetMaxAmount()
-        {
-            GD.PushError($"{nameof(GetMaxAmount)} was never overriden by child class.");
-            return 64;
-        }
-
-        public virtual bool IsSimilar(ItemStack other)
-        {
-            GD.PushError($"{nameof(IsSimilar)} was never overriden by child class.");
-            return false;
-        }
+        public abstract int GetMaxAmount();
+        public abstract bool IsSimilar(ItemStack other);
     }
 }

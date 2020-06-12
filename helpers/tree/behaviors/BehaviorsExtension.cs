@@ -132,6 +132,12 @@ namespace Overlords.helpers.tree.behaviors
             return (TBehavior) GetBehaviorDynamic(gameObject, typeof(TBehavior), required);
         }
 
+        public static Func<TBehavior> GetBehaviorWrapped<TBehavior>(this Node gameObject, bool required = true)
+            where TBehavior : Node
+        {
+            return () => gameObject.GetBehavior<TBehavior>(required);
+        }
+
         public static void AddUserSignals(this Node node)
         {
             var type = node.GetType();

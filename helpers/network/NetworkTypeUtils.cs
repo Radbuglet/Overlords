@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Godot;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
@@ -14,11 +15,16 @@ namespace Overlords.helpers.network
             None
         }
 
+        [Flags]
         public enum ObjectVariant
         {
-            Server,
-            LocalAuthoritative,
-            LocalPuppet
+            FlagAuthoritative = 0b_0000_0001,
+            FlagNotAuthoritative = 0b_0000_0010,
+            FlagServer = 0b_0000_0100,
+            FlagClient = 0b_0000_1000,
+            Server = FlagAuthoritative | FlagServer,
+            LocalAuthoritative = FlagAuthoritative | FlagClient,
+            LocalPuppet = FlagNotAuthoritative | FlagClient
         }
 
         public static Error StartServer(this SceneTree tree, int port, int maxConnections)
@@ -59,6 +65,19 @@ namespace Overlords.helpers.network
                 : ownerPeerId == tree.GetNetworkUniqueId()
                     ? ObjectVariant.LocalAuthoritative
                     : ObjectVariant.LocalPuppet;
+        }
+
+        public static void ApplyToTree(this ObjectVariant variant, Dictionary<ObjectVariant, IEnumerable<Func<Node>>> config)
+        {
+            // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
+            foreach (var group in config)
+            {
+                if ((variant & group.Key) == group.Key)  // True if all bits with values requested match up
+                    continue;
+
+                foreach (var node in group.Value)
+                    node().Purge();
+            }
         }
 
         public static void ApplyNetworkVariant(this Node gameObject, ObjectVariant variant, Type behaviorServer,

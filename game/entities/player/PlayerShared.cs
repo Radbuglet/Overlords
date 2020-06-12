@@ -1,21 +1,23 @@
-﻿using Godot;
+﻿using System;
+using System.Collections.Generic;
+using Godot;
 using Overlords.game.entities.common;
+using Overlords.game.entities.common.inventory;
 using Overlords.game.entities.player.common;
 using Overlords.game.entities.player.local;
 using Overlords.helpers.network;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.network.serialization;
-using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player
 {
     public class PlayerShared: Node, IWorldReferencer
     {
-        [LinkNodeStatic("../StateReplicator")]
+        [LinkNodeStatic("StateReplicator")]
         public StateReplicator StateReplicator;
         
-        [LinkNodeStatic("../RemoteEvent")]
+        [LinkNodeStatic("RemoteEvent")]
         public RemoteEvent RemoteEvent;
         
         [LinkNodeStatic("../FpsCamera/RayCast")]
@@ -37,6 +39,11 @@ namespace Overlords.game.entities.player
             return this.GetGameObject<KinematicBody>();
         }
 
+        public Inventory GetInventory()
+        {
+            return GetNode<Inventory>("../Inventory");
+        }
+
         public void InitializeLocal(
             Node world, int ownerPeerId,
             NetworkTypeUtils.ObjectVariant variant, PlayerProtocol.InitialState initialState)
@@ -44,8 +51,25 @@ namespace Overlords.game.entities.player
             // Setup local tree
             var playerRoot = GetBody();
             this.InitializeBehavior();
-            playerRoot.ApplyNetworkVariant(variant, 
-                typeof(PlayerServer), null, typeof(PlayerLocal), typeof(PlayerPuppet));
+            variant.ApplyToTree(new Dictionary<NetworkTypeUtils.ObjectVariant, IEnumerable<Func<Node>>>
+            {
+                [NetworkTypeUtils.ObjectVariant.FlagAuthoritative] = new Func<Node>[]
+                {
+                    GetInventory
+                },
+                [NetworkTypeUtils.ObjectVariant.Server] = new []
+                {
+                    playerRoot.GetBehaviorWrapped<PlayerServer>()
+                },
+                [NetworkTypeUtils.ObjectVariant.LocalAuthoritative] = new []
+                {
+                    playerRoot.GetBehaviorWrapped<PlayerLocal>()
+                },
+                [NetworkTypeUtils.ObjectVariant.LocalPuppet] = new []
+                {
+                    playerRoot.GetBehaviorWrapped<PlayerPuppet>()
+                }
+            });
 
             // Setup state
             playerRoot.Name = $"player_{ownerPeerId}";
