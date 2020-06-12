@@ -1,4 +1,6 @@
 ﻿using Godot;
+using Godot.Collections;
+using Overlords.game.entities.itemStack;
 using Overlords.game.entities.player;
 using Overlords.game.entities.player.common;
 using Overlords.helpers.network.serialization;
@@ -17,6 +19,9 @@ namespace Overlords.game.world
         [Signal]
         public delegate void PuppetPlayerRemoved(Node node);
         
+        [Export]
+        private Array<Texture> _itemStackTextures = new Array<Texture>();
+        
         [RequireBehavior] public WorldShared LogicShared;
         private _EventHub _remoteEventHub;
 
@@ -32,6 +37,21 @@ namespace Overlords.game.world
             var entityReplicator = LogicShared.EntityReplicator;
             entityReplicator.ClRegisterBuilder((int) WorldProtocol.EntityType.Player, PlayerProtocol.NetworkConstructor.Serializer,
                 constructor => SpawnPlayer(constructor, false));
+        }
+        
+        private void _Login(int sender, WorldProtocol.LoginPacket packet)
+        {
+            var entityReplicator = LogicShared.EntityReplicator;
+            if (!SpawnPlayer(packet.LocalPlayer, true))
+            {
+                // TODO: Crash and burn.
+            }
+            entityReplicator.ClManuallyCatchupInstances(packet.OtherEntities);
+        }
+
+        public Texture GetStackTexture(ItemMaterial type)
+        {
+            return _itemStackTextures[(int) type];
         }
 
         private bool SpawnPlayer(PlayerProtocol.NetworkConstructor constructor, bool isLocal)
@@ -51,16 +71,6 @@ namespace Overlords.game.world
             }
 
             return true;
-        }
-
-        private void _Login(int sender, WorldProtocol.LoginPacket packet)
-        {
-            var entityReplicator = LogicShared.EntityReplicator;
-            if (!SpawnPlayer(packet.LocalPlayer, true))
-            {
-                // TODO: Crash and burn.
-            }
-            entityReplicator.ClManuallyCatchupInstances(packet.OtherEntities);
         }
     }
 }

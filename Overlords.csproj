@@ -58,9 +58,9 @@
     <Compile Include="game\definitions\GameInterfaces.cs" />
     <Compile Include="game\definitions\GameSignals.cs" />
     <Compile Include="game\entities\common\HumanoidMover.cs" />
-    <Compile Include="game\entities\common\inventory\Inventory.cs" />
-    <Compile Include="game\entities\common\inventory\ItemStack.cs" />
-    <Compile Include="game\entities\common\inventory\ItemTypes.cs" />
+    <Compile Include="game\entities\common\Inventory.cs" />
+    <Compile Include="game\entities\itemStack\ItemStack.cs" />
+    <Compile Include="game\entities\itemStack\ItemMaterial.cs" />
     <Compile Include="game\entities\player\local\AspectContainer.cs" />
     <Compile Include="game\entities\player\local\PlayerGuiController.cs" />
     <Compile Include="game\entities\player\local\PlayerLocal.cs" />
@@ -85,8 +85,6 @@
     <Compile Include="helpers\network\RemoteEvent.cs" />
     <Compile Include="helpers\network\RemoteEventHub.cs" />
     <Compile Include="helpers\network\replication\ListReplicator.cs" />
-    <Compile Include="helpers\network\replication\StateFieldBoxed.cs" />
-    <Compile Include="helpers\network\replication\StateReplicator.cs" />
     <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
     <Compile Include="helpers\network\serialization\Core.cs" />
     <Compile Include="helpers\network\serialization\ListSerializer.cs" />

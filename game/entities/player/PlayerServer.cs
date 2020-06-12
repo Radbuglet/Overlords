@@ -75,8 +75,7 @@ namespace Overlords.game.entities.player
                 InitialState = new PlayerProtocol.InitialState
                 {
                     Position = LogicShared.Position
-                },
-                ReplicatedValues = LogicShared.StateReplicator.SerializeValuesCatchup()
+                }
             };
         }
 

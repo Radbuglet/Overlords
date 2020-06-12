@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Godot;
 using Overlords.game.entities.common;
-using Overlords.game.entities.common.inventory;
 using Overlords.game.entities.player.common;
 using Overlords.game.entities.player.local;
 using Overlords.helpers.network;
@@ -14,17 +13,12 @@ namespace Overlords.game.entities.player
 {
     public class PlayerShared: Node, IWorldReferencer
     {
-        [LinkNodeStatic("StateReplicator")]
-        public StateReplicator StateReplicator;
-        
         [LinkNodeStatic("RemoteEvent")]
         public RemoteEvent RemoteEvent;
         
         [LinkNodeStatic("../FpsCamera/RayCast")]
         public RayCast InteractionRayCast;
 
-        public StateFieldBoxed<int> BalanceRVal;
-        
         public Node World { get; private set; }
         public int OwnerPeerId { get; private set; }
 
@@ -41,7 +35,7 @@ namespace Overlords.game.entities.player
 
         public Inventory GetInventory()
         {
-            return GetNode<Inventory>("../Inventory");
+            return GetNode<Inventory>("Inventory");
         }
 
         public void InitializeLocal(
@@ -76,14 +70,12 @@ namespace Overlords.game.entities.player
             World = world;
             OwnerPeerId = ownerPeerId;
             Position = initialState.Position;
-            BalanceRVal = new StateFieldBoxed<int>(new PrimitiveSerializer<int>(), StateReplicator);
         }
-
+        
         public void InitializeRemote(SceneTree tree, Node world, PlayerProtocol.NetworkConstructor constructor)
         {
             InitializeLocal(world, constructor.OwnerPeerId,
                 tree.GetNetworkVariant(constructor.OwnerPeerId), constructor.InitialState);
-            StateReplicator.LoadValuesCatchup(constructor.ReplicatedValues);
         }
     }
 }

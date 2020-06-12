@@ -13,8 +13,6 @@ namespace Overlords.game.entities.player.local
 {
     public class PlayerLocal: Node
     {
-        [Export] private NodePath _pathToMyBalance;
-        
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
         [RequireBehavior] public PlayerShared LogicShared;
         [RequireBehavior] public HumanoidMover Mover;

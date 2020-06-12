@@ -2,16 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using Godot;
+using Overlords.game.entities.itemStack;
 using Overlords.helpers.tree;
 
-namespace Overlords.game.entities.common.inventory
+namespace Overlords.game.entities.common
 {
     public class Inventory : Node
     {
         [Signal]
         public delegate void SlotStackUpdated(int slot);
         
-        [Export] private int _size = 9 * 4;
+        [Export] private int _size = 9 * 5;
         private ItemStack[] _stacks;
         
         public override void _Ready()
@@ -60,13 +61,13 @@ namespace Overlords.game.entities.common.inventory
             EmitSignal(nameof(SlotStackUpdated), slot);
         }
         
-        public bool InsertStack(ItemStack stack)
+        public bool InsertStack(ItemStack addedStack)
         {
             // First pass (merging only)
             int? firstEmptySlot = null;
             for (var index = 0; index < _stacks.Length; index++)
             {
-                if (stack.IsEmpty()) return true;
+                if (addedStack.IsEmpty()) return true;
                 
                 var otherStack = _stacks[index];
                 if (otherStack == null)
@@ -76,15 +77,15 @@ namespace Overlords.game.entities.common.inventory
                     continue;
                 }
                 
-                if (!otherStack.IsSimilar(stack)) continue;
-                var inserted = Math.Min(stack.Amount, otherStack.GetMaxAmount() - otherStack.Amount);
-                stack.Amount -= inserted;
+                if (!otherStack.IsSimilar(addedStack)) continue;
+                var inserted = Math.Min(addedStack.Amount, otherStack.GetMaxAmount() - otherStack.Amount);
+                addedStack.Amount -= inserted;
                 otherStack.Amount += inserted;
             }
             
             // Stick the rest of the stack into the empty slot
             if (firstEmptySlot == null) return false;
-            PutStack(firstEmptySlot.Value, stack);
+            PutStack(firstEmptySlot.Value, addedStack);
             return true;
         }
 
