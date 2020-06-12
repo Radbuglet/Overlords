@@ -14,16 +14,16 @@ namespace Overlords.game.entities.player.local
     public class PlayerLocal: Node
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
+        [LinkNodeStatic("GuiController")] public PlayerGuiController GuiController;
         [RequireBehavior] public PlayerShared LogicShared;
         [RequireBehavior] public HumanoidMover Mover;
         
         private _EventHub _remoteEventHub;
         private Vector3 _initialCameraPos;
-        public bool HasControl;
         public float RotHorizontal;
         public float RotVertical;
         public float Sensitivity => -Mathf.Deg2Rad(0.1F);
-        
+
         public override void _EnterTree()
         {
             if (Engine.EditorHint) return;
@@ -38,7 +38,7 @@ namespace Overlords.game.entities.player.local
 
         public override void _Input(InputEvent ev)
         {
-            if (!HasControl || !(ev is InputEventMouseMotion evMotion)) return;
+            if (!GuiController.HasControl() || !(ev is InputEventMouseMotion evMotion)) return;
             RotHorizontal += evMotion.Relative.x * Sensitivity;
             RotVertical += evMotion.Relative.y * Sensitivity;
             RotHorizontal -= Mathf.Floor(RotHorizontal / Mathf.Tau) * Mathf.Tau;
@@ -48,16 +48,9 @@ namespace Overlords.game.entities.player.local
 
         public override void _PhysicsProcess(float delta)
         {
-            // Handle pause menu
-            if (GameInputs.DebugAttachControl.WasJustPressed())
-            {
-                HasControl = !HasControl;
-                Input.SetMouseMode(HasControl ? Input.MouseMode.Captured : Input.MouseMode.Visible);
-            }
-
             // Generate heading; handle interact command
             var heading = new Vector3();
-            if (HasControl)
+            if (GuiController.HasControl())
             {
                 if (GameInputs.FpsForward.IsPressed()) heading += Vector3.Forward;
                 if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
@@ -79,8 +72,8 @@ namespace Overlords.game.entities.player.local
             }
             
             // Move player (with replication)
-            var isSneaking = HasControl && GameInputs.FpsSneak.IsPressed();
-            Mover.Move(delta, HasControl && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
+            var isSneaking = GuiController.HasControl() && GameInputs.FpsSneak.IsPressed();
+            Mover.Move(delta, GuiController.HasControl() && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
             
             Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
             _remoteEventHub.FireUnreliableServer((PlayerProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));

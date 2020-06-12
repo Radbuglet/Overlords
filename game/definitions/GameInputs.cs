@@ -11,7 +11,8 @@ namespace Overlords.game.definitions
         public static readonly Action FpsJump = new Action("fps_jump");
         public static readonly Action FpsSneak = new Action("fps_sneak");
         public static readonly Action FpsInteract = new Action("fps_interact");
-        public static readonly Action DebugAttachControl = new Action("debug_attach_control");
+        public static readonly Action FpsInventory = new Action("fps_inventory");
+        public static readonly Action FpsClose = new Action("fps_close");
 
         public class Action
         {

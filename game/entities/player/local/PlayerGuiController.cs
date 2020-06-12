@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Godot;
+using Overlords.game.definitions;
 using Overlords.game.entities.common;
-using Overlords.game.entities.itemStack;
 using Overlords.game.world;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.behaviors;
@@ -10,18 +11,30 @@ namespace Overlords.game.entities.player.local
 {
     public class PlayerGuiController: Node
     {
+        public enum Screen
+        {
+            None,
+            Inventory,
+            Pause
+        }
+        
         [Export] private NodePath _pathToLeaderBoard;
+        [Export] private NodePath _pathToInventoryRoot;
         [Export] private NodePath _pathToInventoryGrid;
         
         [LinkNodeEditor(nameof(_pathToLeaderBoard))]
         public Control LeaderBoardRoot;
         
+        [LinkNodeEditor(nameof(_pathToInventoryRoot))]
+        public Control InventoryGuiRoot;
+        
         [LinkNodeEditor(nameof(_pathToInventoryGrid))]
-        public Node InventoryGrid;
+        public Node InventoryGuiGrid;
         
         public PlayerLocal PlayerLocal => GetParent<PlayerLocal>();
         public Inventory Inventory => PlayerLocal.LogicShared.GetInventory();
         private readonly Dictionary<int, Control> _scoreboardEntries = new Dictionary<int, Control>();
+        private Screen _screen = Screen.None;
         
         public override void _Ready()
         {
@@ -36,16 +49,50 @@ namespace Overlords.game.entities.player.local
             
             // Setup inventory
             sharedLogic.GetInventory().Connect(nameof(Inventory.SlotStackUpdated), this, nameof(_InventorySlotUpdated));
+            ResetMenuState();
         }
-
+        
+        // ReSharper disable InvertIf
         public override void _Process(float delta)
         {
-            Inventory.InsertStack(new ItemStack
+            switch (_screen)
             {
-                Material = (ItemMaterial) (GD.Randi() % 10),
-                Amount = 43
-            });
+                case Screen.None:
+                {
+                    if (GameInputs.FpsInventory.WasJustPressed())
+                    {
+                        InventoryGuiRoot.Visible = true;
+                        _screen = Screen.Inventory;
+                        Input.SetMouseMode(Input.MouseMode.Visible);
+                    }
+                
+                
+                    if (GameInputs.FpsClose.WasJustPressed())
+                    {
+                        _screen = Screen.Pause;
+                        Input.SetMouseMode(Input.MouseMode.Visible);
+                    }
+
+                    break;
+                }
+                case Screen.Inventory:
+                    if (GameInputs.FpsInventory.WasJustPressed() || GameInputs.FpsClose.WasJustPressed())
+                    {
+                        InventoryGuiRoot.Visible = false;
+                        ResetMenuState();
+                    }
+                    break;
+                case Screen.Pause:
+                    if (GameInputs.FpsClose.WasJustPressed())
+                    {
+                        ResetMenuState();
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
+        // ReSharper restore InvertIf
 
         private void _OnPlayerAdded(Node playerRoot)
         {
@@ -64,8 +111,19 @@ namespace Overlords.game.entities.player.local
         private void _InventorySlotUpdated(int slot)
         {
             var dataStack = Inventory.GetStackInSlot(slot);
-            var uiStack = (TextureRect) InventoryGrid.GetChild(slot);
+            var uiStack = (TextureRect) InventoryGuiGrid.GetChild(slot);
             uiStack.Texture = PlayerLocal.LogicShared.GetWorldClient().GetStackTexture(dataStack.Material);
+        }
+        
+        private void ResetMenuState()
+        {
+            _screen = Screen.None;
+            Input.SetMouseMode(Input.MouseMode.Captured);
+        }
+        
+        public bool HasControl()
+        {
+            return _screen == Screen.None;
         }
     }
 }
