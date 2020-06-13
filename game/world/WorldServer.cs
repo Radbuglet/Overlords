@@ -19,18 +19,22 @@ namespace Overlords.game.world
 {
     public class WorldServer : Node
     {
-        [RequireBehavior] public WorldShared SharedLogic;
+        [RequireBehavior] public WorldShared LogicShared;
         private readonly NodeGroup<string, Node> _groupAutoCatchup = new NodeGroup<string, Node>();
         private _EventHub _remoteEventHub;
 
         public override void _Ready()
         {
+            // Setup behavior
             this.InitializeBehavior();
 
+            // Connect events
             var tree = GetTree();
-            _remoteEventHub = new _EventHub(SharedLogic.RemoteEvent);
             tree.Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));
             tree.Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerLeft));
+            
+            // Setup event hub
+            _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
         }
 
         private void RegisterAutoCatchup(Node node)
@@ -47,10 +51,10 @@ namespace Overlords.game.world
         {
             GD.Print($"{peerId} joined!");
 
-            var entityContainer = SharedLogic.EntityReplicator;
+            var entityContainer = LogicShared.EntityReplicator;
 
             // Create and setup player
-            var player = SharedLogic.PlayerPrefab.Instance();
+            var player = LogicShared.PlayerPrefab.Instance();
             var sharedLogic = player.GetBehavior<PlayerShared>();
             sharedLogic.InitializeLocal(this.GetGameObject<Node>(), peerId, NetworkTypeUtils.ObjectVariant.Server,
                 new PlayerProtocol.InitialState
@@ -61,12 +65,13 @@ namespace Overlords.game.world
             entityContainer.AddChild(player);
 
             // Replicate player to connected peers
-            entityContainer.SvReplicateEntities(SharedLogic.GetPlayingPeers(), SerializeEntity(player).AsEnumerable());
-            SharedLogic.Players.AddToGroup(peerId, player);
+            entityContainer.SvReplicateEntities(LogicShared.GetPlayingPeers(), SerializeEntity(player).AsEnumerable());
+            LogicShared.Players.AddToGroup(peerId, player);
 
             // Send login info
             _remoteEventHub.FireId(peerId, (WorldProtocol.ClientBound.Login, new WorldProtocol.LoginPacket
             {
+                OverlordId = LogicShared.ActiveOverlordPeer,
                 LocalPlayer = player.GetBehavior<PlayerServer>().MakeConstructor(),
                 OtherEntities = entityContainer.SvSerializeEntities(
                     _groupAutoCatchup.IterateGroupMembers().Select(SerializeEntity))
@@ -78,12 +83,12 @@ namespace Overlords.game.world
         {
             GD.Print($"{peerId} left!");
 
-            var playerNodeGroup = SharedLogic.Players;
+            var playerNodeGroup = LogicShared.Players;
             var player = playerNodeGroup.GetMemberOfGroup<Node>(peerId, this);
             if (player == null) return;
 
             playerNodeGroup.RemoveFromGroup(player);
-            SharedLogic.EntityReplicator.SvDeReplicateInstances(SharedLogic.GetPlayingPeers(), player.AsEnumerable());
+            LogicShared.EntityReplicator.SvDeReplicateInstances(LogicShared.GetPlayingPeers(), player.AsEnumerable());
             player.Purge();
         }
     }

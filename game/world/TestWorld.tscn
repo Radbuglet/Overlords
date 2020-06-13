@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=2]
+[gd_scene load_steps=24 format=2]
 
 [ext_resource path="res://helpers/tree/conditionals/MultiNetworkConditionalNode.cs" type="Script" id=1]
 [ext_resource path="res://game/world/WorldShared.cs" type="Script" id=2]
@@ -20,6 +20,7 @@
 [ext_resource path="res://assets/ui/inventory/material_06.png" type="Texture" id=18]
 [ext_resource path="res://assets/ui/inventory/material_08.png" type="Texture" id=19]
 [ext_resource path="res://assets/ui/inventory/material_04.png" type="Texture" id=20]
+[ext_resource path="res://game/entities/npc/NpcPromoter.tscn" type="PackedScene" id=21]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -72,6 +73,9 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -4 )
 [node name="ShopShared" parent="Map/Shop3" index="2"]
 _quantity = 32
 _material = 2
+
+[node name="Promoter" parent="Map" instance=ExtResource( 21 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 5, 0 )
 
 [node name="EntityContainer" type="Spatial" parent="."]
 script = ExtResource( 3 )

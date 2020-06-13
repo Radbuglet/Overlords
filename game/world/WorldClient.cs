@@ -32,6 +32,12 @@ namespace Overlords.game.world
             // Setup remote event
             _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
             _remoteEventHub.BindHandler(WorldProtocol.ClientBound.Login, WorldProtocol.LoginPacket.Serializer, _Login);
+            _remoteEventHub.BindHandler(WorldProtocol.ClientBound.NewOverlord, WorldProtocol.OverlordIdSerializer,
+                (sender, newOverlord) =>
+                {
+                    GD.Print($"New overlord: {newOverlord}");
+                    LogicShared.ActiveOverlordPeer = newOverlord;
+                });
             
             // Setup dynamic entity spawning
             var entityReplicator = LogicShared.EntityReplicator;
@@ -41,6 +47,10 @@ namespace Overlords.game.world
         
         private void _Login(int sender, WorldProtocol.LoginPacket packet)
         {
+            // Catchup world state
+            LogicShared.ActiveOverlordPeer = packet.OverlordId;
+            
+            // Spawn entities
             var entityReplicator = LogicShared.EntityReplicator;
             if (!SpawnPlayer(packet.LocalPlayer, true))
             {

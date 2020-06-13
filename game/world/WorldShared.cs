@@ -14,8 +14,11 @@ namespace Overlords.game.world
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
         [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
         [LinkNodeStatic("../EntityContainer")] public ListReplicator EntityReplicator;
+        
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
         public readonly NodeGroup<string, Spatial> InteractionTargets = new NodeGroup<string, Spatial>();
+        
+        public int? ActiveOverlordPeer;
 
         public override void _Ready()
         {
@@ -30,7 +33,7 @@ namespace Overlords.game.world
         {
             return Players.IterateGroupKeys();
         }
-
+        
         public IEnumerable<int> GetPlayingPeers(int ignorePeerId)
         {
             return GetPlayingPeers().Where(peerId => ignorePeerId != peerId);

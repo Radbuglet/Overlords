@@ -16,8 +16,12 @@ namespace Overlords.game.world
         
         public enum ClientBound
         {
-            Login
+            Login,
+            NewOverlord
         }
+
+        public static readonly AbstractSerializer<int?> OverlordIdSerializer =
+            new OptionalSerializer<int?>(new PrimitiveSerializer<int?>());
         
         public class LoginPacket
         {
@@ -26,7 +30,8 @@ namespace Overlords.game.world
                 new Dictionary<string, ISerializerRaw>
                 {
                     [nameof(LocalPlayer)] = PlayerProtocol.NetworkConstructor.Serializer,
-                    [nameof(OtherEntities)] = new PrimitiveSerializer<Godot.Collections.Array>()
+                    [nameof(OtherEntities)] = new PrimitiveSerializer<Godot.Collections.Array>(),
+                    [nameof(OverlordId)] = OverlordIdSerializer
                 });
 
             public object Serialize()
@@ -36,6 +41,8 @@ namespace Overlords.game.world
             
             public PlayerProtocol.NetworkConstructor LocalPlayer;
             public Godot.Collections.Array OtherEntities;
+
+            public int? OverlordId;
         }
     }
 }

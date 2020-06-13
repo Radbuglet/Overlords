@@ -62,6 +62,7 @@
     <Compile Include="game\entities\itemStack\IItemCreator.cs" />
     <Compile Include="game\entities\itemStack\ItemStack.cs" />
     <Compile Include="game\entities\itemStack\ItemMaterial.cs" />
+    <Compile Include="game\entities\npc\NpcPromoterServer.cs" />
     <Compile Include="game\entities\player\local\AspectContainer.cs" />
     <Compile Include="game\entities\player\local\PlayerGuiController.cs" />
     <Compile Include="game\entities\player\local\PlayerLocal.cs" />
