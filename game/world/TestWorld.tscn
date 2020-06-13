@@ -56,11 +56,22 @@ directional_shadow_max_distance = 300.0
 [node name="Shop" parent="Map" instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0 )
 
+[node name="ShopShared" parent="Map/Shop" index="2"]
+_quantity = 64
+
 [node name="Shop2" parent="Map" instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 4 )
 
+[node name="ShopShared" parent="Map/Shop2" index="2"]
+_quantity = 8
+_material = 8
+
 [node name="Shop3" parent="Map" instance=ExtResource( 8 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -4 )
+
+[node name="ShopShared" parent="Map/Shop3" index="2"]
+_quantity = 32
+_material = 2
 
 [node name="EntityContainer" type="Spatial" parent="."]
 script = ExtResource( 3 )
@@ -83,3 +94,9 @@ _itemStackTextures = [ ExtResource( 11 ), ExtResource( 10 ), ExtResource( 17 ), 
 
 [node name="WorldServer" type="Node" parent="."]
 script = ExtResource( 5 )
+
+[editable path="Map/Shop"]
+
+[editable path="Map/Shop2"]
+
+[editable path="Map/Shop3"]

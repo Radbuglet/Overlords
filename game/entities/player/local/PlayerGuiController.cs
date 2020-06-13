@@ -65,8 +65,7 @@ namespace Overlords.game.entities.player.local
                         _screen = Screen.Inventory;
                         Input.SetMouseMode(Input.MouseMode.Visible);
                     }
-                
-                
+                    
                     if (GameInputs.FpsClose.WasJustPressed())
                     {
                         _screen = Screen.Pause;

@@ -17,16 +17,16 @@ namespace Overlords.game.entities.player
     {
         private KinematicBody Body => LogicShared.GetBody();
         [RequireBehavior] public PlayerShared LogicShared;
-        public _EventHub RemoteEventHub;
+        private _EventHub _remoteEventHub;
 
         public override void _Ready()
         {
             this.InitializeBehavior();
             this.DeclareImplementation(new []{ typeof(ISerializableEntity) });
-            RemoteEventHub = new _EventHub(LogicShared.RemoteEvent);
+            _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
             void BindOwnerHandler<T>(PlayerProtocol.ServerBound type, ISerializer<T> serializer, _EventHub.PacketHandler<T> handler)
             {
-               RemoteEventHub.BindHandler(type, serializer, (sender, packet) =>
+               _remoteEventHub.BindHandler(type, serializer, (sender, packet) =>
                {
                    if (sender != LogicShared.OwnerPeerId)
                    {
@@ -42,7 +42,7 @@ namespace Overlords.game.entities.player
                 (sender, position) =>
                 {
                     Body.Translation = position;
-                    RemoteEventHub.FireId(LogicShared.GetWorldShared().GetPlayingPeers(sender),
+                    _remoteEventHub.FireId(LogicShared.GetWorldShared().GetPlayingPeers(sender),
                         (PlayerProtocol.ClientBound.PuppetSetPos, (object) position));
                 });
 
@@ -63,8 +63,13 @@ namespace Overlords.game.entities.player
                         return;
                     }
                     
-                    interactionTarget.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), LogicShared.GetBody());
+                    interactionTarget.FireEntitySignal(nameof(GameSignals.OnEntityInteracted), packet.TargetId, LogicShared.GetBody());
                 });
+        }
+
+        public void SendTransactionComplete(string shopId)
+        {
+            _remoteEventHub.FireId(LogicShared.OwnerPeerId, (PlayerProtocol.ClientBound.TransactionCompleted, (object) shopId));
         }
 
         public PlayerProtocol.NetworkConstructor MakeConstructor()

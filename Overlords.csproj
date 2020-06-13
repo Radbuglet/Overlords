@@ -71,6 +71,7 @@
     <Compile Include="game\entities\player\common\InteractionUtils.cs" />
     <Compile Include="game\entities\player\common\Protocol.cs" />
     <Compile Include="game\entities\shop\ShopServer.cs" />
+    <Compile Include="game\entities\shop\ShopShared.cs" />
     <Compile Include="game\world\WorldClient.cs" />
     <Compile Include="game\world\Protocol.cs" />
     <Compile Include="game\world\WorldServer.cs" />

@@ -2,7 +2,9 @@
 using Overlords.game.definitions;
 using Overlords.game.entities.common;
 using Overlords.game.entities.player.common;
+using Overlords.game.entities.shop;
 using Overlords.helpers.network;
+using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
 using Overlords.helpers.tree.trackingGroups;
 using _EventHub = Overlords.helpers.network.RemoteEventHub<
@@ -32,7 +34,21 @@ namespace Overlords.game.entities.player.local
             ApplyRotation();
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
+            
             _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
+            _remoteEventHub.BindHandler(PlayerProtocol.ClientBound.TransactionCompleted, new PrimitiveSerializer<string>(),
+                (sender, shopId) =>
+                {
+                    var shopRoot = LogicShared.GetWorldShared().InteractionTargets
+                        .GetMemberOfGroup<Spatial>(shopId, null);
+                    var shopBehavior = shopRoot.GetBehavior<ShopShared>(false);
+                    if (shopBehavior == null)
+                    {
+                        GD.PushWarning("Server completed transaction on entity that wasn't a shop!");
+                        return;
+                    }
+                    shopBehavior.PerformTransaction(LogicShared);
+                });
             AddChild(_remoteEventHub);
         }
 

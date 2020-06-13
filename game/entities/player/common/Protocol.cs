@@ -41,7 +41,8 @@ namespace Overlords.game.entities.player.common
         // Remotes
         public enum ClientBound
         {
-            PuppetSetPos
+            PuppetSetPos,
+            TransactionCompleted
         }
 
         public enum ServerBound
