@@ -17,6 +17,15 @@ namespace Overlords.game.world
         public readonly NodeGroup<int, Node> Players = new NodeGroup<int, Node>();
         public readonly NodeGroup<string, Spatial> InteractionTargets = new NodeGroup<string, Spatial>();
 
+        public override void _Ready()
+        {
+            this.InitializeBehavior();
+            foreach (var node in GetTree().GetNodesInGroup(GameGdGroups.StaticInteractionTarget).Cast<Spatial>())
+            {
+                InteractionTargets.AddToGroup($"static_{node.Name}", node);
+            }
+        }
+        
         public IEnumerable<int> GetPlayingPeers()
         {
             return Players.IterateGroupKeys();
@@ -25,15 +34,6 @@ namespace Overlords.game.world
         public IEnumerable<int> GetPlayingPeers(int ignorePeerId)
         {
             return GetPlayingPeers().Where(peerId => ignorePeerId != peerId);
-        }
-
-        public override void _Ready()
-        {
-            this.InitializeBehavior();
-            foreach (var node in GetTree().GetNodesInGroup(GameGdGroups.StaticInteractionTarget).Cast<Spatial>())
-            {
-                InteractionTargets.AddToGroup($"static_{node.Name}", node);
-            }
         }
     }
 }

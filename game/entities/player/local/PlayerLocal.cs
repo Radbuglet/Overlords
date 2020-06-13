@@ -1,11 +1,13 @@
 ﻿using Godot;
 using Overlords.game.definitions;
 using Overlords.game.entities.common;
+using Overlords.game.entities.itemStack;
 using Overlords.game.entities.player.common;
 using Overlords.game.entities.shop;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.interfaceBehaviors;
 using Overlords.helpers.tree.trackingGroups;
 using _EventHub = Overlords.helpers.network.RemoteEventHub<
     Overlords.game.entities.player.common.PlayerProtocol.ClientBound,
@@ -13,7 +15,7 @@ using _EventHub = Overlords.helpers.network.RemoteEventHub<
 
 namespace Overlords.game.entities.player.local
 {
-    public class PlayerLocal: Node
+    public class PlayerLocal: Node, IItemCreator
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
         [LinkNodeStatic("GuiController")] public PlayerGuiController GuiController;
@@ -31,6 +33,10 @@ namespace Overlords.game.entities.player.local
             if (Engine.EditorHint) return;
             
             this.InitializeBehavior();
+            this.DeclareImplementation(new []
+            {
+                typeof(IItemCreator)
+            });
             ApplyRotation();
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
@@ -47,7 +53,7 @@ namespace Overlords.game.entities.player.local
                         GD.PushWarning("Server completed transaction on entity that wasn't a shop!");
                         return;
                     }
-                    shopBehavior.PerformTransaction(LogicShared);
+                    shopBehavior.PerformTransaction(this.GetGameObject<Node>());
                 });
             AddChild(_remoteEventHub);
         }
@@ -100,6 +106,15 @@ namespace Overlords.game.entities.player.local
             Camera.Transform = new Transform(
                 Basis.Identity.Rotated(Vector3.Right, RotVertical).Rotated(Vector3.Up, RotHorizontal),
                 Camera.Transform.origin);
+        }
+
+        public ItemStack MakeNormalStack(ItemMaterial material, int amount)
+        {
+            return new ItemStack
+            {
+                Material = material,
+                Amount = amount
+            };
         }
     }
 }

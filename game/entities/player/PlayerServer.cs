@@ -1,6 +1,7 @@
 ﻿using Godot;
 using Overlords.game.definitions;
 using Overlords.game.entities.common;
+using Overlords.game.entities.itemStack;
 using Overlords.game.entities.player.common;
 using Overlords.game.world;
 using Overlords.helpers.network;
@@ -13,7 +14,7 @@ using _EventHub = Overlords.helpers.network.RemoteEventHub<
 
 namespace Overlords.game.entities.player
 {
-    public class PlayerServer: Spatial, ISerializableEntity
+    public class PlayerServer: Spatial, ISerializableEntity, IItemCreator
     {
         private KinematicBody Body => LogicShared.GetBody();
         [RequireBehavior] public PlayerShared LogicShared;
@@ -21,8 +22,15 @@ namespace Overlords.game.entities.player
 
         public override void _Ready()
         {
+            // Setup behavior
             this.InitializeBehavior();
-            this.DeclareImplementation(new []{ typeof(ISerializableEntity) });
+            this.DeclareImplementation(new []
+            {
+                typeof(ISerializableEntity),
+                typeof(IItemCreator)
+            });
+            
+            // Bind remote events
             _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
             void BindOwnerHandler<T>(PlayerProtocol.ServerBound type, ISerializer<T> serializer, _EventHub.PacketHandler<T> handler)
             {
@@ -67,7 +75,7 @@ namespace Overlords.game.entities.player
                 });
         }
 
-        public void SendTransactionComplete(string shopId)
+        public void ReplicateShopTransaction(string shopId)
         {
             _remoteEventHub.FireId(LogicShared.OwnerPeerId, (PlayerProtocol.ClientBound.TransactionCompleted, (object) shopId));
         }
@@ -87,6 +95,15 @@ namespace Overlords.game.entities.player
         public (int typeId, object constructor) SerializeConstructor()
         {
             return ((int) WorldProtocol.EntityType.Player, MakeConstructor().Serialize());
+        }
+
+        public ItemStack MakeNormalStack(ItemMaterial material, int amount)
+        {
+            return new ItemStack
+            {
+                Material = material,
+                Amount = amount
+            };
         }
     }
 }

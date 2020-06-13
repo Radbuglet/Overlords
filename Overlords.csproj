@@ -59,6 +59,7 @@
     <Compile Include="game\definitions\GameSignals.cs" />
     <Compile Include="game\entities\common\HumanoidMover.cs" />
     <Compile Include="game\entities\common\Inventory.cs" />
+    <Compile Include="game\entities\itemStack\IItemCreator.cs" />
     <Compile Include="game\entities\itemStack\ItemStack.cs" />
     <Compile Include="game\entities\itemStack\ItemMaterial.cs" />
     <Compile Include="game\entities\player\local\AspectContainer.cs" />

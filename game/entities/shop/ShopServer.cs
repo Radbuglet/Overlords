@@ -18,8 +18,8 @@ namespace Overlords.game.entities.shop
 		private void _OnInteracted(string myTargetId, Node playerRoot)
 		{
 			GD.Print($"Shop interacted with by {playerRoot.Name}.");
-			ShopShared.PerformTransaction(playerRoot.GetBehavior<PlayerShared>());
-			playerRoot.GetBehavior<PlayerServer>().SendTransactionComplete(myTargetId);
+			ShopShared.PerformTransaction(playerRoot);
+			playerRoot.GetBehavior<PlayerServer>().ReplicateShopTransaction(myTargetId);
 		}
 	}
 }

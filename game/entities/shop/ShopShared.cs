@@ -2,6 +2,7 @@
 using Overlords.game.entities.itemStack;
 using Overlords.game.entities.player;
 using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.interfaceBehaviors;
 
 namespace Overlords.game.entities.shop
 {
@@ -17,13 +18,10 @@ namespace Overlords.game.entities.shop
             this.InitializeBehavior();
         }
 
-        public void PerformTransaction(PlayerShared player)
+        public void PerformTransaction(Node playerRoot)
         {
-            player.GetInventory().InsertStack(new ItemStack
-            {
-                Material = _material,
-                Amount = _quantity
-            });
+            playerRoot.GetBehavior<PlayerShared>().GetInventory().InsertStack(
+                playerRoot.GetImplementation<IItemCreator>().MakeNormalStack(_material, _quantity));
         }
     }
 }
