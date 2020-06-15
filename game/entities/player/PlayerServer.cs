@@ -14,7 +14,7 @@ using _EventHub = Overlords.helpers.network.RemoteEventHub<
 
 namespace Overlords.game.entities.player
 {
-    public class PlayerServer: Spatial, ISerializableEntity, IItemCreator
+    public class PlayerServer: Spatial, ISerializableEntity
     {
         private KinematicBody Body => LogicShared.GetBody();
         [RequireBehavior] public PlayerShared LogicShared;
@@ -26,8 +26,7 @@ namespace Overlords.game.entities.player
             this.InitializeBehavior();
             this.DeclareImplementation(new []
             {
-                typeof(ISerializableEntity),
-                typeof(IItemCreator)
+                typeof(ISerializableEntity)
             });
             
             // Bind remote events
@@ -95,15 +94,6 @@ namespace Overlords.game.entities.player
         public (int typeId, object constructor) SerializeConstructor()
         {
             return ((int) WorldProtocol.EntityType.Player, MakeConstructor().Serialize());
-        }
-
-        public ItemStack MakeNormalStack(ItemMaterial material, int amount)
-        {
-            return new ItemStack
-            {
-                Material = material,
-                Amount = amount
-            };
         }
     }
 }

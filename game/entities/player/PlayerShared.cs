@@ -11,7 +11,7 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.player
 {
-    public class PlayerShared: Node, IWorldReferencer
+    public class PlayerShared: Node, IWorldProvider
     {
         [LinkNodeStatic("RemoteEvent")]
         public RemoteEvent RemoteEvent;

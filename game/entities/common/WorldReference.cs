@@ -4,19 +4,24 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.game.entities.common
 {
-    public interface IWorldReferencer
+    public interface IWorldProvider
     {
         Node World { get; }
     }
 
     public static class WorldReferencingUtils
     {
-        public static WorldShared GetWorldShared(this IWorldReferencer self)
+        public static Node GetWorldFromEntity(this Node entityRoot)
+        {
+            return entityRoot.GetParent().GetParent().GetParent();
+        }
+        
+        public static WorldShared GetWorldShared(this IWorldProvider self)
         {
             return self.World.GetBehavior<WorldShared>();
         }
         
-        public static WorldClient GetWorldClient(this IWorldReferencer self)
+        public static WorldClient GetWorldClient(this IWorldProvider self)
         {
             return self.World.GetBehavior<WorldClient>();
         }

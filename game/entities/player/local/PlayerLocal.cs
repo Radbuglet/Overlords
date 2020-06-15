@@ -15,7 +15,7 @@ using _EventHub = Overlords.helpers.network.RemoteEventHub<
 
 namespace Overlords.game.entities.player.local
 {
-    public class PlayerLocal: Node, IItemCreator
+    public class PlayerLocal: Node
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
         [LinkNodeStatic("GuiController")] public PlayerGuiController GuiController;
@@ -33,10 +33,6 @@ namespace Overlords.game.entities.player.local
             if (Engine.EditorHint) return;
             
             this.InitializeBehavior();
-            this.DeclareImplementation(new []
-            {
-                typeof(IItemCreator)
-            });
             ApplyRotation();
             Camera.Current = true;
             _initialCameraPos = Camera.Translation;
@@ -106,15 +102,6 @@ namespace Overlords.game.entities.player.local
             Camera.Transform = new Transform(
                 Basis.Identity.Rotated(Vector3.Right, RotVertical).Rotated(Vector3.Up, RotHorizontal),
                 Camera.Transform.origin);
-        }
-
-        public ItemStack MakeNormalStack(ItemMaterial material, int amount)
-        {
-            return new ItemStack
-            {
-                Material = material,
-                Amount = amount
-            };
         }
     }
 }

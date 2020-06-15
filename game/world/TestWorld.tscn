@@ -5,7 +5,7 @@
 [ext_resource path="res://helpers/network/replication/ListReplicator.cs" type="Script" id=3]
 [ext_resource path="res://game/world/WorldClient.cs" type="Script" id=4]
 [ext_resource path="res://game/world/WorldServer.cs" type="Script" id=5]
-[ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
+[ext_resource path="res://game/entities/itemStack/ItemStack.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=7]
 [ext_resource path="res://game/entities/shop/Shop.tscn" type="PackedScene" id=8]
 [ext_resource path="res://helpers/network/RemoteEvent.cs" type="Script" id=9]
@@ -20,7 +20,7 @@
 [ext_resource path="res://assets/ui/inventory/material_06.png" type="Texture" id=18]
 [ext_resource path="res://assets/ui/inventory/material_08.png" type="Texture" id=19]
 [ext_resource path="res://assets/ui/inventory/material_04.png" type="Texture" id=20]
-[ext_resource path="res://game/entities/npc/NpcPromoter.tscn" type="PackedScene" id=21]
+[ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=21]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -74,9 +74,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -4 )
 _quantity = 32
 _material = 2
 
-[node name="Promoter" parent="Map" instance=ExtResource( 21 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 5, 0 )
-
 [node name="EntityContainer" type="Spatial" parent="."]
 script = ExtResource( 3 )
 
@@ -90,7 +87,8 @@ script = ExtResource( 9 )
 
 [node name="WorldShared" type="Node" parent="."]
 script = ExtResource( 2 )
-PlayerPrefab = ExtResource( 6 )
+PlayerPrefab = ExtResource( 21 )
+ItemStackPrefab = ExtResource( 6 )
 
 [node name="WorldClient" type="Node" parent="."]
 script = ExtResource( 4 )

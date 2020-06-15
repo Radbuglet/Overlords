@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Overlords.game.entities.common;
 using Overlords.game.entities.itemStack;
 using Overlords.game.entities.player;
 using Overlords.helpers.tree.behaviors;
@@ -6,12 +7,14 @@ using Overlords.helpers.tree.interfaceBehaviors;
 
 namespace Overlords.game.entities.shop
 {
-    public class ShopShared : Node
+    public class ShopShared : Node, IWorldProvider
     {
         [Export] private int _quantity;
         [Export] private ItemMaterial _material;
         [Export] private int _sellPrice;
         [Export] private int _buyPrice;
+
+        public Node World => this.GetWorldFromEntity();
         
         public override void _Ready()
         {
@@ -21,7 +24,7 @@ namespace Overlords.game.entities.shop
         public void PerformTransaction(Node playerRoot)
         {
             playerRoot.GetBehavior<PlayerShared>().GetInventory().InsertStack(
-                playerRoot.GetImplementation<IItemCreator>().MakeNormalStack(_material, _quantity));
+                this.GetWorldShared().MakeItemStack(_material, _quantity));
         }
     }
 }

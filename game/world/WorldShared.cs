@@ -2,6 +2,7 @@
 using System.Linq;
 using Godot;
 using Overlords.game.definitions;
+using Overlords.game.entities.itemStack;
 using Overlords.helpers.network;
 using Overlords.helpers.network.replication;
 using Overlords.helpers.tree.behaviors;
@@ -12,6 +13,7 @@ namespace Overlords.game.world
     public class WorldShared : Node
     {
         [Export] [FieldNotNull] public PackedScene PlayerPrefab;
+        [Export] [FieldNotNull] public PackedScene ItemStackPrefab;
         [LinkNodeStatic("../RemoteEvent")] public RemoteEvent RemoteEvent;
         [LinkNodeStatic("../EntityContainer")] public ListReplicator EntityReplicator;
         
@@ -27,6 +29,14 @@ namespace Overlords.game.world
             {
                 InteractionTargets.AddToGroup($"static_{node.Name}", node);
             }
+        }
+
+        public ItemStack MakeItemStack(ItemMaterial material, int amount)
+        {
+            var stack = (ItemStack) ItemStackPrefab.Instance();
+            stack.Material = material;
+            stack.Amount = amount;
+            return stack;
         }
         
         public IEnumerable<int> GetPlayingPeers()
