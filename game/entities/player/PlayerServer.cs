@@ -86,7 +86,8 @@ namespace Overlords.game.entities.player
                 OwnerPeerId = LogicShared.OwnerPeerId,
                 InitialState = new PlayerProtocol.InitialState
                 {
-                    Position = LogicShared.Position
+                    Position = LogicShared.Position,
+                    DisplayName = LogicShared.DisplayName
                 }
             };
         }

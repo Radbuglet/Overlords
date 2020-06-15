@@ -1,13 +1,11 @@
 ﻿using Godot;
 using Overlords.game.definitions;
 using Overlords.game.entities.common;
-using Overlords.game.entities.itemStack;
 using Overlords.game.entities.npcs.shop;
 using Overlords.game.entities.player.common;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;
-using Overlords.helpers.tree.interfaceBehaviors;
 using Overlords.helpers.tree.trackingGroups;
 using _EventHub = Overlords.helpers.network.RemoteEventHub<
     Overlords.game.entities.player.common.PlayerProtocol.ClientBound,
@@ -89,10 +87,12 @@ namespace Overlords.game.entities.player.local
                 heading = heading.Rotated(Vector3.Up, RotHorizontal);
             }
             
-            // Move player (with replication)
+            // Move player and replicate
+            var isOverlord = LogicShared.IsOverlord();
             var isSneaking = GuiController.HasControl() && GameInputs.FpsSneak.IsPressed();
-            Mover.Move(delta, GuiController.HasControl() && GameInputs.FpsJump.IsPressed(), isSneaking, heading);
-            
+            var isJumping = GuiController.HasControl() && (isOverlord ? GameInputs.FpsJump.WasJustPressed() : GameInputs.FpsJump.IsPressed());
+            Mover.Move(delta, isJumping, isOverlord, isSneaking, heading);
+
             Camera.Translation = (Camera.Translation + 0.4F * (isSneaking ? _initialCameraPos * 0.67F : _initialCameraPos)) / 1.4F;
             _remoteEventHub.FireUnreliableServer((PlayerProtocol.ServerBound.PerformMovement, (object) Mover.Body.Translation));
         }

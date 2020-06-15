@@ -32,10 +32,12 @@ namespace Overlords.game.entities.player.common
                 () => new InitialState(),
                 new Dictionary<string, ISerializerRaw>
                 {
-                    [nameof(Position)] = new PrimitiveSerializer<Vector3>()
+                    [nameof(Position)] = new PrimitiveSerializer<Vector3>(),
+                    [nameof(DisplayName)] = new PrimitiveSerializer<string>()
                 });
             
             public Vector3 Position;
+            public string DisplayName;
         }
         
         // Remotes

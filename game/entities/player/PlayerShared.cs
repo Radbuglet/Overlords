@@ -21,6 +21,7 @@ namespace Overlords.game.entities.player
 
         public Node World { get; private set; }
         public int OwnerPeerId { get; private set; }
+        public string DisplayName;
 
         public Vector3 Position
         {
@@ -70,12 +71,18 @@ namespace Overlords.game.entities.player
             World = world;
             OwnerPeerId = ownerPeerId;
             Position = initialState.Position;
+            DisplayName = initialState.DisplayName;
         }
         
         public void InitializeRemote(SceneTree tree, Node world, PlayerProtocol.NetworkConstructor constructor)
         {
             InitializeLocal(world, constructor.OwnerPeerId,
                 tree.GetNetworkVariant(constructor.OwnerPeerId), constructor.InitialState);
+        }
+
+        public bool IsOverlord()
+        {
+            return this.GetWorldShared().ActiveOverlordPeer == OwnerPeerId;
         }
     }
 }

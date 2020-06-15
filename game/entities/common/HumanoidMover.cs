@@ -20,7 +20,7 @@ namespace Overlords.game.entities.common
             this.InitializeBehavior();
         }
 
-        public void Move(float delta, bool isJumping, bool isSneaking, Vector3 horizontalHeading)
+        public void Move(float delta, bool isJumping, bool airJumpAllowed, bool isSneaking, Vector3 horizontalHeading)
         {
             // TODO: Add acceleration curves; integrate positions to avoid FPS based de-syncs
             horizontalHeading.y = 0;
@@ -35,11 +35,10 @@ namespace Overlords.game.entities.common
 
             // ReSharper disable once InvertIf
             if (Body.IsOnFloor())
-            {
                 Velocity.y = 0;
-                if (isJumping)
-                    Velocity.y = JumpMagnitude;
-            }
+            
+            if ((Body.IsOnFloor() || airJumpAllowed) && isJumping)
+                Velocity.y = JumpMagnitude;
         }
     }
 }

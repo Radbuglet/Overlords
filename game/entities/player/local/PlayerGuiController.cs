@@ -42,9 +42,10 @@ namespace Overlords.game.entities.player.local
 
         private void _OnPlayerAdded(Node playerRoot)
         {
-            var entry = new Label{ Text = playerRoot.Name };
+            var playerShared = playerRoot.GetBehavior<PlayerShared>();
+            var entry = new Label{ Text = playerShared.DisplayName };
             LeaderBoardRoot.AddChild(entry);
-            _scoreboardEntries.Add(playerRoot.GetBehavior<PlayerShared>().OwnerPeerId, entry);
+            _scoreboardEntries.Add(playerShared.OwnerPeerId, entry);
         }
 
         private void _OnPlayerRemoved(Node playerRoot)

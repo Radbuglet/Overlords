@@ -50,7 +50,8 @@ namespace Overlords.game.world
                 new PlayerProtocol.InitialState
                 {
                     Position = new Vector3(
-                        (float) GD.RandRange(-10, 10), 10, (float) GD.RandRange(-10, 10))
+                        (float) GD.RandRange(-10, 10), 10, (float) GD.RandRange(-10, 10)),
+                    DisplayName = $"player_named_{GD.Randi() % 100}"
                 });
             entityContainer.AddChild(player);
 
