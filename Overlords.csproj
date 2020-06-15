@@ -61,6 +61,9 @@
     <Compile Include="game\entities\common\Inventory.cs" />
     <Compile Include="game\entities\itemStack\ItemStack.cs" />
     <Compile Include="game\entities\itemStack\ItemMaterial.cs" />
+    <Compile Include="game\entities\npcs\promoter\PromoterServer.cs" />
+    <Compile Include="game\entities\npcs\shop\ShopServer.cs" />
+    <Compile Include="game\entities\npcs\shop\ShopShared.cs" />
     <Compile Include="game\entities\player\local\AspectContainer.cs" />
     <Compile Include="game\entities\player\local\PlayerGuiController.cs" />
     <Compile Include="game\entities\player\local\PlayerLocal.cs" />
@@ -70,8 +73,6 @@
     <Compile Include="game\entities\common\WorldReference.cs" />
     <Compile Include="game\entities\player\common\InteractionUtils.cs" />
     <Compile Include="game\entities\player\common\Protocol.cs" />
-    <Compile Include="game\entities\shop\ShopServer.cs" />
-    <Compile Include="game\entities\shop\ShopShared.cs" />
     <Compile Include="game\world\WorldClient.cs" />
     <Compile Include="game\world\Protocol.cs" />
     <Compile Include="game\world\WorldServer.cs" />
@@ -113,6 +114,9 @@
       <Version>1.0.0</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="game\entities\npcs\common" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

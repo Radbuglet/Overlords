@@ -25,5 +25,10 @@ namespace Overlords.game.entities.common
         {
             return self.World.GetBehavior<WorldClient>();
         }
+        
+        public static WorldServer GetWorldServer(this IWorldProvider self)
+        {
+            return self.World.GetBehavior<WorldServer>();
+        }
     }
 }

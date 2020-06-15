@@ -3,7 +3,7 @@ using Overlords.game.definitions;
 using Overlords.game.entities.player;
 using Overlords.helpers.tree.behaviors;
 
-namespace Overlords.game.entities.shop
+namespace Overlords.game.entities.npcs.shop
 {
 	public class ShopServer: Node
 	{

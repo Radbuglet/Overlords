@@ -36,17 +36,7 @@ namespace Overlords.game.world
             // Setup event hub
             _remoteEventHub = new _EventHub(LogicShared.RemoteEvent);
         }
-
-        private void RegisterAutoCatchup(Node node)
-        {
-            _groupAutoCatchup.AddToGroup(node.Name, node);
-        }
-
-        private static (int, object) SerializeEntity(Node instance)
-        {
-            return instance.GetImplementation<ISerializableEntity>().SerializeConstructor();
-        }
-
+        
         private void _PeerJoined(int peerId)
         {
             GD.Print($"{peerId} joined!");
@@ -90,6 +80,22 @@ namespace Overlords.game.world
             playerNodeGroup.RemoveFromGroup(player);
             LogicShared.EntityReplicator.SvDeReplicateInstances(LogicShared.GetPlayingPeers(), player.AsEnumerable());
             player.Purge();
+        }
+
+        public void ChangeOverlord(int? peerId)
+        {
+            LogicShared.ActiveOverlordPeer = peerId;
+            _remoteEventHub.Fire((WorldProtocol.ClientBound.NewOverlord, WorldProtocol.OverlordIdSerializer.Serialize(peerId)));
+        }
+
+        private void RegisterAutoCatchup(Node node)
+        {
+            _groupAutoCatchup.AddToGroup(node.Name, node);
+        }
+
+        private static (int, object) SerializeEntity(Node instance)
+        {
+            return instance.GetImplementation<ISerializableEntity>().SerializeConstructor();
         }
     }
 }

@@ -2,8 +2,8 @@
 using Overlords.game.definitions;
 using Overlords.game.entities.common;
 using Overlords.game.entities.itemStack;
+using Overlords.game.entities.npcs.shop;
 using Overlords.game.entities.player.common;
-using Overlords.game.entities.shop;
 using Overlords.helpers.network;
 using Overlords.helpers.network.serialization;
 using Overlords.helpers.tree.behaviors;

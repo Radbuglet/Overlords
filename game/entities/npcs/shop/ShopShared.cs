@@ -3,9 +3,8 @@ using Overlords.game.entities.common;
 using Overlords.game.entities.itemStack;
 using Overlords.game.entities.player;
 using Overlords.helpers.tree.behaviors;
-using Overlords.helpers.tree.interfaceBehaviors;
 
-namespace Overlords.game.entities.shop
+namespace Overlords.game.entities.npcs.shop
 {
     public class ShopShared : Node, IWorldProvider
     {
