@@ -1,8 +1,9 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://assets/ui/crosshair/crosshair_shader.tres" type="Material" id=1]
 [ext_resource path="res://assets/ui/crosshair/crosshair.png" type="Texture" id=2]
 [ext_resource path="res://game/entities/player/PlayerShared.cs" type="Script" id=3]
+[ext_resource path="res://game/entities/player/local/PlayerGuiScreens.cs" type="Script" id=4]
 [ext_resource path="res://helpers/network/RemoteEvent.cs" type="Script" id=5]
 [ext_resource path="res://game/entities/player/PlayerServer.cs" type="Script" id=6]
 [ext_resource path="res://game/entities/player/local/PlayerLocal.cs" type="Script" id=7]
@@ -57,11 +58,16 @@ script = ExtResource( 13 )
 [node name="PlayerLocal" type="Node" parent="."]
 script = ExtResource( 7 )
 
-[node name="GuiController" type="Node" parent="PlayerLocal"]
+[node name="PlayerGuiController" type="Node" parent="PlayerLocal"]
 script = ExtResource( 12 )
 _pathToLeaderBoard = NodePath("../Hud/Leaderboard/VBoxContainer")
-_pathToInventoryRoot = NodePath("../Hud/Inventory")
-_pathToInventoryGrid = NodePath("../Hud/Inventory/VBoxContainer/Container/GridContainer")
+_pathToInventoryGrid = NodePath("../Inventory/VBoxContainer/Container/GridContainer")
+
+[node name="PlayerGuiScreens" type="Node" parent="PlayerLocal"]
+script = ExtResource( 4 )
+_pathToHudRoot = NodePath("../Hud")
+_pathToInventoryRoot = NodePath("../Inventory")
+_pathToPauseRoot = NodePath("../PauseMenu")
 
 [node name="Hud" type="Control" parent="PlayerLocal"]
 anchor_right = 1.0
@@ -104,7 +110,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Inventory" type="Panel" parent="PlayerLocal/Hud"]
+[node name="Inventory" type="Panel" parent="PlayerLocal"]
 visible = false
 anchor_right = 0.373047
 anchor_bottom = 1.0
@@ -112,7 +118,7 @@ __meta__ = {
 "_edit_use_anchors_": true
 }
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PlayerLocal/Hud/Inventory"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PlayerLocal/Inventory"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 8.0
@@ -123,12 +129,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="PlayerLocal/Hud/Inventory/VBoxContainer"]
+[node name="Label" type="Label" parent="PlayerLocal/Inventory/VBoxContainer"]
 margin_right = 366.0
 margin_bottom = 14.0
 text = "Inventory"
 
-[node name="Container" type="Container" parent="PlayerLocal/Hud/Inventory/VBoxContainer"]
+[node name="Container" type="Container" parent="PlayerLocal/Inventory/VBoxContainer"]
 margin_top = 18.0
 margin_right = 366.0
 margin_bottom = 221.333
@@ -136,14 +142,14 @@ rect_min_size = Vector2( 366, 203.333 )
 script = ExtResource( 14 )
 EditorRatio = Vector2( 9, 5 )
 
-[node name="GridContainer" type="GridContainer" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container"]
+[node name="GridContainer" type="GridContainer" parent="PlayerLocal/Inventory/VBoxContainer/Container"]
 margin_right = 366.0
 margin_bottom = 203.333
 custom_constants/vseparation = 0
 custom_constants/hseparation = 0
 columns = 9
 
-[node name="TextureRect" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_right = 40.0
 margin_bottom = 40.0
 size_flags_horizontal = 3
@@ -151,7 +157,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect2" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect2" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 40.0
 margin_right = 80.0
 margin_bottom = 40.0
@@ -160,7 +166,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect3" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect3" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 80.0
 margin_right = 120.0
 margin_bottom = 40.0
@@ -169,7 +175,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect4" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect4" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 120.0
 margin_right = 160.0
 margin_bottom = 40.0
@@ -178,7 +184,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect5" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect5" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 160.0
 margin_right = 200.0
 margin_bottom = 40.0
@@ -187,7 +193,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect6" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect6" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 200.0
 margin_right = 240.0
 margin_bottom = 40.0
@@ -196,7 +202,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect7" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect7" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 240.0
 margin_right = 280.0
 margin_bottom = 40.0
@@ -205,7 +211,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect8" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect8" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 280.0
 margin_right = 320.0
 margin_bottom = 40.0
@@ -214,7 +220,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect9" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect9" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 320.0
 margin_right = 360.0
 margin_bottom = 40.0
@@ -223,7 +229,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect10" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect10" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_top = 40.0
 margin_right = 40.0
 margin_bottom = 80.0
@@ -232,7 +238,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect11" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect11" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 40.0
 margin_top = 40.0
 margin_right = 80.0
@@ -242,7 +248,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect12" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect12" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 80.0
 margin_top = 40.0
 margin_right = 120.0
@@ -252,7 +258,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect13" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect13" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 120.0
 margin_top = 40.0
 margin_right = 160.0
@@ -262,7 +268,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect14" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect14" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 160.0
 margin_top = 40.0
 margin_right = 200.0
@@ -272,7 +278,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect15" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect15" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 200.0
 margin_top = 40.0
 margin_right = 240.0
@@ -282,7 +288,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect16" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect16" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 240.0
 margin_top = 40.0
 margin_right = 280.0
@@ -292,7 +298,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect17" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect17" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 280.0
 margin_top = 40.0
 margin_right = 320.0
@@ -302,7 +308,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect18" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect18" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 320.0
 margin_top = 40.0
 margin_right = 360.0
@@ -312,7 +318,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect19" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect19" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_top = 80.0
 margin_right = 40.0
 margin_bottom = 120.0
@@ -321,7 +327,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect20" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect20" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 40.0
 margin_top = 80.0
 margin_right = 80.0
@@ -331,7 +337,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect21" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect21" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 80.0
 margin_top = 80.0
 margin_right = 120.0
@@ -341,7 +347,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect22" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect22" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 120.0
 margin_top = 80.0
 margin_right = 160.0
@@ -351,7 +357,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect23" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect23" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 160.0
 margin_top = 80.0
 margin_right = 200.0
@@ -361,7 +367,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect24" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect24" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 200.0
 margin_top = 80.0
 margin_right = 240.0
@@ -371,7 +377,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect25" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect25" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 240.0
 margin_top = 80.0
 margin_right = 280.0
@@ -381,7 +387,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect26" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect26" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 280.0
 margin_top = 80.0
 margin_right = 320.0
@@ -391,7 +397,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect27" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect27" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 320.0
 margin_top = 80.0
 margin_right = 360.0
@@ -401,7 +407,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect28" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect28" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_top = 120.0
 margin_right = 40.0
 margin_bottom = 160.0
@@ -410,7 +416,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect29" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect29" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 40.0
 margin_top = 120.0
 margin_right = 80.0
@@ -420,7 +426,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect30" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect30" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 80.0
 margin_top = 120.0
 margin_right = 120.0
@@ -430,7 +436,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect31" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect31" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 120.0
 margin_top = 120.0
 margin_right = 160.0
@@ -440,7 +446,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect32" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect32" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 160.0
 margin_top = 120.0
 margin_right = 200.0
@@ -450,7 +456,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect33" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect33" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 200.0
 margin_top = 120.0
 margin_right = 240.0
@@ -460,7 +466,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect34" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect34" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 240.0
 margin_top = 120.0
 margin_right = 280.0
@@ -470,7 +476,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect35" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect35" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 280.0
 margin_top = 120.0
 margin_right = 320.0
@@ -480,7 +486,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect36" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect36" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 320.0
 margin_top = 120.0
 margin_right = 360.0
@@ -490,7 +496,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect37" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect37" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_top = 160.0
 margin_right = 40.0
 margin_bottom = 200.0
@@ -499,7 +505,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect38" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect38" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 40.0
 margin_top = 160.0
 margin_right = 80.0
@@ -509,7 +515,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect39" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect39" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 80.0
 margin_top = 160.0
 margin_right = 120.0
@@ -519,7 +525,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect40" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect40" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 120.0
 margin_top = 160.0
 margin_right = 160.0
@@ -529,7 +535,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect41" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect41" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 160.0
 margin_top = 160.0
 margin_right = 200.0
@@ -539,7 +545,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect42" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect42" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 200.0
 margin_top = 160.0
 margin_right = 240.0
@@ -549,7 +555,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect43" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect43" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 240.0
 margin_top = 160.0
 margin_right = 280.0
@@ -559,7 +565,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect44" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect44" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 280.0
 margin_top = 160.0
 margin_right = 320.0
@@ -569,7 +575,7 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="TextureRect45" type="TextureRect" parent="PlayerLocal/Hud/Inventory/VBoxContainer/Container/GridContainer"]
+[node name="TextureRect45" type="TextureRect" parent="PlayerLocal/Inventory/VBoxContainer/Container/GridContainer"]
 margin_left = 320.0
 margin_top = 160.0
 margin_right = 360.0
@@ -579,17 +585,40 @@ size_flags_vertical = 3
 texture = ExtResource( 15 )
 expand = true
 
-[node name="Label2" type="Label" parent="PlayerLocal/Hud/Inventory/VBoxContainer"]
+[node name="Label2" type="Label" parent="PlayerLocal/Inventory/VBoxContainer"]
 margin_top = 225.0
 margin_right = 366.0
 margin_bottom = 239.0
 text = "Item Info"
 
-[node name="Label3" type="Label" parent="PlayerLocal/Hud/Inventory/VBoxContainer"]
+[node name="Label3" type="Label" parent="PlayerLocal/Inventory/VBoxContainer"]
 margin_top = 243.0
 margin_right = 366.0
 margin_bottom = 257.0
 text = "Insert description here."
+
+[node name="PauseMenu" type="ColorRect" parent="PlayerLocal"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.0784314, 0.0901961, 0.113725, 0.478431 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="PlayerLocal/PauseMenu"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -23.0
+margin_top = -7.0
+margin_right = 23.0
+margin_bottom = 7.0
+text = "Paused"
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="PlayerPuppet" type="Node" parent="."]
 script = ExtResource( 8 )

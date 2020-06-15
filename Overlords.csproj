@@ -66,6 +66,7 @@
     <Compile Include="game\entities\npcs\shop\ShopShared.cs" />
     <Compile Include="game\entities\player\local\AspectContainer.cs" />
     <Compile Include="game\entities\player\local\PlayerGuiController.cs" />
+    <Compile Include="game\entities\player\local\PlayerGuiScreens.cs" />
     <Compile Include="game\entities\player\local\PlayerLocal.cs" />
     <Compile Include="game\entities\player\PlayerPuppet.cs" />
     <Compile Include="game\entities\player\PlayerServer.cs" />

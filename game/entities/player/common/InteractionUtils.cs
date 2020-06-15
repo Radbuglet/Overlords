@@ -6,7 +6,7 @@ namespace Overlords.game.entities.player.common
 {
     public static class InteractionUtils
     {
-        public const float MaxInteractionDistance = 6;
+        public const float MaxInteractionDistance = 12;
         
         public static bool PerformInteraction(this PlayerLocal player, float maxDistance, out Spatial hitBody, out Vector3 hitPointRelative)
         {

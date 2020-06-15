@@ -21,5 +21,10 @@ namespace Overlords.game.entities.itemStack
         {
             return other.Material == Material;
         }
+
+        public string GetDisplayName()
+        {
+            return Material.ToString();
+        }
     }
 }

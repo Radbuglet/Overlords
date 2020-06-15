@@ -18,7 +18,7 @@ namespace Overlords.game.entities.player.local
     public class PlayerLocal: Node
     {
         [LinkNodeStatic("../FpsCamera")] public Camera Camera;
-        [LinkNodeStatic("GuiController")] public PlayerGuiController GuiController;
+        [LinkNodeStatic(nameof(PlayerGuiController))] public PlayerGuiController GuiController;
         [RequireBehavior] public PlayerShared LogicShared;
         [RequireBehavior] public HumanoidMover Mover;
         
