@@ -73,14 +73,14 @@ namespace Overlords.helpers.network
         // Server
         public static void FireServer<TSelf, TData>(this TSelf self, TData data) where TSelf : Node, IGenericRpc<TData>
         {
-            Debug.Assert(self.GetNetworkMode() == NetworkTypeUtils.NetworkMode.Client);
+            Debug.Assert(self.GetNetworkMode() == NetworkMode.Client);
             self.FireId(1, data);
         }
 
         public static void FireUnreliableServer<TSelf, TData>(this TSelf self, TData data)
             where TSelf : Node, IGenericRpc<TData>
         {
-            Debug.Assert(self.GetNetworkMode() == NetworkTypeUtils.NetworkMode.Client);
+            Debug.Assert(self.GetNetworkMode() == NetworkMode.Client);
             self.FireUnreliableId(1, data);
         }
     }

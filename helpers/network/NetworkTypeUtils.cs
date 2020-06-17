@@ -6,15 +6,15 @@ using Overlords.helpers.tree.behaviors;
 
 namespace Overlords.helpers.network
 {
+    public enum NetworkMode
+    {
+        Server,
+        Client,
+        None
+    }
+    
     public static class NetworkTypeUtils
     {
-        public enum NetworkMode
-        {
-            Server,
-            Client,
-            None
-        }
-
         [Flags]
         public enum ObjectVariant
         {

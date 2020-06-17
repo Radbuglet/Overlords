@@ -53,52 +53,21 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="game\definitions\GameGdGroups.cs" />
-    <Compile Include="game\definitions\GameInputs.cs" />
-    <Compile Include="game\definitions\GameInterfaces.cs" />
-    <Compile Include="game\definitions\GameSignals.cs" />
-    <Compile Include="game\entities\common\HumanoidMover.cs" />
-    <Compile Include="game\entities\common\Inventory.cs" />
-    <Compile Include="game\entities\itemStack\ItemStack.cs" />
-    <Compile Include="game\entities\itemStack\ItemMaterial.cs" />
-    <Compile Include="game\entities\npcs\promoter\PromoterServer.cs" />
-    <Compile Include="game\entities\npcs\shop\ShopServer.cs" />
-    <Compile Include="game\entities\npcs\shop\ShopShared.cs" />
-    <Compile Include="game\entities\player\local\AspectContainer.cs" />
-    <Compile Include="game\entities\player\local\PlayerGuiController.cs" />
-    <Compile Include="game\entities\player\local\PlayerGuiScreens.cs" />
-    <Compile Include="game\entities\player\local\PlayerLocal.cs" />
-    <Compile Include="game\entities\player\PlayerPuppet.cs" />
-    <Compile Include="game\entities\player\PlayerServer.cs" />
-    <Compile Include="game\entities\player\PlayerShared.cs" />
-    <Compile Include="game\entities\common\WorldReference.cs" />
-    <Compile Include="game\entities\player\common\InteractionUtils.cs" />
-    <Compile Include="game\entities\player\common\Protocol.cs" />
-    <Compile Include="game\world\WorldClient.cs" />
-    <Compile Include="game\world\Protocol.cs" />
-    <Compile Include="game\world\WorldServer.cs" />
-    <Compile Include="game\world\WorldShared.cs" />
-    <Compile Include="helpers\csharp\Delegates.cs" />
+    <Compile Include="game\world\entityCore\EntityContainer.cs" />
+    <Compile Include="game\world\entityCore\EntityGroups.cs" />
+    <Compile Include="game\world\entityCore\StateReplicator.cs" />
+    <Compile Include="game\world\services\JoinHandler.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\GodotAliases.cs" />
+    <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
-    <Compile Include="helpers\GodotSignalNames.cs" />
+    <Compile Include="helpers\csharp\ListExtensions.cs" />
+    <Compile Include="helpers\network\catchup\CatchupUtils.cs" />
+    <Compile Include="helpers\network\catchup\Quarantine.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
-    <Compile Include="helpers\network\RemoteEvent.cs" />
-    <Compile Include="helpers\network\RemoteEventHub.cs" />
-    <Compile Include="helpers\network\replication\ListReplicator.cs" />
-    <Compile Include="helpers\network\serialization\EnumSerializer.cs" />
-    <Compile Include="helpers\network\serialization\Core.cs" />
-    <Compile Include="helpers\network\serialization\ListSerializer.cs" />
-    <Compile Include="helpers\network\serialization\OptionalSerializer.cs" />
-    <Compile Include="helpers\network\serialization\PrimitiveSerializer.cs" />
-    <Compile Include="helpers\network\serialization\StructSerializer.cs" />
     <Compile Include="helpers\tree\behaviors\Attributes.cs" />
     <Compile Include="helpers\tree\behaviors\BehaviorsExtension.cs" />
-    <Compile Include="helpers\tree\conditionals\ConditionalNode.cs" />
-    <Compile Include="helpers\tree\conditionals\MultiNetworkConditionalNode.cs" />
-    <Compile Include="helpers\tree\conditionals\NetworkConditionalNode.cs" />
     <Compile Include="helpers\tree\interfaceBehaviors\EntitySignalExtensions.cs" />
     <Compile Include="helpers\tree\interfaceBehaviors\InterfaceBehaviorRouter.cs" />
     <Compile Include="helpers\tree\TreeUtils.cs" />
@@ -117,7 +86,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="game\entities\npcs\common" />
+    <Folder Include="game\entities" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

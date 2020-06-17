@@ -55,6 +55,7 @@ namespace Overlords.helpers.tree.behaviors
                     $"Field {field.Name} is marked as not allowed to be null during init but is null anyway.");
             }
 
+            // Bind entity signals
             foreach (var method in thisType.GetMethods(
                 BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
             {
@@ -130,6 +131,11 @@ namespace Overlords.helpers.tree.behaviors
         public static TBehavior GetBehavior<TBehavior>(this Node gameObject, bool required = true) where TBehavior : Node
         {
             return (TBehavior) GetBehaviorDynamic(gameObject, typeof(TBehavior), required);
+        }
+        
+        public static TBehavior GetBehaviorParallel<TBehavior>(this Node behavior, bool required = true) where TBehavior : Node
+        {
+            return behavior.GetGameObject<Node>().GetBehavior<TBehavior>(required);
         }
 
         public static Func<TBehavior> GetBehaviorWrapped<TBehavior>(this Node gameObject, bool required = true)

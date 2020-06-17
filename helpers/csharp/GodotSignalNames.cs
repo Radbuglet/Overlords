@@ -1,4 +1,4 @@
-namespace Overlords.helpers
+namespace Overlords.helpers.csharp
 {
     public static class SceneTreeSignals
     {
