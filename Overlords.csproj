@@ -66,14 +66,10 @@
     <Compile Include="helpers\network\catchup\Quarantine.cs" />
     <Compile Include="helpers\network\IGenericRpc.cs" />
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
-    <Compile Include="helpers\tree\behaviors\Attributes.cs" />
-    <Compile Include="helpers\tree\behaviors\BehaviorsExtension.cs" />
-    <Compile Include="helpers\tree\interfaceBehaviors\EntitySignalExtensions.cs" />
-    <Compile Include="helpers\tree\interfaceBehaviors\InterfaceBehaviorRouter.cs" />
+    <Compile Include="helpers\tree\initialization\Attributes.cs" />
+    <Compile Include="helpers\tree\initialization\InitializationExtensions.cs" />
     <Compile Include="helpers\tree\TreeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
-    <Compile Include="helpers\tree\trackingGroups\NodeGroup.cs" />
-    <Compile Include="helpers\tree\trackingGroups\NodeGroupMemberTracker.cs" />
     <Compile Include="menu\StartClientButton.cs" />
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

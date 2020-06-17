@@ -3,7 +3,7 @@ using Godot;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.network.catchup;
-using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.initialization;
 using Array = Godot.Collections.Array;
 
 namespace Overlords.game.world.entityCore
@@ -15,7 +15,9 @@ namespace Overlords.game.world.entityCore
 
         public override void _Ready()
         {
-            this.InitializeBehavior();
+            if (this.GetNetworkMode() != NetworkMode.Client) return;
+            GetParent().ConnectOrCreate(nameof(Quarantine.QuarantineChecking),
+                this, nameof(ValidateQuarantineState));
         }
 
         public void AddField<T>(bool isOneShot = false)
@@ -46,7 +48,6 @@ namespace Overlords.game.world.entityCore
             RpcId(peerId, nameof(_CatchupInitialValues), packet);
         }
 
-        [BindEntitySignal(nameof(Quarantine.QuarantineChecking))]
         private void ValidateQuarantineState()
         {
             if (!_constructed)

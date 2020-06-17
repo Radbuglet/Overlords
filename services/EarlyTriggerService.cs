@@ -2,7 +2,7 @@
 using Overlords.helpers;
 using Overlords.helpers.csharp;
 using Overlords.helpers.tree;
-using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.initialization;
 
 namespace Overlords.services
 {
@@ -15,7 +15,7 @@ namespace Overlords.services
     {
         public override void _Ready()
         {
-            this.InitializeBehavior();
+            this.Initialize();
             GetTree().Connect(SceneTreeSignals.NodeAdded, this, nameof(_NodeAdded));
         }
 

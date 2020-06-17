@@ -1,29 +1,30 @@
 ﻿using Godot;
 using Overlords.game.world.entityCore;
+using Overlords.helpers.csharp;
 using Overlords.helpers.network.catchup;
-using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.initialization;
 
 namespace Overlords.game.world.services
 {
     public class JoinHandler: Node
     {
         [Export] private PackedScene _playerPrefab;
-        [RequireBehavior] public EntityContainer Entities;
+        [LinkNodeStatic("../Entities")] public EntityContainer EntityContainer;
         
         public override void _Ready()
         {
-            this.InitializeBehavior();
-            GetTree().Connect("network_peer_connected", this, nameof(_PeerJoined));
-            GetTree().Connect("network_peer_disconnected", this, nameof(_PeerLeft));
+            this.Initialize();
+            GetTree().Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));
+            GetTree().Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerLeft));
         }
 
         private void _PeerJoined(int peerId)
         {
             GD.Print($"{peerId} connected!");
-            this.GetGameObject<Node>().CatchupToPeer(peerId);
+            GetParent().CatchupToPeer(peerId);
             var player = _playerPrefab.Instance();
             player.Name = $"player_{peerId}";
-            Entities.AddEntity(player);
+            EntityContainer.AddEntity(player);
         }
 
         private void _PeerLeft(int peerId)

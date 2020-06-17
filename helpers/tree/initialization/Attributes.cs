@@ -1,14 +1,14 @@
 ﻿using System;
 using Godot;
 
-namespace Overlords.helpers.tree.behaviors
+namespace Overlords.helpers.tree.initialization
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class BindEntitySignal : Attribute
+    public class BindParentSignal : Attribute
     {
         public readonly string SignalName;
 
-        public BindEntitySignal(string signalName)
+        public BindParentSignal(string signalName)
         {
             SignalName = signalName;
         }
@@ -40,11 +40,5 @@ namespace Overlords.helpers.tree.behaviors
         {
             Path = path;
         }
-    }
-
-    [AttributeUsage(AttributeTargets.Field)]
-    public class RequireBehavior : Attribute
-    {
-        
     }
 }

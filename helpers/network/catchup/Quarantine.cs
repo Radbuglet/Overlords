@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Godot;
-using Overlords.helpers.tree.behaviors;
+using Overlords.helpers.tree.initialization;
 
 namespace Overlords.helpers.network.catchup
 {
@@ -15,7 +15,7 @@ namespace Overlords.helpers.network.catchup
         
         public override void _Ready()
         {
-            this.InitializeBehavior();
+            this.Initialize();
             AddToGroup(QuarantinedGroupName);
         }
         
@@ -24,7 +24,7 @@ namespace Overlords.helpers.network.catchup
         {
             foreach (var suspect in tree.GetNodesInGroup(QuarantinedGroupName).Cast<Quarantine>())
             {
-                var suspectGameObj = suspect.GetGameObject<Node>();
+                var suspectGameObj = suspect.GetParent();
                 try
                 {
                     suspectGameObj.EmitSignal(nameof(QuarantineChecking));
