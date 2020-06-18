@@ -1,16 +1,17 @@
 ﻿using Godot;
-using Overlords.game.world.entityCore;
+using Overlords.game.entities.player;
 using Overlords.helpers.csharp;
-using Overlords.helpers.network.catchup;
-using Overlords.helpers.tree.initialization;
+using Overlords.helpers.network;
+using Overlords.helpers.tree;
+using Overlords.services;
 
-namespace Overlords.game.world.services
+namespace Overlords.game.world.logic
 {
-    public class JoinHandler: Node
+    public class JoinHandler : Node, IParentEnterTrigger
     {
         [Export] private PackedScene _playerPrefab;
-        [LinkNodeStatic("../Entities")] public EntityContainer EntityContainer;
-        
+        private WorldRoot WorldRoot => GetNode<WorldRoot>("../../");
+
         public override void _Ready()
         {
             this.Initialize();
@@ -22,14 +23,21 @@ namespace Overlords.game.world.services
         {
             GD.Print($"{peerId} connected!");
             GetParent().CatchupToPeer(peerId);
-            var player = _playerPrefab.Instance();
+            var player = (PlayerRoot) _playerPrefab.Instance();
             player.Name = $"player_{peerId}";
-            EntityContainer.AddEntity(player);
+            player.State.OwnerPeerId.Value = peerId;
+            WorldRoot.Entities.AddEntity(player);
         }
 
         private void _PeerLeft(int peerId)
         {
             GD.Print($"{peerId} left!");
+        }
+
+        public void _EarlyEditorTrigger(SceneTree tree)
+        {
+            if (tree.GetNetworkMode() != NetworkMode.Server)
+                this.Purge();
         }
     }
 }

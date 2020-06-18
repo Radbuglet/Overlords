@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Overlords.game.entities.player;
 
 namespace Overlords.game.world.entityCore
 {
@@ -10,8 +11,8 @@ namespace Overlords.game.world.entityCore
         
         public static IEnumerable<int> GetPlayingPeers(this SceneTree tree)
         {
-            return tree.GetNodesInGroup(PlayersGroupName).Cast<Node>()
-                .Select(player => 2);  // TODO: Implement
+            return tree.GetNodesInGroup(PlayersGroupName).Cast<PlayerRoot>()
+                .Select(player => player.State.OwnerPeerId.Value);
         }
     }
 }

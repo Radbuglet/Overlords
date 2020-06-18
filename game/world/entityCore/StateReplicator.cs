@@ -2,8 +2,7 @@
 using Godot;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
-using Overlords.helpers.network.catchup;
-using Overlords.helpers.tree.initialization;
+using Overlords.helpers.tree;
 using Array = Godot.Collections.Array;
 
 namespace Overlords.game.world.entityCore
@@ -20,21 +19,19 @@ namespace Overlords.game.world.entityCore
                 this, nameof(ValidateQuarantineState));
         }
 
-        public void AddField<T>(bool isOneShot = false)
+        protected ReplicatedField<T> AddField<T>(bool isOneShot = false)
         {
-            var index = _fields.Count;
-            var field = new ReplicatedField<T>(isOneShot);
-            if (this.GetNetworkMode() == NetworkMode.Server)
-            {
-                field.ValueChanged += (newValue, oldValue) =>
-                {
-                    foreach (var peerId in GetTree().GetPlayingPeers())
-                    {
-                        RpcId(peerId, nameof(_SetOneValue), index, newValue);
-                    }
-                };
-            }
+            var field = new ReplicatedField<T>(_fields.Count, isOneShot);
             _fields.Add(field);
+            return field;
+        }
+
+        protected void ReplicateField(IReplicatedField field)
+        {
+            foreach (var peerId in GetTree().GetPlayingPeers())
+            {
+                RpcId(peerId, nameof(_SetOneValue), field.Index, field.NetGetValue());
+            }
         }
         
         public void CatchupState(int peerId)
@@ -100,32 +97,21 @@ namespace Overlords.game.world.entityCore
 
     public interface IReplicatedField
     {
+        int Index { get; }
         bool NetSetValue(object raw);
         object NetGetValue();
     }
 
     public class ReplicatedField<T>: IReplicatedField
     {
-        public delegate void ValueChangeHandler(T newValue, T oldValue);
-        
+        public int Index { get; }
         public readonly bool IsOneShot;
-        public event ValueChangeHandler ValueChanged;
+        public T Value;
 
-        private T _valueInternal;
-        public T Value
+        public ReplicatedField(int index, bool isOneShot)
         {
-            get => _valueInternal;
-            set
-            {
-                var oldValue = _valueInternal;
-                _valueInternal = value;
-                ValueChanged?.Invoke(value, oldValue);
-            }
-        }
-
-        public ReplicatedField(bool isOneShot)
-        {
-            _valueInternal = default;
+            Index = index;
+            Value = default;
             IsOneShot = isOneShot;
         }
 

@@ -1,7 +1,7 @@
 ﻿using Godot;
 using Godot.Collections;
 
-namespace Overlords.helpers.network.catchup
+namespace Overlords.helpers.network
 {
     public interface IRequiresCatchup
     {

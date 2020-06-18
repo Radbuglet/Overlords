@@ -53,21 +53,23 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="game\entities\player\PlayerRoot.cs" />
+    <Compile Include="game\entities\player\PlayerState.cs" />
     <Compile Include="game\world\entityCore\EntityContainer.cs" />
     <Compile Include="game\world\entityCore\EntityGroups.cs" />
     <Compile Include="game\world\entityCore\StateReplicator.cs" />
-    <Compile Include="game\world\services\JoinHandler.cs" />
+    <Compile Include="game\world\logic\DebugBoi.cs" />
+    <Compile Include="game\world\logic\JoinHandler.cs" />
+    <Compile Include="game\world\logic\WorldRoot.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\csharp\ListExtensions.cs" />
-    <Compile Include="helpers\network\catchup\CatchupUtils.cs" />
-    <Compile Include="helpers\network\catchup\Quarantine.cs" />
-    <Compile Include="helpers\network\IGenericRpc.cs" />
+    <Compile Include="helpers\network\CatchupUtils.cs" />
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
-    <Compile Include="helpers\tree\initialization\Attributes.cs" />
-    <Compile Include="helpers\tree\initialization\InitializationExtensions.cs" />
+    <Compile Include="helpers\network\Quarantine.cs" />
+    <Compile Include="helpers\tree\InitializationExtensions.cs" />
     <Compile Include="helpers\tree\TreeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="menu\StartClientButton.cs" />
@@ -80,9 +82,6 @@
       <Version>1.0.0</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="game\entities" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

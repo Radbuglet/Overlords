@@ -5,14 +5,13 @@ using Godot;
 using Godot.Collections;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
-using Overlords.helpers.network.catchup;
 using Overlords.helpers.tree;
 
 namespace Overlords.game.world.entityCore
 {
-    public class EntityContainer: Node, IRequiresCatchup
+    public class EntityContainer : Node, IRequiresCatchup
     {
-        [Export] private Array<PackedScene> _entityTypes;
+        [Export] private Array<PackedScene> _entityTypes = new Array<PackedScene>();
         private Godot.Collections.Dictionary<string, int> _fileToTypeMap;
 
         public override void _Ready()

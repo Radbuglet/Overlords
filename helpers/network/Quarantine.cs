@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using Godot;
-using Overlords.helpers.tree.initialization;
+using Overlords.helpers.tree;
 
-namespace Overlords.helpers.network.catchup
+namespace Overlords.helpers.network
 {
     public class Quarantine : Node
     {
