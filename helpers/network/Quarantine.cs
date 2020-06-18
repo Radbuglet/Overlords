@@ -1,55 +1,68 @@
-﻿using System;
+using System;
 using System.Linq;
 using Godot;
-using Overlords.helpers.tree;
 
 namespace Overlords.helpers.network
 {
-    public class Quarantine : Node
-    {
-        public delegate void QuarantineChecking();
-        public delegate void QuarantineOver();
-        
-        private const string QuarantinedGroupName = "quarantined";
-        public bool IsSafe { get; private set; }
-        
-        public override void _Ready()
-        {
-            this.Initialize();
-            AddToGroup(QuarantinedGroupName);
-        }
-        
+	public interface IQuarantineInfectable
+	{
+		void _QuarantineChecking();
+	}
 
-        public static bool PerformSweep(SceneTree tree, out string problem)
-        {
-            foreach (var suspect in tree.GetNodesInGroup(QuarantinedGroupName).Cast<Quarantine>())
-            {
-                var suspectGameObj = suspect.GetParent();
-                try
-                {
-                    suspectGameObj.EmitSignal(nameof(QuarantineChecking));
-                }
-                catch (QuarantineContamination reason)
-                {
-                    problem = $"Quarantine violation at {suspect.GetPath()}: {reason.Message}";
-                    return false;
-                }
-                suspect.IsSafe = true;
-                suspect.RemoveFromGroup(QuarantinedGroupName);
-                suspectGameObj.EmitSignal(nameof(QuarantineOver));
-            }
+	public interface IQuarantinedListener
+	{
+		void _QuarantineOver();
+	}
+	
+	public static class Quarantine
+	{
+		private const string QuarantineInfectableGroupName = "quarantined_infectable";
+		private const string QuarantineListenerGroupName = "quarantined_listener";
 
-            problem = null;
-            return true;
-        }
-    }
+		public static void FlagQuarantineInfectable<T>(this T target) where T: Node, IQuarantineInfectable
+		{
+			target.AddToGroup(QuarantineInfectableGroupName);
+		}
+		
+		public static void FlagQuarantineListener<T>(this T target) where T: Node, IQuarantinedListener
+		{
+			target.AddToGroup(QuarantineListenerGroupName);
+		}
+		
+		public static bool PerformQuarantineSweep(this SceneTree tree, out string problem)
+		{
+			foreach (var suspectNode in tree.GetNodesInGroup(QuarantineInfectableGroupName).Cast<Node>())
+			{
+				var suspectIface = (IQuarantineInfectable) suspectNode;
+				try
+				{
+					suspectIface._QuarantineChecking();
+				}
+				catch (QuarantineContamination reason)
+				{
+					problem = $"Quarantine violation at {suspectNode.GetPath()}: {reason.Message}";
+					return false;
+				}
+				suspectNode.RemoveFromGroup(QuarantineInfectableGroupName);
+			}
 
-    public class QuarantineContamination : Exception
-    {
-        public QuarantineContamination(string reason): base(reason)
-        { }
+			foreach (var listener in tree.GetNodesInGroup(QuarantineListenerGroupName).Cast<Node>())
+			{
+				listener.RemoveFromGroup(QuarantineListenerGroupName);
+				((IQuarantinedListener) listener)._QuarantineOver();
+			}
 
-        public QuarantineContamination() : base("No reason provided.")
-        { }
-    }
+			problem = null;
+			return true;
+		}
+	}
+
+	public class QuarantineContamination : Exception
+	{
+		public QuarantineContamination(string reason): base(reason)
+		{ }
+
+		public QuarantineContamination() : base("No reason provided.")
+		{ }
+	}
 }

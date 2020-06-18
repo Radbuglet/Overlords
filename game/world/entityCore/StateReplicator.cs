@@ -2,21 +2,19 @@
 using Godot;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
-using Overlords.helpers.tree;
 using Array = Godot.Collections.Array;
 
 namespace Overlords.game.world.entityCore
 {
-    public abstract class StateReplicator : Node, IRequiresCatchup
+    public abstract class StateReplicator : Node, IRequiresCatchup, IQuarantineInfectable
     {
         private readonly List<IReplicatedField> _fields = new List<IReplicatedField>();
         private bool _constructed;
 
         public override void _Ready()
         {
-            if (this.GetNetworkMode() != NetworkMode.Client) return;
-            GetParent().ConnectOrCreate(nameof(Quarantine.QuarantineChecking),
-                this, nameof(ValidateQuarantineState));
+            if (GetTree().GetNetworkMode() == NetworkMode.Client)
+                this.FlagQuarantineInfectable();
         }
 
         protected ReplicatedField<T> AddField<T>(bool isOneShot = false)
@@ -43,14 +41,6 @@ namespace Overlords.game.world.entityCore
             }
 
             RpcId(peerId, nameof(_CatchupInitialValues), packet);
-        }
-
-        private void ValidateQuarantineState()
-        {
-            if (!_constructed)
-            {
-                throw new QuarantineContamination("StateReplicator never received a valid initial state.");
-            }
         }
 
         [Puppet]
@@ -93,6 +83,14 @@ namespace Overlords.game.world.entityCore
             }
             field.NetSetValue(value);
         }
+
+        public void _QuarantineChecking()
+        {
+            if (!_constructed)
+            {
+                throw new QuarantineContamination("StateReplicator never received a valid initial state.");
+            }
+        }
     }
 
     public interface IReplicatedField
@@ -124,7 +122,7 @@ namespace Overlords.game.world.entityCore
             }
             else
             {
-                GD.PushWarning("ReplicatedField had its value set to the wrong type. Ignored.");
+                GD.PushWarning("ReplicatedField had its value set to the wrong type.");
                 return false;
             }
         }

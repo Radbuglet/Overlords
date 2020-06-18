@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://game/world/entityCore/EntityContainer.cs" type="Script" id=1]
-[ext_resource path="res://game/world/logic/DebugBoi.cs" type="Script" id=2]
+[ext_resource path="res://game/world/logic/ClientLogic.cs" type="Script" id=2]
 [ext_resource path="res://game/world/logic/JoinHandler.cs" type="Script" id=3]
 [ext_resource path="res://game/world/logic/WorldRoot.cs" type="Script" id=4]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=5]
+[ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
 
 [sub_resource type="PlaneMesh" id=1]
 material = ExtResource( 5 )
@@ -21,6 +22,7 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_lock_": true
 }
+_entityTypes = [ ExtResource( 6 ) ]
 
 [node name="Map" type="Spatial" parent="."]
 __meta__ = {
@@ -41,6 +43,7 @@ transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 19 )
 
 [node name="JoinHandler" type="Node" parent="Logic"]
 script = ExtResource( 3 )
+_playerPrefab = ExtResource( 6 )
 
-[node name="DebugBoi" type="Node" parent="Logic"]
+[node name="ClientLogic" type="Node" parent="Logic"]
 script = ExtResource( 2 )

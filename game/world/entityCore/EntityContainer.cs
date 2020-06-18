@@ -39,31 +39,20 @@ namespace Overlords.game.world.entityCore
             // Replicate it!
             foreach (var peerId in peerIds)
             {
-                entity.CatchupToPeer(peerId);
                 RpcId(peerId, nameof(_EntityAddedRemotely), typeId, entity.Name);
+                entity.CatchupToPeer(peerId);
             }
         }
 
-        public void AddEntity(Node entity)
+        public void ReplicateEntity(Node entity)
         {
-            // Add locally (if this entity is a player, it will show up in the group and will receive replication)
-            var oldName = entity.Name;
-            AddChild(entity);
-            Debug.Assert(oldName == entity.Name);
-            
-            // Replicate to all players
             ReplicateEntity(entity, GetTree().GetPlayingPeers());
         }
 
-        public void RemoveEntity(Node entity)
+        public void DeReplicateEntity(Node entity)
         {
-            // Remove locally (if this entity is a player, it will be removed from the group and will not receive packets)
-            entity.Purge();
-            
-            // Replicate to all players
             foreach (var peerId in GetTree().GetPlayingPeers())
             {
-                entity.CatchupToPeer(peerId);
                 RpcId(peerId, nameof(_EntityRemovedRemotely), entity.Name);
             }
         }
@@ -79,7 +68,7 @@ namespace Overlords.game.world.entityCore
         [Puppet]
         private void _EntityAddedRemotely(int typeIndex, string name)
         {
-            if (_entityTypes.TryGetValue(typeIndex, out var typePrefab))
+            if (!_entityTypes.TryGetValue(typeIndex, out var typePrefab))
             {
                 GD.PushWarning($"Invalid entity type. Server attempted to spawn entity of type {typeIndex}. Valid types are between 0 and {_entityTypes.Count - 1} inclusive.");
                 return;

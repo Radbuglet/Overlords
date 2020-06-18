@@ -14,5 +14,10 @@ namespace Overlords.game.world.entityCore
             return tree.GetNodesInGroup(PlayersGroupName).Cast<PlayerRoot>()
                 .Select(player => player.State.OwnerPeerId.Value);
         }
+
+        public static string GetPlayerName(int peerId)
+        {
+            return $"player_{peerId}";
+        }
     }
 }

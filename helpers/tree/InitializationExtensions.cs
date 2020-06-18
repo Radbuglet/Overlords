@@ -3,20 +3,10 @@ using System.Diagnostics;
 using System.Reflection;
 using Godot;
 using Overlords.helpers.csharp;
+using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.tree
 {
-    [AttributeUsage(AttributeTargets.Method)]
-    public class BindParentSignal : Attribute
-    {
-        public readonly string SignalName;
-
-        public BindParentSignal(string signalName)
-        {
-            SignalName = signalName;
-        }
-    }
-
     [AttributeUsage(AttributeTargets.Field)]
     public class FieldNotNull : Attribute
     {
@@ -84,27 +74,8 @@ namespace Overlords.helpers.tree
                     field.GetCustomAttribute<FieldNotNull>() == null || field.GetValue(initializedNode) != null,
                     $"Field {field.Name} is marked as not allowed to be null during init but is null anyway.");
             }
-
-            // Bind parent signals
-            var parent = initializedNode.GetParent();
-            foreach (var method in thisType.GetMethods(
-                BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
-            {
-                var attribute = method.GetCustomAttribute<BindParentSignal>();
-                if (attribute != null)
-                {
-                    parent.ConnectOrCreate(attribute.SignalName, initializedNode, method.Name);
-                }
-            }
         }
 
-        public static void ConnectOrCreate(this Node provider, string signalName, Node target, string methodName)
-        {
-            if (!provider.HasSignal(signalName))
-                provider.AddUserSignal(signalName);
-            provider.Connect(signalName, target, methodName);
-        }
-        
         public static void AddUserSignals(this Node node)
         {
             var type = node.GetType();
