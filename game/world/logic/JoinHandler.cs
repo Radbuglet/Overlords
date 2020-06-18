@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Overlords.game.definitions;
 using Overlords.game.entities.player;
 using Overlords.game.world.entityCore;
 using Overlords.helpers.csharp;
@@ -34,9 +35,7 @@ namespace Overlords.game.world.logic
             player.State.DisplayName.Value = "radbuglet";
             player.State.OwnerPeerId.Value = peerId;
             player.State.Balance.Value = 0;
-            player.State.InitialPosition.Value = new Vector3(
-                (float) GD.RandRange(-10, 10), 10,
-                (float) GD.RandRange(-10, 10));
+            player.SetGlobalPosition(new Vector3((float) GD.RandRange(-50, 50), 0, (float) GD.RandRange(-50, 50)));
             player.SharedLogic.OnSetupComplete();
             
             entityContainer.ReplicateEntity(player);

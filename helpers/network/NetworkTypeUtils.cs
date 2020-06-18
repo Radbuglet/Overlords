@@ -12,20 +12,20 @@ namespace Overlords.helpers.network
         None
     }
     
+    [Flags]
+    public enum NetObjectVariant
+    {
+        FlagAuthoritative = 0b_0000_0001,
+        FlagNotAuthoritative = 0b_0000_0010,
+        FlagServer = 0b_0000_0100,
+        FlagClient = 0b_0000_1000,
+        Server = FlagAuthoritative | FlagServer,
+        LocalAuthoritative = FlagAuthoritative | FlagClient,
+        LocalPuppet = FlagNotAuthoritative | FlagClient
+    }
+    
     public static class NetworkTypeUtils
     {
-        [Flags]
-        public enum ObjectVariant
-        {
-            FlagAuthoritative = 0b_0000_0001,
-            FlagNotAuthoritative = 0b_0000_0010,
-            FlagServer = 0b_0000_0100,
-            FlagClient = 0b_0000_1000,
-            Server = FlagAuthoritative | FlagServer,
-            LocalAuthoritative = FlagAuthoritative | FlagClient,
-            LocalPuppet = FlagNotAuthoritative | FlagClient
-        }
-
         public static Error StartServer(this SceneTree tree, int port, int maxConnections)
         {
             var peer = new NetworkedMultiplayerENet {ServerRelay = false};
@@ -57,16 +57,16 @@ namespace Overlords.helpers.network
             return node.GetTree().GetNetworkMode();
         }
 
-        public static ObjectVariant GetNetworkVariant(this SceneTree tree, int ownerPeerId)
+        public static NetObjectVariant GetNetworkVariant(this SceneTree tree, int ownerPeerId)
         {
             return tree.GetNetworkMode() == NetworkMode.Server
-                ? ObjectVariant.Server
+                ? NetObjectVariant.Server
                 : ownerPeerId == tree.GetNetworkUniqueId()
-                    ? ObjectVariant.LocalAuthoritative
-                    : ObjectVariant.LocalPuppet;
+                    ? NetObjectVariant.LocalAuthoritative
+                    : NetObjectVariant.LocalPuppet;
         }
 
-        public static void ApplyToTree(this ObjectVariant variant, Dictionary<ObjectVariant, IEnumerable<Func<Node>>> config)
+        public static void ApplyToTree(this NetObjectVariant variant, Dictionary<NetObjectVariant, IEnumerable<Func<Node>>> config)
         {
             // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
             foreach (var group in config)

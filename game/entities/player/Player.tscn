@@ -1,8 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://game/entities/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/entities/player/PlayerRoot.cs" type="Script" id=2]
 [ext_resource path="res://game/entities/player/PlayerShared.cs" type="Script" id=3]
+[ext_resource path="res://game/entities/player/movement/PlayerMovementNet.cs" type="Script" id=4]
+[ext_resource path="res://game/entities/shared/HumanoidMover.cs" type="Script" id=5]
+[ext_resource path="res://game/entities/player/movement/PlayerMovementLocal.cs" type="Script" id=6]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 1, 2, 1 )
@@ -13,6 +16,15 @@ mid_height = 2.0
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 2 )
 
+[node name="Head" type="Spatial" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
+
+[node name="Camera" type="Camera" parent="Head"]
+fov = 90.0
+
+[node name="RayCast" type="RayCast" parent="Head/Camera"]
+cast_to = Vector3( 0, 0, -10 )
+
 [node name="Logic" type="Node" parent="."]
 
 [node name="State" type="Node" parent="Logic"]
@@ -20,6 +32,24 @@ script = ExtResource( 1 )
 
 [node name="Shared" type="Node" parent="Logic"]
 script = ExtResource( 3 )
+
+[node name="Movement" type="Node" parent="Logic"]
+
+[node name="Mover" type="Node" parent="Logic/Movement"]
+script = ExtResource( 5 )
+PathToBody = NodePath("../../..")
+AccelTimeAir = 0.14
+AccelTimeGround = 0.035
+FullSpeed = 25.0
+Gravity = 80.0
+JumpMagnitude = 20.0
+SneakSpeed = 12.0
+
+[node name="Net" type="Node" parent="Logic/Movement"]
+script = ExtResource( 4 )
+
+[node name="Local" type="Node" parent="Logic/Movement"]
+script = ExtResource( 6 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )

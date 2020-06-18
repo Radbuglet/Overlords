@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Godot;
 using Godot.Collections;
+using Overlords.game.definitions;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree;

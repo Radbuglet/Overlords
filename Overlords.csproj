@@ -53,11 +53,15 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="game\definitions\EntityTypes.cs" />
+    <Compile Include="game\definitions\GameInputs.cs" />
+    <Compile Include="game\entities\player\movement\PlayerMovementNet.cs" />
+    <Compile Include="game\entities\player\movement\PlayerMovementLocal.cs" />
     <Compile Include="game\entities\player\PlayerShared.cs" />
     <Compile Include="game\entities\player\PlayerRoot.cs" />
     <Compile Include="game\entities\player\PlayerState.cs" />
+    <Compile Include="game\entities\shared\HumanoidMover.cs" />
     <Compile Include="game\world\entityCore\EntityContainer.cs" />
-    <Compile Include="game\world\entityCore\EntityTypes.cs" />
     <Compile Include="game\world\entityCore\StateReplicator.cs" />
     <Compile Include="game\world\logic\ClientLogic.cs" />
     <Compile Include="game\world\logic\JoinHandler.cs" />
@@ -70,6 +74,7 @@
     <Compile Include="helpers\network\CatchupUtils.cs" />
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
     <Compile Include="helpers\network\Quarantine.cs" />
+    <Compile Include="helpers\network\RpcUtils.cs" />
     <Compile Include="helpers\tree\InitializationExtensions.cs" />
     <Compile Include="helpers\tree\TreeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />

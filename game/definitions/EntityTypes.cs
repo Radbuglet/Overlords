@@ -3,7 +3,7 @@ using System.Linq;
 using Godot;
 using Overlords.game.entities.player;
 
-namespace Overlords.game.world.entityCore
+namespace Overlords.game.definitions
 {
     public static class EntityTypes
     {
