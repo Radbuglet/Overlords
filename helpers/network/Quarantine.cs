@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Godot;
+using Object = Godot.Object;
 
 namespace Overlords.helpers.network
 {
@@ -48,7 +49,7 @@ namespace Overlords.helpers.network
 
 			foreach (var listener in tree.GetNodesInGroup(QuarantineListenerGroupName).Cast<Node>())
 			{
-				if (!listener.IsInsideTree()) continue;  // ...to handle Nodes that get purged during quarantine release.
+				if (!Object.IsInstanceValid(listener) || !listener.IsInsideTree()) continue;  // ...to handle Nodes that get purged during quarantine release.
 				listener.RemoveFromGroup(QuarantineListenerGroupName);
 				((IQuarantinedListener) listener)._QuarantineOver();
 			}

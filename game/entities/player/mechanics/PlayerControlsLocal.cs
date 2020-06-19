@@ -2,13 +2,13 @@
 using Overlords.game.definitions;
 using Overlords.helpers.network;
 
-namespace Overlords.game.entities.player.movement
+namespace Overlords.game.entities.player.mechanics
 {
-    public class PlayerMovementLocal : Node, IQuarantinedListener
+    public class PlayerControlsLocal : Node, IQuarantinedListener
     {
         private Vector2 _rotation;
         
-        public PlayerRoot Root => GetNode<PlayerRoot>("../../../");
+        public PlayerRoot Root => GetNode<PlayerRoot>("../../");
         private float Sensitivity => -Mathf.Deg2Rad(0.2f);
         private bool HasControl => Input.GetMouseMode() == Input.MouseMode.Captured;
 
@@ -56,6 +56,9 @@ namespace Overlords.game.entities.player.movement
                 if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
                 if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
                 heading = heading.Rotated(Vector3.Up, _rotation.x);
+
+                if (GameInputs.FpsInteract.WasJustPressed())
+                    Root.Interaction.OnLocalInteract();
             }
 
             Root.Mover.Move(delta, heading, HasControl && GameInputs.FpsJump.IsPressed(),

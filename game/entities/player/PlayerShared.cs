@@ -30,7 +30,7 @@ namespace Overlords.game.entities.player
                 [NetObjectVariant.LocalAuthoritative] = new Func<Node>[]
                 {
                     () => Root.FpsCamera,
-                    () => Root.MovementLocal
+                    () => Root.ControlsLocal
                 }
             });
             if (variant == NetObjectVariant.LocalAuthoritative)

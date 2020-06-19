@@ -1,11 +1,12 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://game/entities/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/entities/player/PlayerRoot.cs" type="Script" id=2]
 [ext_resource path="res://game/entities/player/PlayerShared.cs" type="Script" id=3]
-[ext_resource path="res://game/entities/player/movement/PlayerMovementNet.cs" type="Script" id=4]
+[ext_resource path="res://game/entities/player/mechanics/PlayerMovementNet.cs" type="Script" id=4]
 [ext_resource path="res://game/entities/shared/HumanoidMover.cs" type="Script" id=5]
-[ext_resource path="res://game/entities/player/movement/PlayerMovementLocal.cs" type="Script" id=6]
+[ext_resource path="res://game/entities/player/mechanics/PlayerControlsLocal.cs" type="Script" id=6]
+[ext_resource path="res://game/entities/player/mechanics/PlayerInteraction.cs" type="Script" id=7]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 1, 2, 1 )
@@ -48,8 +49,11 @@ SneakSpeed = 12.0
 [node name="Net" type="Node" parent="Logic/Movement"]
 script = ExtResource( 4 )
 
-[node name="Local" type="Node" parent="Logic/Movement"]
+[node name="LocalControls" type="Node" parent="Logic"]
 script = ExtResource( 6 )
+
+[node name="Interaction" type="Node" parent="Logic"]
+script = ExtResource( 7 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )

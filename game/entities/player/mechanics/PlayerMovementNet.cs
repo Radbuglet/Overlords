@@ -2,19 +2,13 @@
 using Overlords.game.definitions;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
-using Overlords.helpers.tree;
 
-namespace Overlords.game.entities.player.movement
+namespace Overlords.game.entities.player.mechanics
 {
     public class PlayerMovementNet : Node, IRequiresCatchup, IQuarantineInfectable
     {
         public PlayerRoot Root => GetNode<PlayerRoot>("../../../");
         private bool _gotInitialPosition;
-        
-        public override void _Ready()
-        {
-            this.Initialize();
-        }
 
         public void CatchupState(int peerId)
         {

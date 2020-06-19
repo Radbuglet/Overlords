@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://game/world/entityCore/ListReplicator.cs" type="Script" id=1]
 [ext_resource path="res://game/world/logic/ClientLogic.cs" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://game/world/logic/WorldRoot.cs" type="Script" id=4]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=5]
 [ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
+[ext_resource path="res://game/entities/npcs/shop/Shop.tscn" type="PackedScene" id=7]
 
 [sub_resource type="PlaneMesh" id=1]
 material = ExtResource( 5 )
@@ -47,6 +48,9 @@ transform = Transform( -1, 1.42109e-14, -8.9407e-08, -6.32203e-08, 0.707107, 0.7
 
 [node name="FallbackCamera" type="Camera" parent="Map"]
 transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 10, 19 )
+
+[node name="Shop" parent="Map" instance=ExtResource( 7 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 17 )
 
 [node name="Logic" type="Node" parent="."]
 

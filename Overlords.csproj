@@ -55,8 +55,10 @@
   <ItemGroup>
     <Compile Include="game\definitions\EntityTypes.cs" />
     <Compile Include="game\definitions\GameInputs.cs" />
-    <Compile Include="game\entities\player\movement\PlayerMovementNet.cs" />
-    <Compile Include="game\entities\player\movement\PlayerMovementLocal.cs" />
+    <Compile Include="game\entities\npcs\shop\ShopRoot.cs" />
+    <Compile Include="game\entities\player\mechanics\PlayerControlsLocal.cs" />
+    <Compile Include="game\entities\player\mechanics\PlayerInteraction.cs" />
+    <Compile Include="game\entities\player\mechanics\PlayerMovementNet.cs" />
     <Compile Include="game\entities\player\PlayerShared.cs" />
     <Compile Include="game\entities\player\PlayerRoot.cs" />
     <Compile Include="game\entities\player\PlayerState.cs" />
@@ -88,9 +90,6 @@
       <Version>1.0.0</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="game\entities\player\interaction" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
