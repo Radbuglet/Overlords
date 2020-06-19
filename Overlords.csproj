@@ -61,7 +61,7 @@
     <Compile Include="game\entities\player\PlayerRoot.cs" />
     <Compile Include="game\entities\player\PlayerState.cs" />
     <Compile Include="game\entities\shared\HumanoidMover.cs" />
-    <Compile Include="game\world\entityCore\EntityContainer.cs" />
+    <Compile Include="game\world\entityCore\ListReplicator.cs" />
     <Compile Include="game\world\entityCore\StateReplicator.cs" />
     <Compile Include="game\world\logic\ClientLogic.cs" />
     <Compile Include="game\world\logic\JoinHandler.cs" />
@@ -88,6 +88,9 @@
       <Version>1.0.0</Version>
       <PrivateAssets>All</PrivateAssets>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="game\entities\player\interaction" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

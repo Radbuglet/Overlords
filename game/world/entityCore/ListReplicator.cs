@@ -10,7 +10,7 @@ using Overlords.helpers.tree;
 
 namespace Overlords.game.world.entityCore
 {
-    public class EntityContainer : Node, IRequiresCatchup
+    public class ListReplicator : Node, IRequiresCatchup
     {
         [Export] private Array<PackedScene> _entityTypes = new Array<PackedScene>();
         private Godot.Collections.Dictionary<string, int> _fileToTypeMap;
@@ -24,6 +24,7 @@ namespace Overlords.game.world.entityCore
             _fileToTypeMap = new Godot.Collections.Dictionary<string, int>();
             foreach (var entityType in _entityTypes)
             {
+                Debug.Assert(entityType != null);
                 _fileToTypeMap[entityType.ResourcePath] = index;
                 index++;
             }
@@ -35,7 +36,7 @@ namespace Overlords.game.world.entityCore
             
             // Get entity's type
             var isRegistered = _fileToTypeMap.TryGetValue(entity.Filename, out var typeId);
-            Debug.Assert(isRegistered);
+            Debug.Assert(isRegistered, "Failed to replicate entity: entity type was never registered.");
             
             // Replicate it!
             foreach (var peerId in peerIds)

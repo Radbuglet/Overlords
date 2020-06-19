@@ -6,9 +6,11 @@ namespace Overlords.game.entities.player.movement
 {
     public class PlayerMovementLocal : Node, IQuarantinedListener
     {
+        private Vector2 _rotation;
+        
         public PlayerRoot Root => GetNode<PlayerRoot>("../../../");
         private float Sensitivity => -Mathf.Deg2Rad(0.2f);
-        private Vector2 _rotation;
+        private bool HasControl => Input.GetMouseMode() == Input.MouseMode.Captured;
 
         public override void _Ready()
         {
@@ -32,7 +34,7 @@ namespace Overlords.game.entities.player.movement
 
         public override void _Input(InputEvent @event)
         {
-            if (!(@event is InputEventMouseMotion motion)) return;
+            if (!HasControl || !(@event is InputEventMouseMotion motion)) return;
             _rotation += motion.Relative * Sensitivity;
             _rotation.y = Mathf.Clamp(_rotation.y, -Mathf.Pi / 2, Mathf.Pi / 2);
             _rotation.x -= Mathf.Floor(_rotation.x / Mathf.Tau) * Mathf.Tau;
@@ -41,15 +43,23 @@ namespace Overlords.game.entities.player.movement
 
         public override void _PhysicsProcess(float delta)
         {
-            var heading = new Vector3();
-            if (GameInputs.FpsForward.IsPressed()) heading += Vector3.Forward;
-            if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
-            if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
-            if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
-            heading = heading.Rotated(Vector3.Up, _rotation.x);
+            if (GameInputs.FpsPause.WasJustPressed())
+            {
+                Input.SetMouseMode(HasControl ? Input.MouseMode.Visible : Input.MouseMode.Captured);
+            }
             
-            Root.Mover.Move(delta, heading, GameInputs.FpsJump.IsPressed(),
-                GameInputs.FpsSneak.IsPressed(), false);
+            var heading = new Vector3();
+            if (HasControl)
+            {
+                if (GameInputs.FpsForward.IsPressed()) heading += Vector3.Forward;
+                if (GameInputs.FpsBackward.IsPressed()) heading += Vector3.Back;
+                if (GameInputs.FpsLeftward.IsPressed()) heading += Vector3.Left;
+                if (GameInputs.FpsRightward.IsPressed()) heading += Vector3.Right;
+                heading = heading.Rotated(Vector3.Up, _rotation.x);
+            }
+
+            Root.Mover.Move(delta, heading, HasControl && GameInputs.FpsJump.IsPressed(),
+                HasControl && GameInputs.FpsSneak.IsPressed(), false);
             Root.MovementNet.ReplicateMyPosition();
         }
     }

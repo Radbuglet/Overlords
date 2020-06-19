@@ -6,7 +6,7 @@ namespace Overlords.game.world.logic
 {
 	public class WorldRoot : Node
 	{
-		[LinkNodeStatic("Entities")] public EntityContainer Entities;
+		[LinkNodeStatic("Entities")] public ListReplicator Entities;
 		
 		public override void _EnterTree()
 		{
