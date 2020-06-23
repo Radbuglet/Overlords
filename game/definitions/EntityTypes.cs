@@ -9,7 +9,7 @@ namespace Overlords.game.definitions
     {
         public delegate void SignalOnInteracted(PlayerRoot player);
         public const string PlayersGroupName = "players";
-        public const string InteractableGroupName = "interactable";
+        public const string RegisterInteractionGroupName = "auto_interactable";
 
         public static IEnumerable<int> GetPlayingPeers(this SceneTree tree)
         {

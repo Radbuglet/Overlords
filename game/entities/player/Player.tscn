@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://game/entities/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/entities/player/PlayerRoot.cs" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://game/entities/shared/HumanoidMover.cs" type="Script" id=5]
 [ext_resource path="res://game/entities/player/mechanics/PlayerControlsLocal.cs" type="Script" id=6]
 [ext_resource path="res://game/entities/player/mechanics/PlayerInteraction.cs" type="Script" id=7]
+[ext_resource path="res://helpers/tree/trackingGroup/TrackedMember.cs" type="Script" id=8]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 1, 2, 1 )
@@ -16,6 +17,9 @@ mid_height = 2.0
 
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 2 )
+
+[node name="TrackedMember" type="Node" parent="."]
+script = ExtResource( 8 )
 
 [node name="Head" type="Spatial" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0 )
@@ -52,7 +56,7 @@ script = ExtResource( 4 )
 [node name="LocalControls" type="Node" parent="Logic"]
 script = ExtResource( 6 )
 
-[node name="Interaction" type="Node" parent="Logic"]
+[node name="Interaction" type="Spatial" parent="Logic"]
 script = ExtResource( 7 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]

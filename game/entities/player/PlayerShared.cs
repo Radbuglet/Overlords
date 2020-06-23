@@ -29,7 +29,8 @@ namespace Overlords.game.entities.player
             {
                 [NetObjectVariant.LocalAuthoritative] = new Func<Node>[]
                 {
-                    () => Root.FpsCamera,
+                    // Note: The FpsCamera nor the RayCast are removed because server side interaction requires the RayCast which is parented
+                    // to the FpsCamera.
                     () => Root.ControlsLocal
                 }
             });

@@ -1,18 +1,18 @@
 ﻿using Godot;
 using Overlords.game.definitions;
 using Overlords.game.entities.player;
-using Overlords.game.world.entityCore;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree;
+using Overlords.helpers.tree.trackingGroup;
 using Overlords.services;
 
 namespace Overlords.game.world.logic
 {
     public class JoinHandler : Node, IParentEnterTrigger
     {
-        // TODO: Use tracking groups instead of searching by name because the later is inefficient.
         [Export] private PackedScene _playerPrefab;
+        private readonly NodeGroup<int, PlayerRoot> _players = new NodeGroup<int, PlayerRoot>();
         private WorldRoot WorldRoot => GetNode<WorldRoot>("../../");
 
         public override void _Ready()
@@ -27,17 +27,21 @@ namespace Overlords.game.world.logic
             GD.Print($"{peerId} connected!");
             WorldRoot.CatchupToPeer(peerId);
 
+            // Create player and add it to the tree
             var entityContainer = WorldRoot.Entities;
             var player = (PlayerRoot) _playerPrefab.Instance();
             player.Name = EntityTypes.GetPlayerName(peerId);
             entityContainer.AddChild(player);
             
+            // Setup player state
             player.State.DisplayName.Value = "radbuglet";
             player.State.OwnerPeerId.Value = peerId;
             player.State.Balance.Value = 0;
             player.SetGlobalPosition(new Vector3((float) GD.RandRange(-50, 50), 0, (float) GD.RandRange(-50, 50)));
-            player.SharedLogic.OnSetupComplete();
             
+            // Register player and replicate
+            player.SharedLogic.OnSetupComplete();
+            _players.AddToGroup(peerId, player);
             entityContainer.ReplicateEntity(player);
         }
 
@@ -45,7 +49,7 @@ namespace Overlords.game.world.logic
         {
             GD.Print($"{peerId} left!");
             var entityContainer = WorldRoot.Entities;
-            var player = entityContainer.GetNodeOrNull<PlayerRoot>(EntityTypes.GetPlayerName(peerId));
+            var player = _players.GetMemberOfGroup<PlayerRoot>(peerId, null);
             if (player == null) return;
             player.Purge();
             entityContainer.DeReplicateEntity(player);

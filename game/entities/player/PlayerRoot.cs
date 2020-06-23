@@ -1,12 +1,14 @@
 using Godot;
 using Overlords.game.entities.player.mechanics;
 using Overlords.game.entities.shared;
+using Overlords.game.world.logic;
 using Overlords.helpers.tree;
 
 namespace Overlords.game.entities.player
 {
 	public class PlayerRoot : KinematicBody
 	{
+		public WorldRoot WorldRoot => GetNode<WorldRoot>("../../");
 		[LinkNodeStatic("Head/Camera")] public Camera FpsCamera;
 		[LinkNodeStatic("Head/Camera/RayCast")] public RayCast LookRayCast;
 		[LinkNodeStatic("Logic/State")] public PlayerState State;

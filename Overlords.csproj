@@ -68,6 +68,7 @@
     <Compile Include="game\world\logic\ClientLogic.cs" />
     <Compile Include="game\world\logic\JoinHandler.cs" />
     <Compile Include="game\world\logic\WorldRoot.cs" />
+    <Compile Include="game\world\logic\WorldShared.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
@@ -78,6 +79,8 @@
     <Compile Include="helpers\network\Quarantine.cs" />
     <Compile Include="helpers\network\RpcUtils.cs" />
     <Compile Include="helpers\tree\InitializationExtensions.cs" />
+    <Compile Include="helpers\tree\trackingGroup\NodeGroup.cs" />
+    <Compile Include="helpers\tree\trackingGroup\TrackedMember.cs" />
     <Compile Include="helpers\tree\TreeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="menu\StartClientButton.cs" />

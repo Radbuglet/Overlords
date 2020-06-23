@@ -66,7 +66,7 @@ namespace Overlords.game.world.entityCore
                 ReplicateEntity(entity, peerId.AsEnumerable());
             }
         }
-
+        
         [Puppet]
         private void _EntityAddedRemotely(int typeIndex, string name)
         {
