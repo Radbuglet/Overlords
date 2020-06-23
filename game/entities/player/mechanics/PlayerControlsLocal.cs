@@ -48,7 +48,9 @@ namespace Overlords.game.entities.player.mechanics
                 Input.SetMouseMode(HasControl ? Input.MouseMode.Visible : Input.MouseMode.Captured);
             }
             
+            // Generate heading
             var heading = new Vector3();
+            var isSneaking = HasControl && GameInputs.FpsSneak.IsPressed();
             if (HasControl)
             {
                 if (GameInputs.FpsForward.IsPressed()) heading += Vector3.Forward;
@@ -58,12 +60,18 @@ namespace Overlords.game.entities.player.mechanics
                 heading = heading.Rotated(Vector3.Up, _rotation.x);
 
                 if (GameInputs.FpsInteract.WasJustPressed())
-                    Root.Interaction.OnLocalInteract();
+                    Root.Interaction.OnLocalInteract(isSneaking);
             }
 
+            // Perform movement
             Root.Mover.Move(delta, heading, HasControl && GameInputs.FpsJump.IsPressed(),
-                HasControl && GameInputs.FpsSneak.IsPressed(), false);
+                isSneaking, false);
             Root.MovementNet.ReplicateMyPosition();
+            
+            // Update head and camera
+            var head = Root.Head;
+            var targetHeadPosition = Root.SharedLogic.GetHeadPosition(isSneaking);
+            head.Translation = (head.Translation + targetHeadPosition) / 2.0f;
         }
     }
 }

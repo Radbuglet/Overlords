@@ -9,6 +9,7 @@ namespace Overlords.game.entities.player
 	public class PlayerRoot : KinematicBody
 	{
 		public WorldRoot WorldRoot => GetNode<WorldRoot>("../../");
+		[LinkNodeStatic("Head")] public Spatial Head;
 		[LinkNodeStatic("Head/Camera")] public Camera FpsCamera;
 		[LinkNodeStatic("Head/Camera/RayCast")] public RayCast LookRayCast;
 		[LinkNodeStatic("Logic/State")] public PlayerState State;

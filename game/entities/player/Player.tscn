@@ -37,6 +37,7 @@ script = ExtResource( 1 )
 
 [node name="Shared" type="Node" parent="Logic"]
 script = ExtResource( 3 )
+_sneakReductionCoef = 0.75
 
 [node name="Movement" type="Node" parent="Logic"]
 

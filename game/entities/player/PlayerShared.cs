@@ -8,13 +8,22 @@ namespace Overlords.game.entities.player
 {
     public class PlayerShared : Node, IQuarantinedListener
     {
-        private PlayerRoot Root => GetNode<PlayerRoot>("../../");
+        [Export] private float _sneakReductionCoef;
         public NetObjectVariant MyVariant;
+        private Vector3 _originalHeadPosition;
+        
+        private PlayerRoot Root => GetNode<PlayerRoot>("../../");
         
         public override void _Ready()
         {
             if (this.GetNetworkMode() != NetworkMode.Client) return;
             this.FlagQuarantineListener();
+            _originalHeadPosition = Root.Head.Translation;
+        }
+        
+        public void _QuarantineOver()
+        {
+            OnSetupComplete();
         }
 
         public void OnSetupComplete()
@@ -29,18 +38,12 @@ namespace Overlords.game.entities.player
             {
                 [NetObjectVariant.LocalAuthoritative] = new Func<Node>[]
                 {
-                    // Note: The FpsCamera nor the RayCast are removed because server side interaction requires the RayCast which is parented
-                    // to the FpsCamera.
+                    () => Root.FpsCamera,  // This also deletes LookRayCast
                     () => Root.ControlsLocal
                 }
             });
             if (variant == NetObjectVariant.LocalAuthoritative)
                 Root.FpsCamera.Current = true;
-        }
-
-        public void _QuarantineOver()
-        {
-            OnSetupComplete();
         }
 
         public bool ValidateOwnerOnlyRpc(string action)
@@ -49,6 +52,11 @@ namespace Overlords.game.entities.player
             if (sender == Root.State.OwnerPeerId.Value) return false;
             GD.PushWarning($"RPC {action} can only be interacted with by the owner. Peer {sender} violated the rule.");
             return true;
+        }
+
+        public Vector3 GetHeadPosition(bool isSneaking)
+        {
+            return isSneaking ? _originalHeadPosition * _sneakReductionCoef : _originalHeadPosition;
         }
     }
 }

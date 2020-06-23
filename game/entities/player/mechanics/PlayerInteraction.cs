@@ -11,7 +11,7 @@ namespace Overlords.game.entities.player.mechanics
         private const float MaxInteractDistance = 12;
         private PlayerRoot Root => GetNode<PlayerRoot>("../../");
         
-        public void OnLocalInteract()
+        public void OnLocalInteract(bool isSneaking)
         {
             // Ray-cast
             var rayCast = Root.LookRayCast;
@@ -22,12 +22,12 @@ namespace Overlords.game.entities.player.mechanics
             if (!(rayCast.GetCollider() is Spatial target)) return;
             if (!target.GetIdInGroup(Root.WorldRoot.Shared.InteractionTargets, out var targetId)) return;
 
-                // Replicate interaction
-            this.RpcServer(nameof(_Interacted), targetId, rayCast.GetCollisionPoint() - target.GetGlobalPosition());
+            // Replicate interaction
+            this.RpcServer(nameof(_Interacted), targetId, rayCast.GetCollisionPoint() - target.GetGlobalPosition(), isSneaking);
         }
 
         [Master]
-        private void _Interacted(string entityId, Vector3 relative)
+        private void _Interacted(string entityId, Vector3 relative, bool isSneaking)
         {
             // Validate player and get target
             if (Root.SharedLogic.ValidateOwnerOnlyRpc(nameof(_Interacted))) return;
@@ -39,7 +39,8 @@ namespace Overlords.game.entities.player.mechanics
             }
 
             // Validate interaction distance
-            var fromPoint = Root.LookRayCast.GetGlobalPosition();
+            Root.Head.Translation = Root.SharedLogic.GetHeadPosition(isSneaking);
+            var fromPoint = Root.Head.GetGlobalPosition();
             var targetPoint = target.GetGlobalPosition() + relative;
             var pointDistance = fromPoint.DistanceTo(targetPoint);
             if (pointDistance > MaxInteractDistance)
