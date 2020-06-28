@@ -26,6 +26,14 @@ namespace Overlords.helpers.network
     
     public static class NetworkTypeUtils
     {
+        /// <summary>
+        /// Creates a server without all that peer to peer nonsense.
+        /// Will silently replace any pre-existing peer without performing any shutdown/cleanup logic.
+        /// </summary>
+        /// <returns>
+        /// The return value from CreateServer().
+        /// `Error.Ok` signifies that the server was created and bounded.
+        /// </returns>
         public static Error StartServer(this SceneTree tree, int port, int maxConnections)
         {
             var peer = new NetworkedMultiplayerENet {ServerRelay = false};
@@ -36,6 +44,14 @@ namespace Overlords.helpers.network
             return Error.Ok;
         }
 
+        /// <summary>
+        /// Creates a client.
+        /// Will silently replace any pre-existing peer without performing any shutdown/cleanup logic.
+        /// </summary>
+        /// <returns>
+        /// The return value from CreateClient().
+        /// `Error.Ok` signifies that the client was created and bounded.
+        /// </returns>
         public static Error StartClient(this SceneTree tree, string host, int port)
         {
             var peer = new NetworkedMultiplayerENet();
@@ -66,13 +82,18 @@ namespace Overlords.helpers.network
                     : NetObjectVariant.LocalPuppet;
         }
 
+        /// <summary>
+        /// Removes all nodes that fall under sections of the config whose keys do not match with the provided variant.
+        /// The config keys are specified as bit masks of NetObjectVariant. All non-zero bits from any given key must match
+        /// the provided variant in order for it to be considered matched.
+        /// </summary>
         public static void ApplyToTree(this NetObjectVariant variant, Dictionary<NetObjectVariant, IEnumerable<Func<Node>>> config)
         {
             // ReSharper disable once ForeachCanBePartlyConvertedToQueryUsingAnotherGetEnumerator
             foreach (var group in config)
             {
                 if ((variant & group.Key) == group.Key)  // True if all bits with values requested match up
-                    continue;
+                    continue;  // Do not delete the nodes in this group.
 
                 foreach (var node in group.Value)
                     node().Purge();

@@ -9,7 +9,6 @@ namespace Overlords.game.entities.player
     public class PlayerShared : Node, IQuarantinedListener
     {
         [Export] private float _sneakReductionCoef;
-        public NetObjectVariant MyVariant;
         private Vector3 _originalHeadPosition;
         
         private PlayerRoot Root => GetNode<PlayerRoot>("../../");
@@ -33,7 +32,6 @@ namespace Overlords.game.entities.player
 
             // Find and apply variant
             var variant = GetTree().GetNetworkVariant(Root.State.OwnerPeerId.Value);
-            MyVariant = variant;
             variant.ApplyToTree(new Dictionary<NetObjectVariant, IEnumerable<Func<Node>>>
             {
                 [NetObjectVariant.LocalAuthoritative] = new Func<Node>[]

@@ -15,6 +15,15 @@ namespace Overlords.helpers.network
 		void _QuarantineOver();
 	}
 	
+	/// <summary>
+	/// Since catchup is handled by all affected nodes in no particular order (nor a central authority to validate any packet),
+	/// nodes created remotely which require catchup validation should use the Quarantine utility.
+	/// 
+	/// Nodes that must check an invariant declare themselves as being a possible "contaminant" using `FlagQuarantineInfectable`.
+	/// Nodes that rely upon some state being valid declare themselves as being a "quarantine listener". All of these nodes will
+	/// be called once all infectable nodes are checked. They will be called in scene tree order in a way almost identical to
+	/// `_EnteredTree`. 
+	/// </summary>
 	public static class Quarantine
 	{
 		private const string QuarantineInfectableGroupName = "quarantined_infectable";
