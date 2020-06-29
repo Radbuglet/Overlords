@@ -74,9 +74,8 @@
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\csharp\ListExtensions.cs" />
-    <Compile Include="helpers\network\CatchupUtils.cs" />
+    <Compile Include="helpers\network\CatchupExtensions.cs" />
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
-    <Compile Include="helpers\network\Quarantine.cs" />
     <Compile Include="helpers\network\RpcUtils.cs" />
     <Compile Include="helpers\tree\InitializationExtensions.cs" />
     <Compile Include="helpers\tree\trackingGroup\NodeGroup.cs" />
