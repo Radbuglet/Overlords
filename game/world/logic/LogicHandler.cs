@@ -1,31 +1,31 @@
 ﻿using Godot;
+using Godot.Collections;
 using Overlords.game.definitions;
 using Overlords.game.entities.player;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree;
 using Overlords.helpers.tree.trackingGroup;
-using Overlords.services;
 
 namespace Overlords.game.world.logic
 {
-    public class JoinHandler : Node, IParentEnterTrigger
+    public class LogicHandler : Node
     {
         [Export] private PackedScene _playerPrefab;
         private readonly NodeGroup<int, PlayerRoot> _players = new NodeGroup<int, PlayerRoot>();
         private WorldRoot WorldRoot => GetNode<WorldRoot>("../../");
-
+        
         public override void _Ready()
         {
             this.Initialize();
             GetTree().Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));
             GetTree().Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerLeft));
         }
-
+        
         private void _PeerJoined(int peerId)
         {
             GD.Print($"{peerId} connected!");
-            WorldRoot.CatchupToPeer(peerId);
+            RpcId(peerId, nameof(_LoggedIn), WorldRoot.GenerateCatchupInfo(peerId));
 
             // Create player and add it to the tree
             var entityContainer = WorldRoot.Entities;
@@ -55,10 +55,14 @@ namespace Overlords.game.world.logic
             entityContainer.DeReplicateEntity(player);
         }
 
-        public void _EarlyEditorTrigger(SceneTree tree)
+        private void _LoggedIn(Dictionary catchupData)
         {
-            if (tree.GetNetworkMode() != NetworkMode.Server)
-                this.Purge();
+            var error = GetTree().ApplyCatchupInfo(catchupData);
+            if (error != null)
+            {
+                // TODO: Crash and burn
+                GD.PushError(error.ToMessage());
+            }
         }
     }
 }

@@ -5,14 +5,28 @@ using Overlords.helpers.network;
 
 namespace Overlords.game.entities.player.mechanics
 {
-    public class PlayerMovementNet : Node, IRequiresCatchup, IQuarantineInfectable
+    public class PlayerMovementNet : Node, IRequiresCatchup, IInvariantEnforcer
     {
         public PlayerRoot Root => GetNode<PlayerRoot>("../../../");
         private bool _gotInitialPosition;
 
-        public void CatchupState(int peerId)
+        public CatchupState CatchupOverNetwork(int peerId)
         {
-            RpcId(peerId, nameof(_SetPlayerPosition), Root.GetGlobalPosition());
+            return new CatchupState(Root.GetGlobalPosition(), true);
+        }
+        
+        public void HandleCatchupState(object remoteArgs)
+        {
+            if (remoteArgs is Vector3 position)
+            {
+                _SetPlayerPosition(position);
+            }
+        }
+        
+        public void ValidateCatchupState(SceneTree tree)
+        {
+            if (!_gotInitialPosition)
+                throw new InvalidCatchupException("Never received initial position.");
         }
 
         [Master]
@@ -33,12 +47,6 @@ namespace Overlords.game.entities.player.mechanics
         {
             Root.SetGlobalPosition(position);
             _gotInitialPosition = true;
-        }
-        
-        public void _QuarantineChecking()
-        {
-            if (!_gotInitialPosition)
-                throw new QuarantineContamination("Player never got its initial position!");
         }
 
         public void ReplicateMyPosition()

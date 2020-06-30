@@ -6,7 +6,7 @@ using Overlords.helpers.network;
 
 namespace Overlords.game.entities.player
 {
-    public class PlayerShared : Node, IQuarantinedListener
+    public class PlayerShared : Node, IValidationAwaiter
     {
         [Export] private float _sneakReductionCoef;
         private Vector3 _originalHeadPosition;
@@ -16,11 +16,11 @@ namespace Overlords.game.entities.player
         public override void _Ready()
         {
             if (this.GetNetworkMode() != NetworkMode.Client) return;
-            this.FlagQuarantineListener();
+            this.FlagAwaiter();
             _originalHeadPosition = Root.Head.Translation;
         }
         
-        public void _QuarantineOver()
+        public void _CatchupStateValidated()
         {
             OnSetupComplete();
         }

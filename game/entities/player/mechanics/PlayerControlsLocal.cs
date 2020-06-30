@@ -4,7 +4,7 @@ using Overlords.helpers.network;
 
 namespace Overlords.game.entities.player.mechanics
 {
-    public class PlayerControlsLocal : Node, IQuarantinedListener
+    public class PlayerControlsLocal : Node, IValidationAwaiter
     {
         private Vector2 _rotation;
         
@@ -14,10 +14,10 @@ namespace Overlords.game.entities.player.mechanics
 
         public override void _Ready()
         {
-            this.FlagQuarantineListener();
+            this.FlagAwaiter();
         }
         
-        public void _QuarantineOver()
+        public void _CatchupStateValidated()
         {
             ApplyRotation();
             Input.SetMouseMode(Input.MouseMode.Captured);

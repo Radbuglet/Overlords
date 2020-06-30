@@ -65,8 +65,7 @@
     <Compile Include="game\entities\shared\HumanoidMover.cs" />
     <Compile Include="game\world\entityCore\ListReplicator.cs" />
     <Compile Include="game\world\entityCore\StateReplicator.cs" />
-    <Compile Include="game\world\logic\ClientLogic.cs" />
-    <Compile Include="game\world\logic\JoinHandler.cs" />
+    <Compile Include="game\world\logic\LogicHandler.cs" />
     <Compile Include="game\world\logic\WorldRoot.cs" />
     <Compile Include="game\world\logic\WorldShared.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />

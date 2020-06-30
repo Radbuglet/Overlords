@@ -87,7 +87,7 @@ namespace Overlords.helpers.network
     /// </summary>
     public interface IValidationAwaiter
     {
-        void CatchupStateValidated();
+        void _CatchupStateValidated();
     }
     
     [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
@@ -208,7 +208,7 @@ namespace Overlords.helpers.network
             // Notify validation finish
             foreach (var (node, awaiter) in GetNodesInGroup<IValidationAwaiter>(GroupValidationAwaiter))
             {
-                awaiter.CatchupStateValidated();
+                awaiter._CatchupStateValidated();
                 node.RemoveFromGroup(GroupValidationAwaiter);
             }
 
