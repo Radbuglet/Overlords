@@ -71,8 +71,11 @@ namespace Overlords.game.world.logic
 
         public void ClientQuit(string message)
         {
+            // TODO: Make shutdown more graceful
             GD.PushWarning($"Quit back to main menu with message: {message}");
-            GetTree().ChangeScene("res://menu/MainMenu.tscn");
+            var tree = GetTree();
+            tree.NetworkPeer = null;
+            tree.ChangeScene("res://menu/MainMenu.tscn");
         }
     }
 }

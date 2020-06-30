@@ -18,9 +18,9 @@ namespace Overlords.game.world.entityCore
                 this.FlagEnforcer();
         }
 
-        protected ReplicatedField<T> AddField<T>(bool isOneShot = false)
+        protected ReplicatedField<T> AddField<T>(bool isOneShot = false, bool isNullable = false)
         {
-            var field = new ReplicatedField<T>(_fields.Count, isOneShot);
+            var field = new ReplicatedField<T>(_fields.Count, isOneShot, isNullable);
             _fields.Add(field);
             return field;
         }
@@ -110,13 +110,15 @@ namespace Overlords.game.world.entityCore
     {
         public int Index { get; }
         public readonly bool IsOneShot;
+        public readonly bool IsNullable;
         public T Value;
 
-        public ReplicatedField(int index, bool isOneShot)
+        public ReplicatedField(int index, bool isOneShot, bool isNullable)
         {
             Index = index;
             Value = default;
             IsOneShot = isOneShot;
+            IsNullable = isNullable;
         }
 
         public bool NetSetValue(object raw)
@@ -126,11 +128,15 @@ namespace Overlords.game.world.entityCore
                 Value = newValue;
                 return true;
             }
-            else
+
+            if (raw == null && IsNullable)
             {
-                GD.PushWarning("ReplicatedField had its value set to the wrong type.");
-                return false;
+                Value = default;
+                return true;
             }
+
+            GD.PushWarning("ReplicatedField had its value set to the wrong type.");
+            return false;
         }
 
         public object NetGetValue()

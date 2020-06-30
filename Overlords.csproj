@@ -68,6 +68,7 @@
     <Compile Include="game\world\logic\LoginHandler.cs" />
     <Compile Include="game\world\logic\WorldRoot.cs" />
     <Compile Include="game\world\logic\WorldShared.cs" />
+    <Compile Include="game\world\logic\WorldState.cs" />
     <Compile Include="helpers\csharp\EnumerableUtils.cs" />
     <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
