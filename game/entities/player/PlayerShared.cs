@@ -12,6 +12,7 @@ namespace Overlords.game.entities.player
         
         private PlayerRoot Root => GetNode<PlayerRoot>("../../");
         
+        // Setup
         public override void _Ready()
         {
             if (this.GetNetworkMode() != NetworkMode.Client) return;
@@ -40,6 +41,7 @@ namespace Overlords.game.entities.player
                 Root.FpsCamera.Current = true;
         }
 
+        // Common tasks
         public bool ValidateOwnerOnlyRpc(string action)
         {
             var sender = GetTree().GetRpcSenderId();
@@ -51,6 +53,11 @@ namespace Overlords.game.entities.player
         public Vector3 GetHeadPosition(bool isSneaking)
         {
             return isSneaking ? _originalHeadPosition * _sneakReductionCoef : _originalHeadPosition;
+        }
+
+        public bool IsOverlord()
+        {
+            return Root.WorldRoot.State.OverlordId.Value == Root.State.OwnerPeerId.Value;
         }
     }
 }

@@ -4,9 +4,14 @@ namespace Overlords.helpers.csharp
 {
     public static class ListExtensions
     {
+        public static bool HasIndex<T>(this IList<T> list, int index)
+        {
+            return index < 0 || index >= list.Count;
+        }
+        
         public static bool TryGetValue<T>(this IList<T> list, int index, out T value)
         {
-            if (index < 0 || index >= list.Count)
+            if (list.HasIndex(index))
             {
                 value = default;
                 return false;
