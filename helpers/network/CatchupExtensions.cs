@@ -141,7 +141,7 @@ namespace Overlords.helpers.network
         /// <summary>
         /// Runs `HandleCatchupState` on any instances who have received catchup information. Not all instances implementing
         /// `IRequiresCatchup` will receive this information and any instance implementing the interface could be subject
-        /// to getting `HandleCatchupState` called.
+        /// to getting `HandleCatchupState` called.  TODO: Allow user to limit who can receive catchup for easier error resolution
         /// 
         /// Invariant enforcers and validation awaiters can be registered during this time. However, invariant enforcers
         /// can't register new invariant enforcers and validation awaiters can't register new validation awaiters.

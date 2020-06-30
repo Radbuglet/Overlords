@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://game/world/entityCore/ListReplicator.cs" type="Script" id=1]
-[ext_resource path="res://game/world/logic/ClientLogic.cs" type="Script" id=2]
-[ext_resource path="res://game/world/logic/JoinHandler.cs" type="Script" id=3]
+[ext_resource path="res://game/world/logic/LoginHandler.cs" type="Script" id=2]
 [ext_resource path="res://game/world/logic/WorldRoot.cs" type="Script" id=4]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=5]
 [ext_resource path="res://game/entities/player/Player.tscn" type="PackedScene" id=6]
@@ -76,9 +75,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 17 )
 [node name="Shared" type="Node" parent="Logic"]
 script = ExtResource( 8 )
 
-[node name="JoinHandler" type="Node" parent="Logic"]
-script = ExtResource( 3 )
-_playerPrefab = ExtResource( 6 )
-
-[node name="ClientLogic" type="Node" parent="Logic"]
+[node name="LoginHandler" type="Node" parent="Logic"]
 script = ExtResource( 2 )
+_playerPrefab = ExtResource( 6 )

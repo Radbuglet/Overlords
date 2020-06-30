@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using Godot;
 using Godot.Collections;
@@ -7,7 +6,6 @@ using Overlords.game.definitions;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree;
-using Array = Godot.Collections.Array;
 
 namespace Overlords.game.world.entityCore
 {
@@ -31,13 +29,19 @@ namespace Overlords.game.world.entityCore
             }
         }
 
+        private int GetTypeId(Node entity)
+        {
+            var isRegistered = _fileToTypeMap.TryGetValue(entity.Filename, out var typeId);
+            Debug.Assert(isRegistered, "Failed to replicate entity: entity type was never registered.");
+            return typeId;
+        }
+
         public void ReplicateEntity(Node entity)
         {
             Debug.Assert(this.GetNetworkMode() == NetworkMode.Server);
             
             // Get entity's type
-            var isRegistered = _fileToTypeMap.TryGetValue(entity.Filename, out var typeId);
-            Debug.Assert(isRegistered, "Failed to replicate entity: entity type was never registered.");
+            var typeId = GetTypeId(entity);
             
             // Replicate it!
             foreach (var peerId in this.GetWorldRoot().Shared.GetOnlinePeers())
@@ -56,7 +60,12 @@ namespace Overlords.game.world.entityCore
 
         public CatchupState CatchupOverNetwork(int peerId)
         {
-            throw new NotImplementedException();
+            var packet = new Array();
+            foreach (var entity in GetChildren().Cast<Node>())
+            {
+                packet.Add(new Array {entity.Name, GetTypeId(entity)});
+            }
+            return new CatchupState(packet, true);
         }
 
         public void HandleCatchupState(object argsRoot)
@@ -69,7 +78,15 @@ namespace Overlords.game.world.entityCore
 
             foreach (var entityRaw in entities)
             {
-                // TODO
+                if (!(
+                    entityRaw is Array entity && entity.Count == 2 &&
+                    entity[0] is string name && entity[1] is int typeId))
+                {
+                    GD.PushWarning("Ignored replicated entity whose descriptor was invalid.");
+                    continue;
+                }
+
+                _EntityAddedRemotely(typeId, name, null);
             }
         }
 
@@ -84,11 +101,12 @@ namespace Overlords.game.world.entityCore
             var entity = typePrefab.Instance();
             entity.Name = name;
             AddChild(entity);
+            
             if (entity.Name != name)
-            {
                 GD.PushWarning("Name was invalid and entity name was changed when added into the scene tree. This might cause bugs.");
-            }
-            this.GetWorldRoot().LoginHandler.ApplyCatchupInfo(catchupInfo);
+            
+            if (catchupInfo != null)
+                this.GetWorldRoot().LoginHandler.ApplyCatchupInfo(catchupInfo);
         }
 
         [Puppet]

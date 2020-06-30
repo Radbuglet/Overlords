@@ -4,25 +4,27 @@ using Overlords.game.entities.player;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree;
-using Overlords.helpers.tree.trackingGroup;
 
 namespace Overlords.game.world.logic
 {
     public class LoginHandler : Node
     {
-        [Export] private PackedScene _playerPrefab;
-        private readonly NodeGroup<int, PlayerRoot> _players = new NodeGroup<int, PlayerRoot>();
+        [FieldNotNull] [Export] private PackedScene _playerPrefab;
         private WorldRoot WorldRoot => GetNode<WorldRoot>("../../");
         
         public override void _Ready()
         {
             this.Initialize();
-            GetTree().Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));
-            GetTree().Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerLeft));
+            if (this.GetNetworkMode() == NetworkMode.Server)
+            {
+                GetTree().Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerJoined));
+                GetTree().Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerLeft));
+            }
         }
         
         private void _PeerJoined(int peerId)
         {
+            // TODO: Catchup works differently in this version. We're sending two packets where we should only be sending one.
             GD.Print($"{peerId} connected!");
             RpcId(peerId, nameof(_LoggedIn), WorldRoot.GenerateCatchupInfo(peerId));
 
@@ -40,7 +42,7 @@ namespace Overlords.game.world.logic
             
             // Register player and replicate
             player.SharedLogic.OnSetupComplete();
-            _players.AddToGroup(peerId, player);
+            WorldRoot.Shared.RegisterPlayer(player);
             entityContainer.ReplicateEntity(player);
         }
 
@@ -48,12 +50,13 @@ namespace Overlords.game.world.logic
         {
             GD.Print($"{peerId} left!");
             var entityContainer = WorldRoot.Entities;
-            var player = _players.GetMemberOfGroup<PlayerRoot>(peerId, null);
+            var player = WorldRoot.Shared.GetPlayer(peerId);
             if (player == null) return;
             player.Purge();
             entityContainer.DeReplicateEntity(player);
         }
 
+        [Puppet]
         private void _LoggedIn(Dictionary catchupData)
         {
             ApplyCatchupInfo(catchupData);

@@ -19,7 +19,7 @@ namespace Overlords.game.entities.player.mechanics
         
         public void _CatchupStateValidated()
         {
-            ApplyRotation();
+            ApplyRotation();  // TODO: Fix crash here
             Input.SetMouseMode(Input.MouseMode.Captured);
         }
 
