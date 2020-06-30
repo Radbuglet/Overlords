@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Reflection;
 using Godot;
 using Overlords.helpers.csharp;
-using Array = Godot.Collections.Array;
 
 namespace Overlords.helpers.tree
 {

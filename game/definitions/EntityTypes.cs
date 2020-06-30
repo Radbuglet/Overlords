@@ -1,25 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Godot;
+﻿using Godot;
 using Overlords.game.entities.player;
+using Overlords.game.world.logic;
+using Overlords.helpers.csharp;
 
 namespace Overlords.game.definitions
 {
     public static class EntityTypes
     {
         public delegate void SignalOnInteracted(PlayerRoot player);
-        public const string PlayersGroupName = "players";
         public const string RegisterInteractionGroupName = "auto_interactable";
 
-        public static IEnumerable<int> GetPlayingPeers(this SceneTree tree)
+        public static WorldRoot GetWorldRoot(this Node node)
         {
-            return tree.GetNodesInGroup(PlayersGroupName).Cast<PlayerRoot>()
-                .Select(player => player.State.OwnerPeerId.Value);
-        }
-
-        public static string GetPlayerName(int peerId)
-        {
-            return $"player_{peerId}";
+            return node.GetScene<WorldRoot>();
         }
     }
 }

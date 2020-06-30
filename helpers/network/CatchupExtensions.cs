@@ -65,7 +65,7 @@ namespace Overlords.helpers.network
     public interface IRequiresCatchup
     {
         CatchupState CatchupOverNetwork(int peerId);
-        void HandleCatchupState(object remoteArgs);
+        void HandleCatchupState(object argsRoot);
     }
 
     /// <summary>

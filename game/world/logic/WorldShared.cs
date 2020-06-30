@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using Overlords.game.definitions;
 using Overlords.helpers.tree.trackingGroup;
@@ -16,6 +18,11 @@ namespace Overlords.game.world.logic
             {
                 InteractionTargets.AddToGroup(node.Name, node);
             }
+        }
+
+        public IEnumerable<int> GetOnlinePeers()
+        {
+            throw new NotImplementedException();
         }
     }
 }

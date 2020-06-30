@@ -8,6 +8,7 @@ namespace Overlords.game.world.logic
 	{
 		[LinkNodeStatic("Entities")] public ListReplicator Entities;
 		[LinkNodeStatic("Logic/Shared")] public WorldShared Shared;
+		[LinkNodeStatic("Logic/LoginHandler")] public LoginHandler LoginHandler;
 		
 		public override void _EnterTree()
 		{

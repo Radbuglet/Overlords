@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using Godot;
@@ -7,13 +7,14 @@ using Overlords.game.definitions;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.tree;
+using Array = Godot.Collections.Array;
 
 namespace Overlords.game.world.entityCore
 {
     public class ListReplicator : Node, IRequiresCatchup
     {
         [Export] private Array<PackedScene> _entityTypes = new Array<PackedScene>();
-        private Godot.Collections.Dictionary<string, int> _fileToTypeMap;
+        private Dictionary<string, int> _fileToTypeMap;
 
         public override void _Ready()
         {
@@ -21,7 +22,7 @@ namespace Overlords.game.world.entityCore
             
             // Create a mapping between resource file names and entity types
             var index = 0;
-            _fileToTypeMap = new Godot.Collections.Dictionary<string, int>();
+            _fileToTypeMap = new Dictionary<string, int>();
             foreach (var entityType in _entityTypes)
             {
                 Debug.Assert(entityType != null);
@@ -30,7 +31,7 @@ namespace Overlords.game.world.entityCore
             }
         }
 
-        private void ReplicateEntity(Node entity, IEnumerable<int> peerIds)
+        public void ReplicateEntity(Node entity)
         {
             Debug.Assert(this.GetNetworkMode() == NetworkMode.Server);
             
@@ -39,36 +40,41 @@ namespace Overlords.game.world.entityCore
             Debug.Assert(isRegistered, "Failed to replicate entity: entity type was never registered.");
             
             // Replicate it!
-            foreach (var peerId in peerIds)
+            foreach (var peerId in this.GetWorldRoot().Shared.GetOnlinePeers())
             {
-                RpcId(peerId, nameof(_EntityAddedRemotely), typeId, entity.Name);
-                entity.CatchupToPeer(peerId);
+                RpcId(peerId, nameof(_EntityAddedRemotely), typeId, entity.Name, entity.GenerateCatchupInfo(peerId));
             }
-        }
-
-        public void ReplicateEntity(Node entity)
-        {
-            ReplicateEntity(entity, GetTree().GetPlayingPeers());
         }
 
         public void DeReplicateEntity(Node entity)
         {
-            foreach (var peerId in GetTree().GetPlayingPeers())
+            foreach (var peerId in this.GetWorldRoot().Shared.GetOnlinePeers())
             {
                 RpcId(peerId, nameof(_EntityRemovedRemotely), entity.Name);
             }
         }
-        
-        public void CatchupState(int peerId)
+
+        public CatchupState CatchupOverNetwork(int peerId)
         {
-            foreach (var entity in GetChildren().Cast<Node>())
+            throw new NotImplementedException();
+        }
+
+        public void HandleCatchupState(object argsRoot)
+        {
+            if (!(argsRoot is Array entities))
             {
-                ReplicateEntity(entity, peerId.AsEnumerable());
+                GD.PushWarning("Failed to catchup list replicator: packet root is not array");
+                return;
+            }
+
+            foreach (var entityRaw in entities)
+            {
+                // TODO
             }
         }
-        
+
         [Puppet]
-        private void _EntityAddedRemotely(int typeIndex, string name)
+        private void _EntityAddedRemotely(int typeIndex, string name, Dictionary catchupInfo)
         {
             if (!_entityTypes.TryGetValue(typeIndex, out var typePrefab))
             {
@@ -82,8 +88,9 @@ namespace Overlords.game.world.entityCore
             {
                 GD.PushWarning("Name was invalid and entity name was changed when added into the scene tree. This might cause bugs.");
             }
+            this.GetWorldRoot().LoginHandler.ApplyCatchupInfo(catchupInfo);
         }
-        
+
         [Puppet]
         private void _EntityRemovedRemotely(string name)
         {

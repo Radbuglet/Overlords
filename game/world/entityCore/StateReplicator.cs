@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using Godot;
+using Godot.Collections;
 using Overlords.game.definitions;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
-using Array = Godot.Collections.Array;
 
 namespace Overlords.game.world.entityCore
 {
-    public abstract class StateReplicator : Node, IRequiresCatchup, IQuarantineInfectable
+    public abstract class StateReplicator : Node, IRequiresCatchup, IInvariantEnforcer
     {
         private readonly List<IReplicatedField> _fields = new List<IReplicatedField>();
         private bool _constructed;
@@ -15,7 +15,7 @@ namespace Overlords.game.world.entityCore
         public override void _Ready()
         {
             if (GetTree().GetNetworkMode() == NetworkMode.Client)
-                this.FlagQuarantineInfectable();
+                this.FlagEnforcer();
         }
 
         protected ReplicatedField<T> AddField<T>(bool isOneShot = false)
@@ -27,13 +27,13 @@ namespace Overlords.game.world.entityCore
 
         protected void ReplicateField(IReplicatedField field)
         {
-            foreach (var peerId in GetTree().GetPlayingPeers())
+            foreach (var peerId in this.GetWorldRoot().Shared.GetOnlinePeers())
             {
                 RpcId(peerId, nameof(_SetOneValue), field.Index, field.NetGetValue());
             }
         }
-        
-        public void CatchupState(int peerId)
+
+        public CatchupState CatchupOverNetwork(int peerId)
         {
             var packet = new Array();
             foreach (var field in _fields)
@@ -41,15 +41,20 @@ namespace Overlords.game.world.entityCore
                 packet.Add(field.NetGetValue());
             }
 
-            RpcId(peerId, nameof(_CatchupInitialValues), packet);
+            return new CatchupState(packet, true);
         }
 
-        [Puppet]
-        private void _CatchupInitialValues(Array values)
+        public void HandleCatchupState(object valuesRaw)
         {
             if (_constructed)
             {
                 GD.PushWarning($"Initial values have already been provided to the {nameof(StateReplicator)}.");
+                return;
+            }
+
+            if (!(valuesRaw is Array values))
+            {
+                GD.PushWarning("StateReplicator failed to handle catchup state: root wasn't an array!");
                 return;
             }
 
@@ -68,6 +73,14 @@ namespace Overlords.game.world.entityCore
 
             _constructed = true;
         }
+
+        public void ValidateCatchupState(SceneTree tree)
+        {
+            if (!_constructed)
+            {
+                throw new InvalidCatchupException("StateReplicator never received a valid initial state.");
+            }
+        }
         
         [Puppet]
         private void _SetOneValue(int index, object value)
@@ -83,14 +96,6 @@ namespace Overlords.game.world.entityCore
                 return;
             }
             field.NetSetValue(value);
-        }
-
-        public void _QuarantineChecking()
-        {
-            if (!_constructed)
-            {
-                throw new QuarantineContamination("StateReplicator never received a valid initial state.");
-            }
         }
     }
 

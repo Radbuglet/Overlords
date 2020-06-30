@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Godot;
-using Overlords.game.definitions;
 using Overlords.helpers.network;
 
 namespace Overlords.game.entities.player
@@ -27,9 +26,6 @@ namespace Overlords.game.entities.player
 
         public void OnSetupComplete()
         {
-            // Shared initialization
-            Root.AddToGroup(EntityTypes.PlayersGroupName);
-
             // Find and apply variant
             var variant = GetTree().GetNetworkVariant(Root.State.OwnerPeerId.Value);
             variant.ApplyToTree(new Dictionary<NetObjectVariant, IEnumerable<Func<Node>>>

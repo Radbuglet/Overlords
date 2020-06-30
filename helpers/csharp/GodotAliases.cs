@@ -13,5 +13,15 @@ namespace Overlords.helpers.csharp
         {
             return spatial.GlobalTransform.origin;
         }
+
+        public static T GetScene<T>(this SceneTree tree) where T : Node
+        {
+            return (T) tree.CurrentScene;
+        }
+
+        public static T GetScene<T>(this Node node) where T : Node
+        {
+            return node.GetTree().GetScene<T>();
+        }
     }
 }

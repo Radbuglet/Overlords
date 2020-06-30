@@ -1,6 +1,5 @@
 ﻿using Godot;
 using Godot.Collections;
-using Overlords.game.definitions;
 using Overlords.game.entities.player;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
@@ -9,7 +8,7 @@ using Overlords.helpers.tree.trackingGroup;
 
 namespace Overlords.game.world.logic
 {
-    public class LogicHandler : Node
+    public class LoginHandler : Node
     {
         [Export] private PackedScene _playerPrefab;
         private readonly NodeGroup<int, PlayerRoot> _players = new NodeGroup<int, PlayerRoot>();
@@ -30,7 +29,7 @@ namespace Overlords.game.world.logic
             // Create player and add it to the tree
             var entityContainer = WorldRoot.Entities;
             var player = (PlayerRoot) _playerPrefab.Instance();
-            player.Name = EntityTypes.GetPlayerName(peerId);
+            player.Name = $"player_{peerId}";
             entityContainer.AddChild(player);
             
             // Setup player state
@@ -57,12 +56,20 @@ namespace Overlords.game.world.logic
 
         private void _LoggedIn(Dictionary catchupData)
         {
+            ApplyCatchupInfo(catchupData);
+        }
+
+        public void ApplyCatchupInfo(Dictionary catchupData)
+        {
             var error = GetTree().ApplyCatchupInfo(catchupData);
             if (error != null)
-            {
-                // TODO: Crash and burn
-                GD.PushError(error.ToMessage());
-            }
+                ClientQuit(error.ToMessage());
+        }
+
+        public void ClientQuit(string message)
+        {
+            GD.PushWarning($"Quit back to main menu with message: {message}");
+            GetTree().ChangeScene("res://menu/MainMenu.tscn");
         }
     }
 }

@@ -15,9 +15,9 @@ namespace Overlords.game.entities.player.mechanics
             return new CatchupState(Root.GetGlobalPosition(), true);
         }
         
-        public void HandleCatchupState(object remoteArgs)
+        public void HandleCatchupState(object argsRoot)
         {
-            if (remoteArgs is Vector3 position)
+            if (argsRoot is Vector3 position)
             {
                 _SetPlayerPosition(position);
             }
@@ -35,7 +35,7 @@ namespace Overlords.game.entities.player.mechanics
             if (Root.SharedLogic.ValidateOwnerOnlyRpc(nameof(_RequestMove))) return;
             Root.SetGlobalPosition(target);
             var ownerPeerId = GetTree().GetRpcSenderId();
-            foreach (var peerId in GetTree().GetPlayingPeers())
+            foreach (var peerId in this.GetWorldRoot().Shared.GetOnlinePeers())
             {
                 if (peerId == ownerPeerId) continue;
                 RpcUnreliableId(peerId, nameof(_SetPlayerPosition), target);
