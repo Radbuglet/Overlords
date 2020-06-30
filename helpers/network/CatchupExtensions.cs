@@ -87,7 +87,7 @@ namespace Overlords.helpers.network
     /// </summary>
     public interface IValidationAwaiter
     {
-        void _CatchupStateValidated();
+        void _StateValidated();
     }
     
     [SuppressMessage("ReSharper", "SuspiciousTypeConversion.Global")]
@@ -187,7 +187,7 @@ namespace Overlords.helpers.network
             IEnumerable<(Node, TInterface)> GetNodesInGroup<TInterface>(string groupName) where TInterface : class
             {
                 return tree.GetNodesInGroup(groupName).Cast<Node>()
-                    .Where(node => node.IsInGroup(groupName))
+                    .Where(node => node.IsInsideTree() && node.IsInGroup(groupName))
                     .Select(node => (node, node as TInterface));
             }
 
@@ -208,7 +208,7 @@ namespace Overlords.helpers.network
             // Notify validation finish
             foreach (var (node, awaiter) in GetNodesInGroup<IValidationAwaiter>(GroupValidationAwaiter))
             {
-                awaiter._CatchupStateValidated();
+                awaiter._StateValidated();
                 node.RemoveFromGroup(GroupValidationAwaiter);
             }
 

@@ -17,9 +17,9 @@ namespace Overlords.game.entities.player.mechanics
             this.FlagAwaiter();
         }
         
-        public void _CatchupStateValidated()
+        public void _StateValidated()
         {
-            ApplyRotation();  // TODO: Fix crash here
+            ApplyRotation();
             Input.SetMouseMode(Input.MouseMode.Captured);
         }
 

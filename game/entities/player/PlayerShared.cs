@@ -19,7 +19,7 @@ namespace Overlords.game.entities.player
             _originalHeadPosition = Root.Head.Translation;
         }
         
-        public void _CatchupStateValidated()
+        public void _StateValidated()
         {
             OnSetupComplete();
         }
