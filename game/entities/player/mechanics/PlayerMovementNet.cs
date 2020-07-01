@@ -5,14 +5,14 @@ using Overlords.helpers.network;
 
 namespace Overlords.game.entities.player.mechanics
 {
-    public class PlayerMovementNet : Node, IRequiresCatchup, IInvariantEnforcer
+    public class PlayerMovementNet : Node, ICatchesUpSelf, IInvariantEnforcer
     {
         public PlayerRoot Root => GetNode<PlayerRoot>("../../../");
         private bool _gotInitialPosition;
 
         public CatchupState CatchupOverNetwork(int peerId)
         {
-            return new CatchupState(Root.GetGlobalPosition(), true);
+            return new CatchupState(true, Root.GetGlobalPosition());
         }
         
         public void HandleCatchupState(object argsRoot)

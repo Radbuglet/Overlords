@@ -1,4 +1,5 @@
 using Godot;
+using Overlords.game.entities.player.inventory;
 using Overlords.game.entities.player.mechanics;
 using Overlords.game.entities.shared;
 using Overlords.game.world.logic;
@@ -12,6 +13,7 @@ namespace Overlords.game.entities.player
 		[LinkNodeStatic("Head")] public Spatial Head;
 		[LinkNodeStatic("Head/Camera")] public Camera FpsCamera;
 		[LinkNodeStatic("Head/Camera/RayCast")] public RayCast LookRayCast;
+		[LinkNodeStatic("Inventory")] public PlayerInventory Inventory;
 		[LinkNodeStatic("Logic/State")] public PlayerState State;
 		[LinkNodeStatic("Logic/Shared")] public PlayerShared SharedLogic;
 		[LinkNodeStatic("Logic/Movement/Net")] public PlayerMovementNet MovementNet;

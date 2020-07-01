@@ -24,7 +24,7 @@ namespace Overlords.helpers.network
         public readonly CullMode Mode;
         public readonly object RemoteArgs;
         
-        public CatchupState(object remoteArgs, bool sendChildren)
+        public CatchupState(bool sendChildren, object remoteArgs)
         {
             Mode = CullMode.SendInfo | (sendChildren ? CullMode.SendChildren : 0);
             RemoteArgs = remoteArgs;
@@ -58,11 +58,15 @@ namespace Overlords.helpers.network
     /// Represents a node that should have its initial state replicated to new peers (i.e. catching up).
     /// `CatchupOverNetwork` is in charge of generating the data whereas `HandleCatchupState` is in charge of applying it
     /// with micro level validation (validation for this node only).
+    ///
+    /// If the remote state contains unrecoverable errors, an `InvalidCatchupException` can be raised by the
+    /// HandleCatchupState method, which will have the same effect as if it were raised by an IInvariantEnforcer.
+    /// 
     /// `CatchupOverNetwork` must contain HLAPI serializable objects (i.e. objects descending from variant that can be
     /// marshalled).
     /// `HandleCatchupState` can be called several times remotely. TODO: Fix this problem using auto unflagging groups
     /// </summary>
-    public interface IRequiresCatchup
+    public interface ICatchesUpSelf
     {
         CatchupState CatchupOverNetwork(int peerId);
         void HandleCatchupState(object argsRoot);
@@ -114,7 +118,7 @@ namespace Overlords.helpers.network
             void HandleNode(Node node)
             {
                 // Serialize the node
-                if (node is IRequiresCatchup requiresCatchup)
+                if (node is ICatchesUpSelf requiresCatchup)
                 {
                     var generated = requiresCatchup.CatchupOverNetwork(peerId);
                     if ((generated.Mode & CatchupState.CullMode.SendInfo) != 0)
@@ -173,14 +177,22 @@ namespace Overlords.helpers.network
                     GD.PushWarning(errorPrefix + "key was not a node path.");
                     continue;
                 }
-                var node = tree.Root.GetNodeOrNull<IRequiresCatchup>(path);
+                var node = tree.Root.GetNodeOrNull<ICatchesUpSelf>(path);
                 if (node == null)
                 {
-                    GD.PushWarning(errorPrefix + $"specified node does not exist or does not implement {nameof(IRequiresCatchup)}.");
+                    GD.PushWarning(errorPrefix + $"specified node does not exist or does not implement {nameof(ICatchesUpSelf)}.");
                     continue;
                 }
-                
-                node.HandleCatchupState(data[pathRaw]);
+
+                try
+                {
+                    node.HandleCatchupState(data[pathRaw]);
+                }
+                catch (InvalidCatchupException e)
+                {
+                    e.Instigator = (Node) node;
+                    return e;
+                }
             }
             
             // Check invariants

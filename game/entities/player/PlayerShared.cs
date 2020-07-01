@@ -34,7 +34,8 @@ namespace Overlords.game.entities.player
                 [NetObjectVariant.LocalAuthoritative] = new Func<Node>[]
                 {
                     () => Root.FpsCamera,  // This also deletes LookRayCast
-                    () => Root.ControlsLocal
+                    () => Root.ControlsLocal,
+                    () => Root.Inventory
                 }
             });
             if (variant == NetObjectVariant.LocalAuthoritative)

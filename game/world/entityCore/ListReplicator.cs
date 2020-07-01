@@ -9,7 +9,7 @@ using Overlords.helpers.tree;
 
 namespace Overlords.game.world.entityCore
 {
-    public class ListReplicator : Node, IRequiresCatchup
+    public class ListReplicator : Node, ICatchesUpSelf
     {
         [Export] private Array<PackedScene> _entityTypes = new Array<PackedScene>();
         private Dictionary<string, int> _fileToTypeMap;
@@ -65,7 +65,7 @@ namespace Overlords.game.world.entityCore
             {
                 packet.Add(new Array {entity.Name, GetTypeId(entity)});
             }
-            return new CatchupState(packet, true);
+            return new CatchupState(true, packet);
         }
 
         public void HandleCatchupState(object argsRoot)

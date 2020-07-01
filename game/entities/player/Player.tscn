@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://game/entities/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/entities/player/PlayerRoot.cs" type="Script" id=2]
@@ -8,6 +8,8 @@
 [ext_resource path="res://game/entities/player/mechanics/PlayerControlsLocal.cs" type="Script" id=6]
 [ext_resource path="res://game/entities/player/mechanics/PlayerInteraction.cs" type="Script" id=7]
 [ext_resource path="res://helpers/tree/trackingGroup/TrackedMember.cs" type="Script" id=8]
+[ext_resource path="res://game/entities/player/inventory/PlayerInventory.cs" type="Script" id=9]
+[ext_resource path="res://game/entities/player/inventory/ItemStack.tscn" type="PackedScene" id=10]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 1, 2, 1 )
@@ -59,6 +61,11 @@ script = ExtResource( 6 )
 
 [node name="Interaction" type="Spatial" parent="Logic"]
 script = ExtResource( 7 )
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource( 9 )
+_size = 36
+_stackPrefab = ExtResource( 10 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )

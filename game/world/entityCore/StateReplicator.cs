@@ -7,7 +7,7 @@ using Overlords.helpers.network;
 
 namespace Overlords.game.world.entityCore
 {
-    public abstract class StateReplicator : Node, IRequiresCatchup, IInvariantEnforcer
+    public abstract class StateReplicator : Node, ICatchesUpSelf, IInvariantEnforcer
     {
         private readonly List<IReplicatedField> _fields = new List<IReplicatedField>();
         private bool _constructed;
@@ -41,7 +41,7 @@ namespace Overlords.game.world.entityCore
                 packet.Add(field.NetGetValue());
             }
 
-            return new CatchupState(packet, true);
+            return new CatchupState(true, packet);
         }
 
         public void HandleCatchupState(object valuesRaw)
