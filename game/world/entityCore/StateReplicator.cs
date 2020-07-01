@@ -108,10 +108,24 @@ namespace Overlords.game.world.entityCore
 
     public class ReplicatedField<T>: IReplicatedField
     {
+        public delegate void ValueUpdateHandler(T newValue, T oldValue);
+        public event ValueUpdateHandler ValueChanged;
+        
         public int Index { get; }
         public readonly bool IsOneShot;
         public readonly bool IsNullable;
-        public T Value;
+        private T _value;
+
+        public T Value
+        {
+            get => _value;
+            set
+            {
+                var oldValue = _value;
+                _value = value;
+                ValueChanged?.Invoke(value, oldValue);
+            }
+        } 
 
         public ReplicatedField(int index, bool isOneShot, bool isNullable)
         {
