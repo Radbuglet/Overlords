@@ -74,7 +74,7 @@ namespace Overlords.game.world.entityCore
             _constructed = true;
         }
 
-        public void ValidateCatchupState(SceneTree tree)
+        public virtual void ValidateCatchupState(SceneTree tree)
         {
             if (!_constructed)
             {
