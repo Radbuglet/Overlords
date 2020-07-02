@@ -18,9 +18,9 @@ namespace Overlords.game.world.entityCore
                 this.FlagEnforcer();
         }
 
-        protected ReplicatedField<T> AddField<T>(bool isOneShot = false, bool isNullable = false)
+        protected ReplicatedField<T> AddField<T>(bool isOneShot = false, bool isNullable = false, ReplicatedField<T>.ValueValidator validator = null)
         {
-            var field = new ReplicatedField<T>(_fields.Count, isOneShot, isNullable);
+            var field = new ReplicatedField<T>(_fields.Count, isOneShot, isNullable, validator);
             _fields.Add(field);
             return field;
         }
@@ -48,33 +48,31 @@ namespace Overlords.game.world.entityCore
         {
             if (_constructed)
             {
-                GD.PushWarning($"Initial values have already been provided to the {nameof(StateReplicator)}.");
-                return;
+                throw new InvalidCatchupException($"Initial values have already been provided to the {nameof(StateReplicator)}.");
             }
 
             if (!(valuesRaw is Array values))
             {
-                GD.PushWarning("StateReplicator failed to handle catchup state: root wasn't an array!");
-                return;
+                throw new InvalidCatchupException("StateReplicator failed to handle catchup state: root wasn't an array!");
             }
 
             if (_fields.Count != values.Count)
             {
-                GD.PushWarning("Value catchup packet field count does not match local field count.");
-                return;
+                throw new InvalidCatchupException("Value catchup packet field count does not match local field count.");
             }
 
             var index = 0;
             foreach (var field in _fields)
             {
-                if (!field.NetSetValue(values[index])) return;
+                if (!field.NetSetValue(values[index], true))
+                    throw new InvalidCatchupException("Invalid field value for StateReplicator.");
                 index++;
             }
 
             _constructed = true;
         }
 
-        public virtual void ValidateCatchupState(SceneTree tree)
+        public void ValidateCatchupState(SceneTree tree)
         {
             if (!_constructed)
             {
@@ -95,25 +93,28 @@ namespace Overlords.game.world.entityCore
                 GD.PushWarning($"Unknown field with index {index}. Expected an index between 0 and {_fields.Count - 1} inclusive.");
                 return;
             }
-            field.NetSetValue(value);
+            field.NetSetValue(value, false);
         }
     }
 
     public interface IReplicatedField
     {
         int Index { get; }
-        bool NetSetValue(object raw);
+        bool NetSetValue(object raw, bool isFirstTime);
         object NetGetValue();
     }
 
     public class ReplicatedField<T>: IReplicatedField
     {
         public delegate void ValueUpdateHandler(T newValue, T oldValue);
+        public delegate bool ValueValidator(T value, ref string reason);
+        
         public event ValueUpdateHandler ValueChanged;
         
         public int Index { get; }
         public readonly bool IsOneShot;
         public readonly bool IsNullable;
+        public readonly ValueValidator Validator;
         private T _value;
 
         public T Value
@@ -127,30 +128,49 @@ namespace Overlords.game.world.entityCore
             }
         } 
 
-        public ReplicatedField(int index, bool isOneShot, bool isNullable)
+        public ReplicatedField(int index, bool isOneShot, bool isNullable, ValueValidator validator)
         {
             Index = index;
             Value = default;
             IsOneShot = isOneShot;
             IsNullable = isNullable;
+            Validator = validator;
         }
 
-        public bool NetSetValue(object raw)
+        public bool NetSetValue(object raw, bool isFirstTime)
         {
-            if (raw is T newValue)
+            // Ensure OneShot policy
+            if (!isFirstTime && IsOneShot)
             {
-                Value = newValue;
-                return true;
+                GD.PushWarning("OneShot ReplicatedField was set multiple times.");
+                return false;
             }
 
-            if (raw == null && IsNullable)
+            // Parse type
+            T newValue;
+            if (raw is T value)
             {
-                Value = default;
-                return true;
+                newValue = value;
+            } else if (raw == null && IsNullable)
+            {
+                newValue = default;
+            }
+            else
+            {
+                GD.PushWarning("ReplicatedField had its value set to the wrong type.");
+                return false;
+            }
+            
+            // Validate value and set
+            string problem = null;
+            if (Validator != null && !Validator(newValue, ref problem))
+            {
+                GD.PushWarning($"ReplicatedValue was set to some invalid value: {problem ?? "(no reason given)"}");
+                return false;
             }
 
-            GD.PushWarning("ReplicatedField had its value set to the wrong type.");
-            return false;
+            Value = newValue;
+            return true;
         }
 
         public object NetGetValue()
