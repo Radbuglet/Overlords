@@ -4,7 +4,7 @@ using Godot;
 
 namespace Overlords.helpers.csharp
 {
-    public static class EnumerableUtils
+    public static class IteratorUtils
     {
         public static IEnumerable<Node> ConvertToNodeIterator(this IEnumerable<NodePath> nodePaths, Node root, bool ignoreMissing = false)
         {

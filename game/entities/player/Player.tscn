@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://game/entities/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/entities/player/PlayerRoot.cs" type="Script" id=2]
@@ -10,6 +10,8 @@
 [ext_resource path="res://helpers/tree/trackingGroup/TrackedMember.cs" type="Script" id=8]
 [ext_resource path="res://game/entities/player/inventory/PlayerInventory.cs" type="Script" id=9]
 [ext_resource path="res://game/entities/player/inventory/ItemStack.tscn" type="PackedScene" id=10]
+[ext_resource path="res://game/entities/player/gui/GuiController.cs" type="Script" id=11]
+[ext_resource path="res://assets/ui/blur/blur_heavy.tres" type="Material" id=12]
 
 [sub_resource type="BoxShape" id=1]
 extents = Vector3( 1, 2, 1 )
@@ -66,6 +68,42 @@ script = ExtResource( 7 )
 script = ExtResource( 9 )
 _size = 36
 _stackPrefab = ExtResource( 10 )
+
+[node name="Gui" type="Node" parent="."]
+script = ExtResource( 11 )
+
+[node name="Hud" type="Control" parent="Gui"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Gui/Hud"]
+margin_right = 40.0
+margin_bottom = 14.0
+text = "This is a hud"
+
+[node name="Pause" type="ColorRect" parent="Gui"]
+visible = false
+material = ExtResource( 12 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.207843, 0.207843, 0.207843, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="Gui/Pause"]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -149.0
+margin_bottom = 14.0
+text = "This is the pause menu"
+align = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )

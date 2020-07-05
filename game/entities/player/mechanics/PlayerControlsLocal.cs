@@ -1,27 +1,17 @@
 ﻿using Godot;
 using Overlords.game.definitions;
+using Overlords.game.entities.player.gui;
 using Overlords.helpers.network;
 
 namespace Overlords.game.entities.player.mechanics
 {
-    public class PlayerControlsLocal : Node, IValidationAwaiter
+    public class PlayerControlsLocal : Node
     {
         private Vector2 _rotation;
         
         public PlayerRoot Root => GetNode<PlayerRoot>("../../");
         private float Sensitivity => -Mathf.Deg2Rad(0.2f);
-        private bool HasControl => Input.GetMouseMode() == Input.MouseMode.Captured;
-
-        public override void _Ready()
-        {
-            this.FlagAwaiter();
-        }
-        
-        public void _StateValidated()
-        {
-            ApplyRotation();
-            Input.SetMouseMode(Input.MouseMode.Captured);
-        }
+        private bool HasControl => Root.GuiController.State == GudState.Playing;
 
         private void ApplyRotation()
         {
@@ -43,11 +33,6 @@ namespace Overlords.game.entities.player.mechanics
 
         public override void _PhysicsProcess(float delta)
         {
-            if (GameInputs.FpsPause.WasJustPressed())
-            {
-                Input.SetMouseMode(HasControl ? Input.MouseMode.Visible : Input.MouseMode.Captured);
-            }
-            
             // Generate heading
             var heading = new Vector3();
             var isSneaking = HasControl && GameInputs.FpsSneak.IsPressed();

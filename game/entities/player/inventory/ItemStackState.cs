@@ -9,7 +9,7 @@ namespace Overlords.game.entities.player.inventory
 
         public ItemStackState()
         {
-            Material = AddField<int>(isOneShot: true);  // TODO: Validate values.
+            Material = AddField<int>(true);  // TODO: Validate values.
             Amount = AddField<int>();
         }
     }

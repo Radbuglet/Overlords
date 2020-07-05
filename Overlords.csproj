@@ -56,6 +56,7 @@
     <Compile Include="game\definitions\EntityTypes.cs" />
     <Compile Include="game\definitions\GameInputs.cs" />
     <Compile Include="game\entities\npcs\shop\ShopRoot.cs" />
+    <Compile Include="game\entities\player\gui\GuiController.cs" />
     <Compile Include="game\entities\player\inventory\ItemStackRoot.cs" />
     <Compile Include="game\entities\player\inventory\ItemStackState.cs" />
     <Compile Include="game\entities\player\inventory\PlayerInventory.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="game\world\logic\WorldRoot.cs" />
     <Compile Include="game\world\logic\WorldShared.cs" />
     <Compile Include="game\world\logic\WorldState.cs" />
-    <Compile Include="helpers\csharp\EnumerableUtils.cs" />
+    <Compile Include="helpers\csharp\IteratorUtils.cs" />
     <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
