@@ -10,6 +10,9 @@ namespace Overlords.game.entities.player.inventory
 {
     public class PlayerInventory : Node, ICatchesUpSelf
     {
+        [Signal]
+        public delegate void StackMaterialUpdated(int slot, ItemStackRoot root);
+        
         [Export] private int _size;
         [Export] private PackedScene _stackPrefab;
         private ItemStackRoot[] _stacks;
@@ -45,11 +48,12 @@ namespace Overlords.game.entities.player.inventory
         }
 
         // Networking
-        private void MakeStack(int slot)
+        private ItemStackRoot MakeStack(int slot)
         {
             var stack = (ItemStackRoot) _stackPrefab.Instance();
             stack.Name = slot.ToString();
             AddChild(stack);
+            return stack;
         }
         
         public CatchupState CatchupOverNetwork(int peerId)
@@ -96,8 +100,13 @@ namespace Overlords.game.entities.player.inventory
                 GD.PushWarning($"Failed to {nameof(AddStack)}: {nameof(targetSlot)} is not empty.");
                 return;
             }
-            MakeStack(targetSlot);
-            this.GetWorldRoot().LoginHandler.ApplyCatchupInfo(catchupInfo);
+            
+            var newStack = MakeStack(targetSlot);
+            
+            if (!this.GetWorldRoot().LoginHandler.ApplyCatchupInfo(catchupInfo))
+            {
+                EmitSignal(nameof(StackMaterialUpdated), targetSlot, newStack);
+            }
         }
         
         [Puppet]
@@ -111,6 +120,7 @@ namespace Overlords.game.entities.player.inventory
             }
             stack.Purge();
             _stacks[targetSlot] = null;
+            EmitSignal(nameof(StackMaterialUpdated), targetSlot, null);
         }
 
         [Puppet]
@@ -140,6 +150,8 @@ namespace Overlords.game.entities.player.inventory
             stack.Name = newSlot.ToString();
             _stacks[newSlot] = stack;
             _stacks[currentSlot] = null;
+            EmitSignal(nameof(StackMaterialUpdated), currentSlot, null);
+            EmitSignal(nameof(StackMaterialUpdated), newSlot, stack);
         }
     }
 }

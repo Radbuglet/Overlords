@@ -62,11 +62,12 @@ namespace Overlords.game.world.logic
             ApplyCatchupInfo(catchupData);
         }
 
-        public void ApplyCatchupInfo(Dictionary catchupData)
+        public bool ApplyCatchupInfo(Dictionary catchupData)
         {
             var error = GetTree().ApplyCatchupInfo(catchupData);
-            if (error != null)
-                ClientQuit(error.ToMessage());
+            if (error == null) return true;
+            ClientQuit(error.ToMessage());
+            return false;
         }
 
         public void ClientQuit(string message)

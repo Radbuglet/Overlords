@@ -12,7 +12,7 @@ source = 1
 [sub_resource type="VisualShaderNodeInput" id=4]
 input_name = "screen_uv"
 
-[sub_resource type="VisualShaderNodeScalarUniform" id=6]
+[sub_resource type="VisualShaderNodeScalarUniform" id=5]
 uniform_name = "LOD"
 
 [resource]
@@ -71,6 +71,6 @@ nodes/fragment/4/node = SubResource( 3 )
 nodes/fragment/4/position = Vector2( -220, 300 )
 nodes/fragment/5/node = SubResource( 4 )
 nodes/fragment/5/position = Vector2( -480, 300 )
-nodes/fragment/7/node = SubResource( 6 )
+nodes/fragment/7/node = SubResource( 5 )
 nodes/fragment/7/position = Vector2( -460, 400 )
 nodes/fragment/connections = PoolIntArray( 2, 0, 3, 0, 4, 0, 3, 1, 5, 0, 4, 0, 3, 0, 0, 0, 7, 0, 4, 1 )

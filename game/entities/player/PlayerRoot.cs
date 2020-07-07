@@ -8,6 +8,7 @@ using Overlords.helpers.tree;
 
 namespace Overlords.game.entities.player
 {
+	// TODO: Root nodes are pretty bad for maintainability. Use signals where possible.
 	public class PlayerRoot : KinematicBody
 	{
 		// TODO: Use GetParent() instead of GetNode() to avoid the performance hit caused by parsing NodePaths

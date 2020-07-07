@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=2]
+[gd_scene load_steps=17 format=2]
 
 [ext_resource path="res://game/entities/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/entities/player/PlayerRoot.cs" type="Script" id=2]
@@ -12,11 +12,18 @@
 [ext_resource path="res://game/entities/player/inventory/ItemStack.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/entities/player/gui/GuiController.cs" type="Script" id=11]
 [ext_resource path="res://assets/ui/blur/blur_heavy.tres" type="Material" id=12]
+[ext_resource path="res://game/entities/player/gui/AspectContainer.cs" type="Script" id=13]
 
-[sub_resource type="BoxShape" id=1]
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0.321569, 0.321569, 0.321569, 1 )
+shadow_color = Color( 0, 0, 0, 0.156863 )
+shadow_size = 4
+shadow_offset = Vector2( 0, 0.991 )
+
+[sub_resource type="BoxShape" id=2]
 extents = Vector3( 1, 2, 1 )
 
-[sub_resource type="CapsuleMesh" id=2]
+[sub_resource type="CapsuleMesh" id=3]
 mid_height = 2.0
 
 [node name="Player" type="KinematicBody"]
@@ -64,11 +71,6 @@ script = ExtResource( 6 )
 [node name="Interaction" type="Spatial" parent="Logic"]
 script = ExtResource( 7 )
 
-[node name="Inventory" type="Node" parent="."]
-script = ExtResource( 9 )
-_size = 36
-_stackPrefab = ExtResource( 10 )
-
 [node name="Gui" type="Node" parent="."]
 script = ExtResource( 11 )
 
@@ -105,11 +107,53 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Inventory" type="ColorRect" parent="Gui"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0, 0, 0, 0.243137 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Container" type="Container" parent="Gui/Inventory"]
+anchor_left = 0.05
+anchor_top = 0.05
+anchor_right = 0.95
+anchor_bottom = 0.95
+rect_min_size = Vector2( 921.6, 512 )
+script = ExtResource( 13 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+EditorRatio = Vector2( 9, 5 )
+
+[node name="Panel" type="Panel" parent="Gui/Inventory/Container"]
+margin_top = 14.0
+margin_right = 921.6
+margin_bottom = 526.0
+custom_styles/panel = SubResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Grid" type="GridContainer" parent="Gui/Inventory/Container/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+columns = 9
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource( 9 )
+_size = 36
+_stackPrefab = ExtResource( 10 )
+
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
-shape = SubResource( 1 )
+shape = SubResource( 2 )
 
 [node name="MeshInstance" type="MeshInstance" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 2, 0 )
-mesh = SubResource( 2 )
+mesh = SubResource( 3 )
 material/0 = null
