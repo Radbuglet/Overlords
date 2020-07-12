@@ -8,7 +8,7 @@ namespace Overlords.game.entities.player.mechanics
     public class PlayerMovementNet : Node, ICatchesUpSelf, IInvariantEnforcer
     {
         public PlayerRoot Root => GetNode<PlayerRoot>("../../../");
-        private bool _gotInitialPosition;
+        public bool DeniesCatchup { get; set; }
 
         public CatchupState CatchupOverNetwork(int peerId)
         {
@@ -25,7 +25,7 @@ namespace Overlords.game.entities.player.mechanics
         
         public void ValidateCatchupState(SceneTree tree)
         {
-            if (!_gotInitialPosition)
+            if (!DeniesCatchup)
                 throw new InvalidCatchupException("Never received initial position.");
         }
 
@@ -46,7 +46,6 @@ namespace Overlords.game.entities.player.mechanics
         private void _SetPlayerPosition(Vector3 position)
         {
             Root.SetGlobalPosition(position);
-            _gotInitialPosition = true;
         }
 
         public void ReplicateMyPosition()

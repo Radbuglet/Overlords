@@ -10,7 +10,7 @@ namespace Overlords.game.world.entityCore
     public abstract class StateReplicator : Node, ICatchesUpSelf, IInvariantEnforcer
     {
         private readonly List<IReplicatedField> _fields = new List<IReplicatedField>();
-        private bool _constructed;
+        public bool DeniesCatchup { get; set; }
 
         public override void _Ready()
         {
@@ -46,11 +46,6 @@ namespace Overlords.game.world.entityCore
 
         public void HandleCatchupState(object valuesRaw)
         {
-            if (_constructed)
-            {
-                throw new InvalidCatchupException($"Initial values have already been provided to the {nameof(StateReplicator)}.");
-            }
-
             if (!(valuesRaw is Array values))
             {
                 throw new InvalidCatchupException("StateReplicator failed to handle catchup state: root wasn't an array!");
@@ -68,13 +63,11 @@ namespace Overlords.game.world.entityCore
                     throw new InvalidCatchupException("Invalid field value for StateReplicator.");
                 index++;
             }
-
-            _constructed = true;
         }
 
         public void ValidateCatchupState(SceneTree tree)
         {
-            if (!_constructed)
+            if (!DeniesCatchup)
             {
                 throw new InvalidCatchupException("StateReplicator never received a valid initial state.");
             }
@@ -83,7 +76,7 @@ namespace Overlords.game.world.entityCore
         [Puppet]
         private void _SetOneValue(int index, object value)
         {
-            if (!_constructed)
+            if (!DeniesCatchup)
             {
                 GD.PushWarning($"Single value was set before {nameof(StateReplicator)} was constructed.");
                 return;

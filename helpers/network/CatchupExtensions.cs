@@ -64,10 +64,12 @@ namespace Overlords.helpers.network
     /// 
     /// `CatchupOverNetwork` must contain HLAPI serializable objects (i.e. objects descending from variant that can be
     /// marshalled).
-    /// `HandleCatchupState` can be called several times remotely. TODO: Fix this problem using auto unflagging groups
+    /// `HandleCatchupState` can only be called if `DeniesCatchup` if false. Before HandleCatchupState() is called,
+    /// `DeniesCatchup` will be set to true. To override this, you can set it back to false in the method.
     /// </summary>
     public interface ICatchesUpSelf
     {
+        bool DeniesCatchup { get; set; }
         CatchupState CatchupOverNetwork(int peerId);
         void HandleCatchupState(object argsRoot);
     }
@@ -114,7 +116,7 @@ namespace Overlords.helpers.network
         {
             var packet = new Dictionary();
 
-            // TODO: Optimize using groups, check impact of NodePath serialization.
+            // TODO: Optimize using groups, check impact of nested NodePath serialization.
             void HandleNode(Node node)
             {
                 // Serialize the node
@@ -184,8 +186,15 @@ namespace Overlords.helpers.network
                     continue;
                 }
 
+                if (node.DeniesCatchup)
+                {
+                    GD.PushWarning(errorPrefix + "specified node denies catchup (double catchup of a single instance?).");
+                    continue;
+                }
+                
                 try
                 {
+                    node.DeniesCatchup = true;
                     node.HandleCatchupState(data[pathRaw]);
                 }
                 catch (InvalidCatchupException e)

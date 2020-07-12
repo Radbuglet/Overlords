@@ -16,6 +16,7 @@ namespace Overlords.game.entities.player.inventory
         [Export] private int _size;
         [Export] private PackedScene _stackPrefab;
         private ItemStackRoot[] _stacks;
+        public bool DeniesCatchup { get; set; }
 
         // Scene tree garbage
         private PlayerRoot PlayerRoot => GetParent<PlayerRoot>();

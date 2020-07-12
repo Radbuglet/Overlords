@@ -13,6 +13,7 @@ namespace Overlords.game.world.entityCore
     {
         [Export] private Array<PackedScene> _entityTypes = new Array<PackedScene>();
         private Dictionary<string, int> _fileToTypeMap;
+        public bool DeniesCatchup { get; set; }
 
         public override void _Ready()
         {

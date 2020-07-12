@@ -29,6 +29,7 @@ namespace Overlords.game.entities.player.mechanics
         [Master]
         private void _Interacted(string entityId, Vector3 relative, bool isSneaking)
         {
+            // TODO: Interaction when player is looking down directly is buggy ("failed to interact with the object (obscured?)").
             // Validate player and get target
             if (Root.SharedLogic.ValidateOwnerOnlyRpc(nameof(_Interacted))) return;
             var target = Root.WorldRoot.Shared.InteractionTargets.GetMemberOfGroup<Spatial>(entityId, null);

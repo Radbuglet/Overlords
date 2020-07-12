@@ -55,11 +55,6 @@ transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 16, 25 )
 [node name="Shop" parent="Map" instance=ExtResource( 7 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 17 )
 
-[node name="Inventory" type="Node" parent="."]
-
-[node name="List" type="Node" parent="Inventory"]
-script = ExtResource( 1 )
-
 [node name="Logic" type="Node" parent="."]
 
 [node name="Shared" type="Node" parent="Logic"]

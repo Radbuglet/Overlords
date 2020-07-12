@@ -6,7 +6,7 @@ using Overlords.helpers.tree;
 
 namespace Overlords.game.entities.player.gui
 {
-    public enum GudState
+    public enum GuiState
     {
         Playing,
         InGameMenu,
@@ -20,8 +20,11 @@ namespace Overlords.game.entities.player.gui
 
         [LinkNodeStatic("Pause")]
         public Control PauseRoot;
+        
+        [LinkNodeStatic("Inventory")]
+        public Control InventoryRoot;
 
-        public GudState State { get; private set; } = GudState.Playing;
+        public GuiState State { get; private set; } = GuiState.Playing;
         public Control CurrentUiRoot;
 
         public override void _Ready()
@@ -42,19 +45,30 @@ namespace Overlords.game.entities.player.gui
 
         public override void _Input(InputEvent @event)
         {
-            if (!GameInputs.FpsPause.WasJustPressed()) return;
-            
-            if (State == GudState.Paused)
+            if (GameInputs.FpsPause.WasJustPressed())
             {
-                SwapStatePlaying();
-            }
-            else
+                if (State == GuiState.Paused || State == GuiState.InGameMenu)
+                {
+                    SwapStatePlaying();
+                }
+                else
+                {
+                    SwapStatePaused();
+                }   
+            } else if (GameInputs.FpsInventory.WasJustPressed())
             {
-                SwapStatePaused();
+                if (State == GuiState.Playing)
+                {
+                    SwapStateMenu(InventoryRoot);
+                }
+                else if (State == GuiState.InGameMenu)
+                {
+                    SwapStatePlaying();
+                }
             }
         }
 
-        private void SwapState(GudState state, Control newUiRoot)
+        private void SwapState(GuiState state, Control newUiRoot)
         {
             // Swap UI roots
             if (CurrentUiRoot != null)
@@ -65,22 +79,22 @@ namespace Overlords.game.entities.player.gui
             
             // Set variables
             State = state;
-            Input.SetMouseMode(state == GudState.Playing ? Input.MouseMode.Captured : Input.MouseMode.Visible);
+            Input.SetMouseMode(state == GuiState.Playing ? Input.MouseMode.Captured : Input.MouseMode.Visible);
         }
 
         public void SwapStatePlaying()
         {
-            SwapState(GudState.Playing, HudRoot);
+            SwapState(GuiState.Playing, HudRoot);
         }
 
         public void SwapStatePaused()
         {
-            SwapState(GudState.Paused, PauseRoot);
+            SwapState(GuiState.Paused, PauseRoot);
         }
 
         public void SwapStateMenu(Control menuRoot)
         {
-            SwapState(GudState.InGameMenu, menuRoot);
+            SwapState(GuiState.InGameMenu, menuRoot);
         }
     }
 }

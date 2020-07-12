@@ -11,7 +11,7 @@ namespace Overlords.game.entities.player.mechanics
         
         public PlayerRoot Root => GetNode<PlayerRoot>("../../");
         private float Sensitivity => -Mathf.Deg2Rad(0.2f);
-        private bool HasControl => Root.GuiController.State == GudState.Playing;
+        private bool HasControl => Root.GuiController.State == GuiState.Playing;
 
         private void ApplyRotation()
         {
