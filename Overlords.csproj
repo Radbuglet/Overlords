@@ -84,8 +84,7 @@
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
     <Compile Include="helpers\network\RpcUtils.cs" />
     <Compile Include="helpers\tree\InitializationExtensions.cs" />
-    <Compile Include="helpers\tree\trackingGroup\NodeGroup.cs" />
-    <Compile Include="helpers\tree\trackingGroup\TrackedMember.cs" />
+    <Compile Include="helpers\tree\NodeDictionary.cs" />
     <Compile Include="helpers\tree\TreeUtils.cs" />
     <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="menu\StartClientButton.cs" />

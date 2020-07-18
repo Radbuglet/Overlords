@@ -3,7 +3,7 @@ using System.Linq;
 using Godot;
 using Overlords.game.definitions;
 using Overlords.game.entities.player;
-using Overlords.helpers.tree.trackingGroup;
+using Overlords.helpers.tree;
 
 namespace Overlords.game.world.logic
 {
@@ -11,31 +11,31 @@ namespace Overlords.game.world.logic
     {
         private WorldRoot WorldRoot => GetNode<WorldRoot>("../../");
         
-        public readonly NodeGroup<string, Node> InteractionTargets = new NodeGroup<string, Node>();
-        public readonly NodeGroup<int, PlayerRoot> Players = new NodeGroup<int, PlayerRoot>();
+        public readonly NodeDictionary<string, Node> InteractionTargets = new NodeDictionary<string, Node>();
+        public readonly NodeDictionary<int, PlayerRoot> Players = new NodeDictionary<int, PlayerRoot>();
 
         public override void _Ready()
         {
             foreach (var node in GetTree().GetNodesInGroup(EntityTypes.RegisterInteractionGroupName).Cast<Node>())
             {
-                InteractionTargets.AddToGroup(node.Name, node);
+                InteractionTargets.Add(node.Name, node);
             }
         }
 
         public IEnumerable<int> GetOnlinePeers()
         {
-            return Players.IterateGroupMembers()
+            return Players.GetValues()
                 .Select(player => player.State.OwnerPeerId.Value);
         }
 
         public void RegisterPlayer(PlayerRoot root)
         {
-            Players.AddToGroup(root.State.OwnerPeerId.Value, root);
+            Players.Add(root.State.OwnerPeerId.Value, root);
         }
 
         public PlayerRoot GetPlayer(int peerId)
         {
-            return Players.GetMemberOfGroup<PlayerRoot>(peerId, null);
+            return Players.TryGetValue<PlayerRoot>(peerId, out var player) ? player : null;
         }
     }
 }

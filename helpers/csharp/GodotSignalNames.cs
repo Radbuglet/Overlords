@@ -9,4 +9,9 @@ namespace Overlords.helpers.csharp
         public const string ServerDisconnected = "server_disconnected";
         public const string NodeAdded = "node_added";
     }
+
+    public static class NodeSignals
+    {
+        public const string TreeExited = "tree_exited";
+    }
 }

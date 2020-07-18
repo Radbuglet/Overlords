@@ -21,13 +21,13 @@ namespace Overlords.helpers.tree
             return node.EnumerateAncestors().Contains(other);
         }
 
-        public static (bool isDescendant, Node firstNodeAfterAncestor) IsDescendantOfWithBacktrack(this Node node,
-            Node other)
+        public static (bool isDescendant, Node firstNodeAfterAncestor) IsDescendantOfWithBacktrack(this Node node, Node other)
         {
             var firstNodeAfterAncestor = node;
             foreach (var ancestor in node.EnumerateAncestors())
             {
-                if (ancestor.Equals(other)) return (true, firstNodeAfterAncestor);
+                if (ancestor.Equals(other))
+                    return (true, firstNodeAfterAncestor);
                 firstNodeAfterAncestor = ancestor;
             }
 
@@ -41,7 +41,8 @@ namespace Overlords.helpers.tree
 
         public static void MoveInto(this Node from, Node into)
         {
-            foreach (var child in from.EnumerateChildren()) child.ReParent(@into);
+            foreach (var child in from.EnumerateChildren())
+                child.ReParent(@into);
         }
 
         public static void ImportNodesFrom(this Node into, PackedScene from)
@@ -57,7 +58,10 @@ namespace Overlords.helpers.tree
 
         public static IEnumerable<Node> EnumerateChildren(this Node node)
         {
-            return node.GetChildren().Cast<Node>();
+            for (var idx = 0; idx < node.GetChildCount(); idx++)
+            {
+                yield return node.GetChild(idx);
+            }
         }
     }
 }

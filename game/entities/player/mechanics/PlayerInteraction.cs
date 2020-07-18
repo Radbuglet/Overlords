@@ -2,7 +2,6 @@
 using Overlords.game.definitions;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
-using Overlords.helpers.tree.trackingGroup;
 
 namespace Overlords.game.entities.player.mechanics
 {
@@ -20,7 +19,7 @@ namespace Overlords.game.entities.player.mechanics
             
             // Find entity  TODO: Sound/animation for failing interaction
             if (!(rayCast.GetCollider() is Spatial target)) return;
-            if (!target.GetIdInGroup(Root.WorldRoot.Shared.InteractionTargets, out var targetId)) return;
+            if (!Root.WorldRoot.Shared.InteractionTargets.TryGetKey(target, out var targetId)) return;
 
             // Replicate interaction
             this.RpcServer(nameof(_Interacted), targetId, rayCast.GetCollisionPoint() - target.GetGlobalPosition(), isSneaking);
@@ -32,8 +31,7 @@ namespace Overlords.game.entities.player.mechanics
             // TODO: Interaction when player is looking down directly is buggy ("failed to interact with the object (obscured?)").
             // Validate player and get target
             if (Root.SharedLogic.ValidateOwnerOnlyRpc(nameof(_Interacted))) return;
-            var target = Root.WorldRoot.Shared.InteractionTargets.GetMemberOfGroup<Spatial>(entityId, null);
-            if (target == null)
+            if (!Root.WorldRoot.Shared.InteractionTargets.TryGetValue<Spatial>(entityId, out var target))
             {
                 GD.PushWarning($"Player {Root.State.OwnerPeerId.Value} interacted with entity that didn't exist.");
                 return;
