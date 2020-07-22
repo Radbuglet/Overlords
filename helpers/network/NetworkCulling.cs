@@ -34,5 +34,21 @@ namespace Overlords.helpers.network
         {
             return filterFrom.Where(target.IsLocallyVisibleTo);
         }
+
+        public static void RpcVis(this Node target, string method, params object[] args)
+        {
+            foreach (var peerId in target.EnumerateNetworkViewers())
+            {
+                target.RpcId(peerId, method, args);
+            }
+        }
+        
+        public static void RpcUnreliableVis(this Node target, string method, params object[] args)
+        {
+            foreach (var peerId in target.EnumerateNetworkViewers())
+            {
+                target.RpcUnreliableId(peerId, method, args);
+            }
+        }
     }
 }

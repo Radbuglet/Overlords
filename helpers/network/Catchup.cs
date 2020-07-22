@@ -74,9 +74,14 @@ namespace Overlords.helpers.network
         public static Dictionary GenerateCatchupInfo(this Node rootNode, int peerId)
         {
             var packet = new Dictionary();
+            Debug.Assert(rootNode.IsVisibleTo(peerId));
             
             void HandleNode(Node node)
             {
+                // Check if this node is visible
+                if (node is ICullsNetwork cullsNetwork && !cullsNetwork.IsLocallyVisibleTo(peerId))
+                    return;
+
                 // Serialize the node
                 if (node is IRequiresCatchup requiresCatchup)
                 {

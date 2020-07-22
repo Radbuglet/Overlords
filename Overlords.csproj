@@ -55,12 +55,12 @@
   <ItemGroup>
     <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
-    <Compile Include="helpers\csharp\IteratorUtils.cs" />
     <Compile Include="helpers\csharp\ListExtensions.cs" />
     <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
     <Compile Include="helpers\network\Catchup.cs" />
     <Compile Include="helpers\network\NetworkCulling.cs" />
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
+    <Compile Include="helpers\network\TupleDecoder.cs" />
     <Compile Include="helpers\replication\ListReplicator.cs" />
     <Compile Include="helpers\replication\StateReplicator.cs" />
     <Compile Include="helpers\tree\InitializationExtensions.cs" />

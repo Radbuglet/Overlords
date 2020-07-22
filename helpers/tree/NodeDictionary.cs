@@ -37,6 +37,11 @@ namespace Overlords.helpers.tree
             return true;
         }
 
+        public bool HasKey(TKey key)
+        {
+            return _idToElement.ContainsKey(key);
+        }
+
         public bool TryGetValue(TKey key, out TValue element)
         {
             return _idToElement.TryGetValue(key, out element);
