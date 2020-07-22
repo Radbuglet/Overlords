@@ -21,46 +21,102 @@ namespace Overlords.helpers.tree
             return node.EnumerateAncestors().Contains(other);
         }
 
-        public static (bool isDescendant, Node firstNodeAfterAncestor) IsDescendantOfWithBacktrack(this Node node, Node other)
+        /// <summary>
+        /// Finds the first ancestor that is assignable to the type "T".
+        /// Returns null if the operation failed.
+        /// </summary>
+        /// <returns></returns>
+        public static T FindFirstAncestor<T>(this Node node) where T : Node
         {
-            var firstNodeAfterAncestor = node;
             foreach (var ancestor in node.EnumerateAncestors())
             {
-                if (ancestor.Equals(other))
-                    return (true, firstNodeAfterAncestor);
-                firstNodeAfterAncestor = ancestor;
+                if (ancestor is T firstAncestor)
+                    return firstAncestor;
             }
-
-            return (false, null);
+            return null;
         }
 
+        /// <summary>
+        /// This method is a more memory efficient version of the GetChildren() method present in Nodes because it returns
+        /// an iterator instead of creating a new array.
+        /// </summary>
+        /// <param name="node">The parent node</param>
+        /// <returns>An iterator with each child in scene-tree order</returns>
+        public static IEnumerable<Node> EnumerateChildren(this Node node)
+        {
+            for (var idx = 0; idx < node.GetChildCount(); idx++)
+            {
+                yield return node.GetChild(idx);
+            }
+        }
+
+        /// <summary>
+        /// Gets the first child that has a certain name. This, alongside all other "find node" operations in Godot is
+        /// an O(n) operation.
+        /// </summary>
+        /// <param name="node">The parent node</param>
+        /// <param name="name">The expected (exact) name. No regexes supported.</param>
+        /// <returns></returns>
         public static Node GetChildByName(this Node node, string name)
         {
             return node.EnumerateChildren().FirstOrDefault(child => child.Name == name);
         }
 
+        /// <summary>
+        /// Re-parents all direct children of the "from" node to the "to" node.
+        /// </summary>
         public static void MoveInto(this Node from, Node into)
         {
             foreach (var child in from.EnumerateChildren())
                 child.ReParent(@into);
         }
-
-        public static void ImportNodesFrom(this Node into, PackedScene from)
-        {
-            from.Instance().MoveInto(into);
-        }
-
+        
         public static void ReParent(this Node node, Node newParent)
         {
             node.GetParent()?.RemoveChild(node);
             newParent.AddChild(node);
         }
 
-        public static IEnumerable<Node> EnumerateChildren(this Node node)
+        /// <summary>
+        /// Removes a node from the scene tree immediately and queues the memory for deletion.
+        /// </summary>
+        public static void Purge(this Node node)
         {
-            for (var idx = 0; idx < node.GetChildCount(); idx++)
+            node.GetParent().RemoveChild(node);
+            node.QueueFree();
+        }
+
+        
+        /// <summary>
+        /// Removes all children of a node and optionally queues the parent node for freeing.
+        /// This method is useful if the node is locked during a scene tree initialization.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="freeSelf"></param>
+        public static void PurgeWhileLocked(this Node node, bool freeSelf)
+        {
+            foreach (var child in node.EnumerateChildren())
             {
-                yield return node.GetChild(idx);
+                child.QueueFree();
+                node.RemoveChild(child);
+            }
+
+            if (freeSelf)
+                node.QueueFree();
+        }
+        
+        
+        /// <summary>
+        /// Lists all the members of a group which derive the generic type "T". Unlike GetNodesInGroup, this method
+        /// will account for any dynamic removals during the iteration but not any dynamic additions.
+        /// </summary>
+        public static IEnumerable<(Node, T)> EnumerateGroupMembers<T>(this SceneTree tree, string groupName)
+        {
+            // ReSharper disable once LoopCanBeConvertedToQuery
+            foreach (var node in tree.GetNodesInGroup(groupName).Cast<Node>())
+            {
+                if (node.IsInGroup(groupName) && node is T)
+                    yield return (node, (T) (object) node);
             }
         }
     }

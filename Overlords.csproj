@@ -53,44 +53,22 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="game\definitions\EntityTypes.cs" />
-    <Compile Include="game\definitions\GameInputs.cs" />
-    <Compile Include="game\entities\npcs\shop\ShopRoot.cs" />
-    <Compile Include="game\entities\player\gui\AspectContainer.cs" />
-    <Compile Include="game\entities\player\gui\GuiController.cs" />
-    <Compile Include="game\entities\player\gui\InventoryMenu.cs" />
-    <Compile Include="game\entities\player\inventory\ItemStackRoot.cs" />
-    <Compile Include="game\entities\player\inventory\ItemStackState.cs" />
-    <Compile Include="game\entities\player\inventory\PlayerInventory.cs" />
-    <Compile Include="game\entities\player\mechanics\PlayerControlsLocal.cs" />
-    <Compile Include="game\entities\player\mechanics\PlayerInteraction.cs" />
-    <Compile Include="game\entities\player\mechanics\PlayerMovementNet.cs" />
-    <Compile Include="game\entities\player\PlayerShared.cs" />
-    <Compile Include="game\entities\player\PlayerRoot.cs" />
-    <Compile Include="game\entities\player\PlayerState.cs" />
-    <Compile Include="game\entities\shared\HumanoidMover.cs" />
-    <Compile Include="game\world\entityCore\ListReplicator.cs" />
-    <Compile Include="game\world\entityCore\StateReplicator.cs" />
-    <Compile Include="game\world\logic\LoginHandler.cs" />
-    <Compile Include="game\world\logic\WorldRoot.cs" />
-    <Compile Include="game\world\logic\WorldShared.cs" />
-    <Compile Include="game\world\logic\WorldState.cs" />
-    <Compile Include="helpers\csharp\IteratorUtils.cs" />
     <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
-    <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
+    <Compile Include="helpers\csharp\IteratorUtils.cs" />
     <Compile Include="helpers\csharp\ListExtensions.cs" />
-    <Compile Include="helpers\network\CatchupExtensions.cs" />
+    <Compile Include="helpers\csharp\ReflectionExtensions.cs" />
+    <Compile Include="helpers\network\Catchup.cs" />
+    <Compile Include="helpers\network\NetworkCulling.cs" />
     <Compile Include="helpers\network\NetworkTypeUtils.cs" />
-    <Compile Include="helpers\network\RpcUtils.cs" />
+    <Compile Include="helpers\replication\ListReplicator.cs" />
+    <Compile Include="helpers\replication\StateReplicator.cs" />
     <Compile Include="helpers\tree\InitializationExtensions.cs" />
     <Compile Include="helpers\tree\NodeDictionary.cs" />
     <Compile Include="helpers\tree\TreeUtils.cs" />
-    <Compile Include="helpers\tree\NodePurging.cs" />
     <Compile Include="menu\StartClientButton.cs" />
     <Compile Include="menu\StartServerButton.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="services\EarlyTriggerService.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies">

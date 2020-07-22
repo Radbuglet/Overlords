@@ -1,21 +1,18 @@
 ﻿using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
-using Overlords.game.definitions;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 
-namespace Overlords.game.world.entityCore
+namespace Overlords.helpers.replication
 {
-    public abstract class StateReplicator : Node, ICatchesUpSelf, IInvariantEnforcer
+    public abstract class StateReplicator : Node, IRequiresCatchup
     {
         private readonly List<IReplicatedField> _fields = new List<IReplicatedField>();
-        public bool DeniesCatchup { get; set; }
 
         public override void _Ready()
         {
-            if (GetTree().GetNetworkMode() == NetworkMode.Client)
-                this.FlagEnforcer();
+            this.FlagRequiresCatchup();
         }
 
         protected ReplicatedField<T> AddField<T>(bool isOneShot = false, bool isNullable = false, ReplicatedField<T>.ValueValidator validator = null)
@@ -27,7 +24,7 @@ namespace Overlords.game.world.entityCore
 
         protected void ReplicateField(IReplicatedField field)
         {
-            foreach (var peerId in this.GetWorldRoot().Shared.GetOnlinePeers())
+            foreach (var peerId in this.EnumerateNetworkViewers())
             {
                 RpcId(peerId, nameof(_SetOneValue), field.Index, field.NetGetValue());
             }
@@ -41,7 +38,7 @@ namespace Overlords.game.world.entityCore
                 packet.Add(field.NetGetValue());
             }
 
-            return new CatchupState(true, packet);
+            return new CatchupState(packet);
         }
 
         public void HandleCatchupState(object valuesRaw)
@@ -65,18 +62,10 @@ namespace Overlords.game.world.entityCore
             }
         }
 
-        public void ValidateCatchupState(SceneTree tree)
-        {
-            if (!DeniesCatchup)
-            {
-                throw new InvalidCatchupException("StateReplicator never received a valid initial state.");
-            }
-        }
-        
         [Puppet]
         private void _SetOneValue(int index, object value)
         {
-            if (!DeniesCatchup)
+            if (this.DoesRequireCatchup())
             {
                 GD.PushWarning($"Single value was set before {nameof(StateReplicator)} was constructed.");
                 return;
