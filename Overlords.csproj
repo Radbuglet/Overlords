@@ -53,6 +53,20 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="game\GameRoot.cs" />
+    <Compile Include="game\player\gui\AspectContainer.cs" />
+    <Compile Include="game\player\gui\GuiController.cs" />
+    <Compile Include="game\player\gui\InventoryMenu.cs" />
+    <Compile Include="game\player\inventory\ItemStackRoot.cs" />
+    <Compile Include="game\player\inventory\ItemStackState.cs" />
+    <Compile Include="game\player\inventory\PlayerInventory.cs" />
+    <Compile Include="game\player\mechanics\PlayerControlsLocal.cs" />
+    <Compile Include="game\player\mechanics\PlayerInteraction.cs" />
+    <Compile Include="game\player\mechanics\PlayerMovementNet.cs" />
+    <Compile Include="game\player\PlayerRoot.cs" />
+    <Compile Include="game\player\PlayerShared.cs" />
+    <Compile Include="game\player\PlayerState.cs" />
+    <Compile Include="game\shared\HumanoidMover.cs" />
     <Compile Include="helpers\csharp\GodotAliases.cs" />
     <Compile Include="helpers\csharp\GodotSignalNames.cs" />
     <Compile Include="helpers\csharp\ListExtensions.cs" />

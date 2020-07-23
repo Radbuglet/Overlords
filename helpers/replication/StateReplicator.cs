@@ -30,7 +30,7 @@ namespace Overlords.helpers.replication
             }
         }
 
-        public CatchupState CatchupOverNetwork(int peerId)
+        public object CatchupOverNetwork(int peerId)
         {
             var packet = new Array();
             foreach (var field in _fields)
@@ -38,7 +38,7 @@ namespace Overlords.helpers.replication
                 packet.Add(field.NetGetValue());
             }
 
-            return new CatchupState(packet);
+            return packet;
         }
 
         public void HandleCatchupState(object valuesRaw)
@@ -133,13 +133,14 @@ namespace Overlords.helpers.replication
             if (raw is T value)
             {
                 newValue = value;
-            } else if (raw == null && IsNullable)
+            }
+            else if (raw == null && IsNullable)
             {
                 newValue = default;
             }
             else
             {
-                GD.PushWarning("ReplicatedField had its value set to the wrong type.");
+                GD.PushWarning($"ReplicatedField had its value set to the wrong type. Expected {typeof(T).FullName}, got {(raw != null ? raw.GetType().FullName : "null")}.");
                 return false;
             }
             

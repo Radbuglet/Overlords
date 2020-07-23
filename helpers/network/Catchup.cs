@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using Godot;
 using Godot.Collections;
 using Overlords.helpers.tree;
@@ -7,22 +9,6 @@ using Overlords.helpers.tree;
 // TODO: Document
 namespace Overlords.helpers.network
 {
-    /// <summary>
-    /// Represents the packet that will be delivered to the remote instance upon catch up. If the empty constructor is
-    /// used (i.e. the `WillSendArgs` field is false), no remote args will be sent.
-    /// </summary>
-    public readonly struct CatchupState
-    {
-        public readonly bool WillSendArgs;
-        public readonly object RemoteArgs;
-        
-        public CatchupState(object remoteArgs)
-        {
-            WillSendArgs = true;
-            RemoteArgs = remoteArgs;
-        }
-    }
-
     /// <summary>
     /// Represents an exception signaling a fatal error in the received catch up state.
     /// </summary>
@@ -42,7 +28,7 @@ namespace Overlords.helpers.network
 
     public interface IRequiresCatchup
     {
-        CatchupState CatchupOverNetwork(int peerId);
+        object CatchupOverNetwork(int peerId);
         void HandleCatchupState(object argsRoot);
     }
     
@@ -85,9 +71,7 @@ namespace Overlords.helpers.network
                 // Serialize the node
                 if (node is IRequiresCatchup requiresCatchup)
                 {
-                    var generated = requiresCatchup.CatchupOverNetwork(peerId);
-                    if (generated.WillSendArgs)
-                        packet[node.GetPath()] = generated.RemoteArgs;
+                    packet[node.GetPath()] = requiresCatchup.CatchupOverNetwork(peerId);
                 }
                 
                 // Traverse the branch if `CatchupOverNetwork` returned true
@@ -116,20 +100,23 @@ namespace Overlords.helpers.network
                     GD.PushWarning(errorPrefix + "key was not a node path.");
                     continue;
                 }
-                
+
+                GD.Print($"Catching up node at \"{path}\"");
+
                 var node = tree.Root.GetNodeOrNull<IRequiresCatchup>(path);
                 if (node == null)
                 {
-                    GD.PushWarning(errorPrefix + $"specified node does not exist or does not implement {nameof(IRequiresCatchup)}.");
+                    GD.PushWarning(errorPrefix +
+                                   $"specified node does not exist or does not implement {nameof(IRequiresCatchup)}.");
                     continue;
                 }
 
                 if (!((Node) node).IsInGroup(GroupRequiresCatchup))
                 {
-                    GD.PushWarning(errorPrefix + "specified node is not flagged as currently requiring catchup.");
+                    GD.PushWarning(errorPrefix + "specified node at is not flagged as currently requiring catchup.");
                     continue;
                 }
-                
+
                 // Attempt to apply catchup
                 try
                 {
@@ -143,12 +130,21 @@ namespace Overlords.helpers.network
                     return e;
                 }
             }
-            
+
             // Ensure that all nodes requiring catchup have been caught up
             if (tree.DoesAnythingRequireCatchup())
             {
                 _catchupPhase = CatchupApplicationPhase.NotCatchingUp;
-                return new InvalidCatchupException("At least one node marked as currently requiring catchup has not been caught up.");
+                var list = new StringBuilder();
+                var first = true;
+                foreach (var node in tree.GetNodesInGroup(GroupRequiresCatchup).Cast<Node>())
+                {
+                    if (!first)
+                        list.Append(",");
+                    first = false;
+                    list.Append(node.GetPath());
+                }
+                return new InvalidCatchupException($"At least one node marked as currently requiring catchup has not been caught up.\nNodes: {list}");
             }
 
             // Perform macro catchup validation
@@ -192,7 +188,7 @@ namespace Overlords.helpers.network
                 target.AddToGroup(GroupRequiresCatchup);
         }
         
-        public static void UnFlagRequiresCatchup<T>(this Node target)
+        public static void UnFlagRequiresCatchup(this Node target)
         {
             if (target.GetNetworkMode() == NetworkMode.Client)
                 target.RemoveFromGroup(GroupRequiresCatchup);
@@ -212,7 +208,7 @@ namespace Overlords.helpers.network
                 target.AddToGroup(GroupMacroCatchupValidator);
         }
         
-        public static void UnFlagMacroValidator<T>(this Node target)
+        public static void UnFlagMacroValidator(this Node target)
         {
             if (target.GetNetworkMode() == NetworkMode.Client)
                 target.RemoveFromGroup(GroupMacroCatchupValidator);
@@ -227,7 +223,7 @@ namespace Overlords.helpers.network
                 target.AddToGroup(GroupCatchupAwaiter);
         }
         
-        public static void UnFlagCatchupAwaiter<T>(this Node target)
+        public static void UnFlagCatchupAwaiter(this Node target)
         {
             if (target.GetNetworkMode() == NetworkMode.Client)
                 target.RemoveFromGroup(GroupCatchupAwaiter);

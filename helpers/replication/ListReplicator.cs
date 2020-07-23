@@ -19,6 +19,7 @@ namespace Overlords.helpers.replication
         // Event handlers
         public override void _Ready()
         {
+            this.FlagRequiresCatchup();
             if (this.GetNetworkMode() != NetworkMode.Server) return;  // No setup for client
             
             // Create a mapping between resource file names and entity types
@@ -33,7 +34,7 @@ namespace Overlords.helpers.replication
         }
         
         // Catchup networking
-        public CatchupState CatchupOverNetwork(int peerId)
+        public object CatchupOverNetwork(int peerId)
         {
             var packet = new Array();
             foreach (var entity in this.EnumerateChildren())
@@ -41,7 +42,7 @@ namespace Overlords.helpers.replication
                 if (entity.IsVisibleTo(peerId))
                     packet.Add(new Array {entity.Name, GetTypeId(entity)});
             }
-            return new CatchupState(packet);
+            return packet;
         }
 
         public void HandleCatchupState(object argsRoot)
@@ -62,7 +63,7 @@ namespace Overlords.helpers.replication
                     continue;
                 }
 
-                _EntityAddedRemotely(typeId, name, null);
+                SpawnRemoteEntity(typeId, name);
             }
         }
 
@@ -111,25 +112,39 @@ namespace Overlords.helpers.replication
         }
 
         // Client replication handlers
-        [Puppet]
-        private void _EntityAddedRemotely(int typeIndex, string name, Dictionary catchupInfo)
+        private (Node entity, bool success) SpawnRemoteEntity(int typeIndex, string name)
         {
             if (!_entityTypes.TryGetValue(typeIndex, out var typePrefab))
             {
                 GD.PushWarning($"Invalid entity type. Server attempted to spawn entity of type {typeIndex}. Valid types are between 0 and {_entityTypes.Count - 1} inclusive.");
-                return;
+                return (null, false);
             }
 
-            if (GetTree().DoesAnythingRequireCatchup())
+            if (name == null)
             {
-                GD.PushWarning("Failed to remotely spawn entity: tree still contained nodes requiring catchup!");
-                return;
+                GD.PushWarning("Failed to spawn remote entity: name is null!");
+                return (null, false);
             }
             
             var entity = typePrefab.Instance();
             entity.Name = name;
             entity.AddToGroup(RemoteInstanceGroup);
             AddChild(entity);
+            return (entity, true);
+        }
+        
+        [Puppet]
+        private void _EntityAddedRemotely(int typeIndex, string name, Dictionary catchupInfo)
+        {
+            if (GetTree().DoesAnythingRequireCatchup())
+            {
+                GD.PushWarning("Failed to remotely spawn entity: tree still contained nodes requiring catchup!");
+                return;
+            }
+
+            var (entity, success) = SpawnRemoteEntity(typeIndex, name);
+            if (!success)
+                return;
 
             if (entity.Name != name)
                 GD.PushWarning("Name was invalid and entity name was changed when added into the scene tree. This might cause bugs.");

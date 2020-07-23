@@ -1,0 +1,40 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://game/GameRoot.cs" type="Script" id=1]
+[ext_resource path="res://helpers/replication/ListReplicator.cs" type="Script" id=2]
+[ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=5]
+[ext_resource path="res://game/player/Player.tscn" type="PackedScene" id=6]
+
+[sub_resource type="PlaneMesh" id=1]
+
+[sub_resource type="BoxShape" id=2]
+
+[node name="TestWorld" type="Spatial"]
+script = ExtResource( 1 )
+_playerPrefab = ExtResource( 6 )
+
+[node name="Static" type="Spatial" parent="."]
+
+[node name="DefaultCamera" type="Camera" parent="Static"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 51 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="Static"]
+transform = Transform( -1, -7.74287e-08, 4.47035e-08, -2.31402e-08, 0.707107, 0.707107, -8.63605e-08, 0.707107, -0.707107, 0, 14, 0 )
+
+[node name="Floor" type="MeshInstance" parent="Static"]
+transform = Transform( 50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0 )
+mesh = SubResource( 1 )
+material/0 = ExtResource( 5 )
+
+[node name="StaticBody" type="StaticBody" parent="Static/Floor"]
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Static/Floor/StaticBody"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
+shape = SubResource( 2 )
+
+[node name="Entities" type="Node" parent="."]
+script = ExtResource( 2 )
+_entityTypes = [ ExtResource( 6 ) ]
