@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=18 format=2]
 
 [ext_resource path="res://game/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/player/PlayerRoot.cs" type="Script" id=2]
@@ -7,11 +7,13 @@
 [ext_resource path="res://game/shared/HumanoidMover.cs" type="Script" id=5]
 [ext_resource path="res://game/player/mechanics/PlayerControlsLocal.cs" type="Script" id=6]
 [ext_resource path="res://game/player/mechanics/PlayerInteraction.cs" type="Script" id=7]
+[ext_resource path="res://assets/ui/crosshair/crosshair.png" type="Texture" id=8]
 [ext_resource path="res://game/player/inventory/PlayerInventory.cs" type="Script" id=9]
 [ext_resource path="res://game/player/inventory/ItemStack.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/player/gui/GuiController.cs" type="Script" id=11]
 [ext_resource path="res://assets/ui/blur/blur_heavy.tres" type="Material" id=12]
 [ext_resource path="res://game/player/gui/AspectContainer.cs" type="Script" id=13]
+[ext_resource path="res://assets/ui/crosshair/crosshair_shader.tres" type="Material" id=14]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0.321569, 0.321569, 0.321569, 1 )
@@ -82,6 +84,25 @@ margin_right = 40.0
 margin_bottom = 14.0
 text = "This is a hud"
 
+[node name="Crosshair" type="Container" parent="Gui/Hud"]
+anchor_left = 0.49
+anchor_top = 0.49
+anchor_right = 0.51
+anchor_bottom = 0.51
+script = ExtResource( 13 )
+__meta__ = {
+"_edit_use_anchors_": true
+}
+
+[node name="Rect" type="TextureRect" parent="Gui/Hud/Crosshair"]
+material = ExtResource( 14 )
+margin_left = 4.23999
+margin_right = 16.24
+margin_bottom = 12.0
+texture = ExtResource( 8 )
+expand = true
+stretch_mode = 1
+
 [node name="Pause" type="ColorRect" parent="Gui"]
 visible = false
 material = ExtResource( 12 )
@@ -104,6 +125,7 @@ __meta__ = {
 }
 
 [node name="Inventory" type="ColorRect" parent="Gui"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 color = Color( 0, 0, 0, 0.243137 )

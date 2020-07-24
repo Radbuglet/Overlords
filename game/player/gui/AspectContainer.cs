@@ -19,12 +19,17 @@ namespace Overlords.game.player.gui
             }
         }
 
+        public override void _Ready()
+        {
+            QueueSort();
+        }
+
         public override void _Notification(int what)
         {
             if (what != NotificationSortChildren) return;
             var rect = GetRect();
-            RectMinSize = _ratio * Math.Min(rect.Size.x / _ratio.x, rect.Size.y / _ratio.y);
-            FitChildInRect((Control) GetChild(0), new Rect2((RectSize - RectMinSize) / 2, RectMinSize));
+            var childSize = _ratio * Math.Min(rect.Size.x / _ratio.x, rect.Size.y / _ratio.y);
+            FitChildInRect((Control) GetChild(0), new Rect2((RectSize - childSize) / 2, childSize));
         }
     }
 }
