@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Linq;
 using Godot;
 using Godot.Collections;
 using Overlords.game.player;
+using Overlords.game.props;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.replication;
@@ -26,6 +28,7 @@ namespace Overlords.game
 			// Register interact targets
 			foreach (var target in GetTree().GetNodesInGroup(Constants.RegisterInteractable).Cast<Node>())
 			{
+				Debug.Assert(target is IProp);
 				InteractTargets.Add(target.Name, target);
 			}
 			
@@ -45,8 +48,8 @@ namespace Overlords.game
 			var player = (PlayerRoot) _playerPrefab.Instance();
 			player.Name = $"player_{peerId}";
 			Entities.AddChild(player);
-			player.State.OwnerPeerId.Value = peerId;
-			player.State.DisplayName.Value = $"user_{peerId}";
+			player.State.OwnerPeerId = peerId;
+			player.State.DisplayName = $"user_{peerId}";
 			player.Shared.OnSetupComplete();
 			
 			// Replicate to already existent peers

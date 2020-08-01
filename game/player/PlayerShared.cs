@@ -29,7 +29,7 @@ namespace Overlords.game.player
         public void OnSetupComplete()
         {
             // Find and apply variant
-            var variant = GetTree().GetNetworkVariant(Player.State.OwnerPeerId.Value);
+            var variant = GetTree().GetNetworkVariant(Player.State.OwnerPeerId);
             variant.ApplyToTree(new Dictionary<NetObjectVariant, IEnumerable<Func<Node>>>
             {
                 [NetObjectVariant.FlagAuthoritative] = new Func<Node>[]
@@ -50,7 +50,7 @@ namespace Overlords.game.player
         public bool ValidateOwnerOnlyRpc(string action)
         {
             var sender = GetTree().GetRpcSenderId();
-            if (sender == Player.State.OwnerPeerId.Value) return false;
+            if (sender == Player.State.OwnerPeerId) return false;
             GD.PushWarning($"RPC {action} can only be interacted with by the owner. Peer {sender} violated the rule.");
             return true;
         }
@@ -62,8 +62,7 @@ namespace Overlords.game.player
 
         public bool IsOverlord()
         {
-            // That's a lot of redirects. At least the component system was better in that regard.
-            return Player.Game.State.OverlordId.Value == Player.State.OwnerPeerId.Value;
+            return Player.Game.State.OverlordId == Player.State.OwnerPeerId;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Overlords.game.player.mechanics
             if (Player.Shared.ValidateOwnerOnlyRpc(nameof(_Interacted))) return;
             if (!Player.Game.InteractTargets.TryGetValue<Spatial>(entityId, out var target))
             {
-                GD.PushWarning($"Player {Player.State.OwnerPeerId.Value} interacted with entity that didn't exist.");
+                GD.PushWarning($"Player {Player.State.OwnerPeerId} interacted with entity that didn't exist.");
                 return;
             }
 
@@ -46,7 +46,7 @@ namespace Overlords.game.player.mechanics
             var pointDistance = fromPoint.DistanceTo(targetPoint);
             if (pointDistance > MaxInteractDistance)
             {
-                GD.PushWarning($"Player {Player.State.OwnerPeerId.Value} interacted with an object that was too far away.");
+                GD.PushWarning($"Player {Player.State.OwnerPeerId} interacted with an object that was too far away.");
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace Overlords.game.player.mechanics
             var result = GetWorld().DirectSpaceState.IntersectRay(fromPoint, targetPoint);
             if (result == null || !result.Contains("collider") || result["collider"] != target)
             {
-                GD.PushWarning($"Player {Player.State.OwnerPeerId.Value} failed to interact with the object (obscured?).");
+                GD.PushWarning($"Player {Player.State.OwnerPeerId} failed to interact with the object (obscured?).");
                 return;
             }
             

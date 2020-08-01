@@ -159,7 +159,7 @@ namespace Overlords.game.player.inventory
 
         public bool IsLocallyVisibleTo(int peerId)
         {
-            return peerId == Player.State.OwnerPeerId.Value;
+            return peerId == Player.State.OwnerPeerId;
         }
     }
 }

@@ -2,17 +2,19 @@
 
 namespace Overlords.game.player
 {
-    public class PlayerState : StateReplicator
+    public class PlayerState : StateConstructor
     {
-        public readonly ReplicatedField<int> OwnerPeerId;
-        public readonly ReplicatedField<string> DisplayName;
-        public readonly ReplicatedField<int> Balance;
+        public int OwnerPeerId;
+        public string DisplayName;
+        public int Balance;
+        public int Health;
         
         public PlayerState()
         {
-            OwnerPeerId = AddField<int>(true);
-            DisplayName = AddField<string>(true);
-            Balance = AddField<int>();
+            AddField(() => OwnerPeerId, v => OwnerPeerId = v);
+            AddField(() => DisplayName, v => DisplayName = v);
+            AddField(() => Balance, v => Balance = v);
+            AddField(() => Health, v => Health = v);
         }
     }
 }

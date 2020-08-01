@@ -1,14 +1,20 @@
-﻿using Overlords.helpers.replication;
+﻿using System;
+using Overlords.helpers.replication;
 
 namespace Overlords.game
 {
-    public class GameState : StateReplicator
+    public class GameState : StateConstructor
     {
-        public readonly ReplicatedField<int?> OverlordId;
+        public int? OverlordId;
         
         public GameState()
         {
-            OverlordId = AddField<int?>(isNullable: true);
+            AddField(() => OverlordId, v => OverlordId = v);
+        }
+
+        public void SvOverlordChanged(int? id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

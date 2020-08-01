@@ -2,15 +2,16 @@
 
 namespace Overlords.game.player.inventory
 {
-    public class ItemStackState : StateReplicator
+    public class ItemStackState : StateConstructor
     {
-        public readonly ReplicatedField<int> Material;
-        public readonly ReplicatedField<int> Amount;
+        public int Material;
+        public int Amount;
 
         public ItemStackState()
         {
-            Material = AddField<int>(true);  // TODO: Validate values.
-            Amount = AddField<int>();
+            // TODO: Validate values.
+            AddField(() => Material, v => Material = v);
+            AddField(() => Amount, v => Amount = v);
         }
     }
 }

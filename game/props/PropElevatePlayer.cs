@@ -9,7 +9,7 @@ namespace Overlords.game.props
         public void _OnObjectInteracted(PlayerRoot player)
         {
             var state = this.GetScene<GameRoot>().State;
-            state.OverlordId.SetValueReplicated(player.State.OwnerPeerId.Value, state);
+            state.SvOverlordChanged(player.State.OwnerPeerId);
             GD.Print("New overlord!");
         }
     }
