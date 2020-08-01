@@ -1,10 +1,15 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://game/GameRoot.cs" type="Script" id=1]
 [ext_resource path="res://helpers/replication/ListReplicator.cs" type="Script" id=2]
 [ext_resource path="res://game/GameState.cs" type="Script" id=3]
+[ext_resource path="res://game/props/PropElevatePlayer.cs" type="Script" id=4]
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=5]
 [ext_resource path="res://game/player/Player.tscn" type="PackedScene" id=6]
+
+[sub_resource type="BoxShape" id=3]
+
+[sub_resource type="CubeMesh" id=4]
 
 [sub_resource type="PlaneMesh" id=1]
 
@@ -26,6 +31,19 @@ far = 500.0
 [node name="DirectionalLight" type="DirectionalLight" parent="Static"]
 transform = Transform( -1, -7.74287e-08, 4.47035e-08, -2.31402e-08, 0.707107, 0.707107, -8.63605e-08, 0.707107, -0.707107, 0, 14, 0 )
 shadow_enabled = true
+
+[node name="ElevatePlayer" type="StaticBody" parent="Static" groups=[
+"register_interactable",
+]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -23 )
+script = ExtResource( 4 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Static/ElevatePlayer"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="Static/ElevatePlayer"]
+mesh = SubResource( 4 )
+material/0 = null
 
 [node name="Floor" type="MeshInstance" parent="Static"]
 transform = Transform( 50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0 )

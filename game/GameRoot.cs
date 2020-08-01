@@ -22,28 +22,25 @@ namespace Overlords.game
 		public override void _Ready()
 		{
 			this.Initialize();
+			
+			// Register interact targets
+			foreach (var target in GetTree().GetNodesInGroup(Constants.RegisterInteractable).Cast<Node>())
+			{
+				InteractTargets.Add(target.Name, target);
+			}
+			
 			if (this.GetNetworkMode() == NetworkMode.Server)
 			{
 				// Connect signals
 				GetTree().Connect(SceneTreeSignals.NetworkPeerConnected, this, nameof(_PeerConnected));
 				GetTree().Connect(SceneTreeSignals.NetworkPeerDisconnected, this, nameof(_PeerDisconnected));
-				
-				// Register interact targets
-				foreach (var target in GetTree().GetNodesInGroup("register_interactable").Cast<Node>())
-				{
-					InteractTargets.Add(target.Name, target);
-				}
 			}
 		}
 
 		public void _PeerConnected(int peerId)
 		{
 			GD.Print(peerId, " connected!");
-			
-			// Make the player overlord if no one else is. TODO: Temp
-			if (State.OverlordId.Value == null)
-				State.OverlordId.Value = peerId;
-			
+
 			// Create player
 			var player = (PlayerRoot) _playerPrefab.Instance();
 			player.Name = $"player_{peerId}";

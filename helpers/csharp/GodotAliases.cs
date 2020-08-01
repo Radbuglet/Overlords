@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Godot.Collections;
 
 namespace Overlords.helpers.csharp
 {
@@ -27,6 +28,13 @@ namespace Overlords.helpers.csharp
         public static Vector3 WithY(this Vector3 vector, float value)
         {
             return new Vector3(vector.x, value, vector.z);
+        }
+
+        public static void ConnectOrCreate(this Object emitter, string signal, Object target, string method, Array binds = null, uint flags = 0)
+        {
+            if (!emitter.HasSignal(signal))
+                emitter.AddUserSignal(signal);
+            emitter.Connect(signal, target, method, binds, flags);
         }
     }
 }

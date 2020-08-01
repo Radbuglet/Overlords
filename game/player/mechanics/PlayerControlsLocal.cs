@@ -34,21 +34,21 @@ namespace Overlords.game.player.mechanics
         {
             // Generate heading
             var heading = new Vector3();
-            var isSneaking = HasControl && Input.IsActionPressed("fps_sneak");
+            var isSneaking = HasControl && Input.IsActionPressed(Constants.FpsSneak);
             if (HasControl)
             {
-                if (Input.IsActionPressed("fps_forward")) heading += Vector3.Forward;
-                if (Input.IsActionPressed("fps_backward")) heading += Vector3.Back;
-                if (Input.IsActionPressed("fps_leftward")) heading += Vector3.Left;
-                if (Input.IsActionPressed("fps_rightward")) heading += Vector3.Right;
+                if (Input.IsActionPressed(Constants.FpsForward)) heading += Vector3.Forward;
+                if (Input.IsActionPressed(Constants.FpsBackward)) heading += Vector3.Back;
+                if (Input.IsActionPressed(Constants.FpsLeftward)) heading += Vector3.Left;
+                if (Input.IsActionPressed(Constants.FpsRightward)) heading += Vector3.Right;
                 heading = heading.Rotated(Vector3.Up, _rotation.x);
 
-                if (Input.IsActionPressed("fps_interact"))
+                if (Input.IsActionJustPressed(Constants.FpsInteract))
                     Root.Interaction.OnLocalInteract(isSneaking);
             }
 
             // Perform movement
-            Root.Mover.Move(delta, heading, HasControl && Input.IsActionPressed("fps_jump"),
+            Root.Mover.Move(delta, heading, HasControl && Input.IsActionPressed(Constants.FpsJump),
                 isSneaking, Root.Shared.IsOverlord());
             Root.MovementNet.ReplicateMyPosition();
             

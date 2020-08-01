@@ -1,14 +1,13 @@
 ﻿using Godot;
+using Overlords.game.props;
 using Overlords.helpers.csharp;
+using Overlords.helpers.network;
 using Overlords.helpers.tree;
 
 namespace Overlords.game.player.mechanics
 {
     public class PlayerInteraction : Spatial
     {
-        [Signal]
-        public delegate void OnObjectInteracted(PlayerRoot player);
-        
         private const float MaxInteractDistance = 12;
         private PlayerRoot Player => this.FindFirstAncestor<PlayerRoot>();
         
@@ -24,7 +23,8 @@ namespace Overlords.game.player.mechanics
             if (!Player.Game.InteractTargets.TryGetKey(target, out var targetId)) return;
 
             // Replicate interaction
-            this.Rpc(nameof(_Interacted), targetId, rayCast.GetCollisionPoint() - target.GetGlobalPosition(), isSneaking);
+            GD.Print("Attempting to interact...");
+            this.RpcMaster(nameof(_Interacted), targetId, rayCast.GetCollisionPoint() - target.GetGlobalPosition(), isSneaking);
         }
 
         [Master]
@@ -61,7 +61,7 @@ namespace Overlords.game.player.mechanics
                 return;
             }
             
-            target.EmitSignal(nameof(OnObjectInteracted), Player);
+            ((IProp) target)._OnObjectInteracted(Player);
         }
     }
 }

@@ -22,11 +22,11 @@ namespace Overlords.helpers.replication
             return field;
         }
 
-        protected void ReplicateField(IReplicatedField field)
+        public void ReplicateField(IReplicatedField field)
         {
             foreach (var peerId in this.EnumerateNetworkViewers())
             {
-                RpcId(peerId, nameof(_SetOneValue), field.Index, field.NetGetValue());
+                RpcId(peerId, nameof(_SetOneValue), field.Index, field.GetValueRaw());
             }
         }
 
@@ -35,7 +35,7 @@ namespace Overlords.helpers.replication
             var packet = new Array();
             foreach (var field in _fields)
             {
-                packet.Add(field.NetGetValue());
+                packet.Add(field.GetValueRaw());
             }
 
             return packet;
@@ -56,7 +56,7 @@ namespace Overlords.helpers.replication
             var index = 0;
             foreach (var field in _fields)
             {
-                if (!field.NetSetValue(values[index], true))
+                if (!field.InternalRemotelySetValue(values[index], true))
                     throw new InvalidCatchupException("Invalid field value for StateReplicator.");
                 index++;
             }
@@ -75,15 +75,15 @@ namespace Overlords.helpers.replication
                 GD.PushWarning($"Unknown field with index {index}. Expected an index between 0 and {_fields.Count - 1} inclusive.");
                 return;
             }
-            field.NetSetValue(value, false);
+            field.InternalRemotelySetValue(value, false);
         }
     }
 
     public interface IReplicatedField
     {
         int Index { get; }
-        bool NetSetValue(object raw, bool isFirstTime);
-        object NetGetValue();
+        bool InternalRemotelySetValue(object raw, bool isFirstTime);
+        object GetValueRaw();
     }
 
     public class ReplicatedField<T>: IReplicatedField
@@ -119,7 +119,13 @@ namespace Overlords.helpers.replication
             Validator = validator;
         }
 
-        public bool NetSetValue(object raw, bool isFirstTime)
+        public void SetValueReplicated(T value, StateReplicator replicator)
+        {
+            Value = value;
+            replicator.ReplicateField(this);
+        }
+
+        public bool InternalRemotelySetValue(object raw, bool isFirstTime)
         {
             // Ensure OneShot policy
             if (!isFirstTime && IsOneShot)
@@ -156,7 +162,7 @@ namespace Overlords.helpers.replication
             return true;
         }
 
-        public object NetGetValue()
+        public object GetValueRaw()
         {
             return Value;
         }
