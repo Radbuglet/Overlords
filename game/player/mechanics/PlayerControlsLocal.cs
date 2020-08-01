@@ -49,7 +49,7 @@ namespace Overlords.game.player.mechanics
 
             // Perform movement
             Root.Mover.Move(delta, heading, HasControl && Input.IsActionPressed("fps_jump"),
-                isSneaking, false);
+                isSneaking, Root.Shared.IsOverlord());
             Root.MovementNet.ReplicateMyPosition();
             
             // Update head and camera

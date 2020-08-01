@@ -8,8 +8,7 @@ using Overlords.helpers.tree;
 
 namespace Overlords.game.player.inventory
 {
-    // TODO: Culling
-    public class PlayerInventory : Node, IRequiresCatchup
+    public class PlayerInventory : Node, IRequiresCatchup, ICullsNetwork
     {
         [Signal]
         public delegate void StackMaterialUpdated(int slot, ItemStackRoot root);
@@ -156,6 +155,11 @@ namespace Overlords.game.player.inventory
             _stacks[currentSlot] = null;
             EmitSignal(nameof(StackMaterialUpdated), currentSlot, null);
             EmitSignal(nameof(StackMaterialUpdated), newSlot, stack);
+        }
+
+        public bool IsLocallyVisibleTo(int peerId)
+        {
+            return peerId == Player.State.OwnerPeerId.Value;
         }
     }
 }

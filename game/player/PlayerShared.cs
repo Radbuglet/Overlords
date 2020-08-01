@@ -59,5 +59,11 @@ namespace Overlords.game.player
         {
             return isSneaking ? _originalHeadPosition * _sneakReductionCoef : _originalHeadPosition;
         }
+
+        public bool IsOverlord()
+        {
+            // That's a lot of redirects. At least the component system was better in that regard.
+            return Player.Game.State.OverlordId.Value == Player.State.OwnerPeerId.Value;
+        }
     }
 }

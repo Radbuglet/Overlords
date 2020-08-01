@@ -3,12 +3,15 @@ using Overlords.game.player.gui;
 using Overlords.game.player.inventory;
 using Overlords.game.player.mechanics;
 using Overlords.game.shared;
+using Overlords.helpers.csharp;
 using Overlords.helpers.tree;
 
 namespace Overlords.game.player
 {
 	public class PlayerRoot : KinematicBody
 	{
+		public GameRoot Game => this.GetScene<GameRoot>();
+		
 		[LinkNodeStatic("Head")] public Spatial Head;
 		[LinkNodeStatic("Head/Camera")] public Camera FpsCamera;
 		[LinkNodeStatic("Head/Camera/RayCast")] public RayCast LookRayCast;

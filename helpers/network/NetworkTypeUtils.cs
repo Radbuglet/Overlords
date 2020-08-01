@@ -99,5 +99,15 @@ namespace Overlords.helpers.network
                     node().Purge();
             }
         }
+        
+        public static void RpcMaster(this Node node, string methodName, params object[] args)
+        {
+            node.RpcId(node.GetNetworkMaster(), methodName, args);
+        }
+        
+        public static void RpcUnreliableMaster(this Node node, string methodName, params object[] args)
+        {
+            node.RpcUnreliableId(node.GetNetworkMaster(), methodName, args);
+        }
     }
 }

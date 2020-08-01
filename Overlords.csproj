@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="game\GameRoot.cs" />
+    <Compile Include="game\GameState.cs" />
     <Compile Include="game\player\gui\AspectContainer.cs" />
     <Compile Include="game\player\gui\GuiController.cs" />
     <Compile Include="game\player\gui\InventoryMenu.cs" />

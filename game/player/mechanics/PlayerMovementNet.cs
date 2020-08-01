@@ -33,7 +33,11 @@ namespace Overlords.game.player.mechanics
             if (Player.Shared.ValidateOwnerOnlyRpc(nameof(_RequestMove))) return;
             Player.SetGlobalPosition(target);
             var ownerPeerId = GetTree().GetRpcSenderId();
-            this.RpcUnreliableVis(nameof(_SetPlayerPosition), target);
+            foreach (var viewer in this.EnumerateNetworkViewers())
+            {
+                if (viewer == ownerPeerId) continue;
+                RpcUnreliableId(viewer, nameof(_SetPlayerPosition), target);
+            }
         }
         
         [Puppet]
@@ -44,7 +48,7 @@ namespace Overlords.game.player.mechanics
 
         public void ReplicateMyPosition()
         {
-            this.Rpc(nameof(_RequestMove), Player.GetGlobalPosition());
+            this.RpcUnreliableMaster(nameof(_RequestMove), Player.GetGlobalPosition());
         }
     }
 }
