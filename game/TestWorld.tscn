@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://game/GameRoot.cs" type="Script" id=1]
 [ext_resource path="res://helpers/replication/ListReplicator.cs" type="Script" id=2]
@@ -7,17 +7,20 @@
 [ext_resource path="res://assets/materials/tile/tile_material.tres" type="Material" id=5]
 [ext_resource path="res://game/player/Player.tscn" type="PackedScene" id=6]
 
-[sub_resource type="BoxShape" id=3]
+[sub_resource type="BoxShape" id=1]
 
-[sub_resource type="CubeMesh" id=4]
+[sub_resource type="CubeMesh" id=2]
 
-[sub_resource type="PlaneMesh" id=1]
+[sub_resource type="PlaneMesh" id=3]
 
-[sub_resource type="BoxShape" id=2]
+[sub_resource type="BoxShape" id=4]
+
+[sub_resource type="CubeMesh" id=5]
 
 [node name="TestWorld" type="Spatial"]
 script = ExtResource( 1 )
 _playerPrefab = ExtResource( 6 )
+_pathToSpawn = NodePath("Static/Tower/OverlordSpawn")
 
 [node name="State" type="Node" parent="."]
 script = ExtResource( 3 )
@@ -35,19 +38,19 @@ shadow_enabled = true
 [node name="ElevatePlayer" type="StaticBody" parent="Static" groups=[
 "register_interactable",
 ]]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -23 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, -23 )
 script = ExtResource( 4 )
 
 [node name="CollisionShape" type="CollisionShape" parent="Static/ElevatePlayer"]
-shape = SubResource( 3 )
+shape = SubResource( 1 )
 
 [node name="MeshInstance" type="MeshInstance" parent="Static/ElevatePlayer"]
-mesh = SubResource( 4 )
+mesh = SubResource( 2 )
 material/0 = null
 
 [node name="Floor" type="MeshInstance" parent="Static"]
 transform = Transform( 50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0 )
-mesh = SubResource( 1 )
+mesh = SubResource( 3 )
 material/0 = ExtResource( 5 )
 
 [node name="StaticBody" type="StaticBody" parent="Static/Floor"]
@@ -57,7 +60,27 @@ __meta__ = {
 
 [node name="CollisionShape" type="CollisionShape" parent="Static/Floor/StaticBody"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0 )
-shape = SubResource( 2 )
+shape = SubResource( 4 )
+
+[node name="Tower" type="Spatial" parent="Static"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 32, -23 )
+
+[node name="OverlordSpawn" type="Position3D" parent="Static/Tower"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+
+[node name="Floor2" type="MeshInstance" parent="Static/Tower"]
+transform = Transform( 5, 0, 0, 0, 1, 0, 0, 0, 5, 0, 0, 0 )
+mesh = SubResource( 5 )
+material/0 = ExtResource( 5 )
+
+[node name="StaticBody" type="StaticBody" parent="Static/Tower/Floor2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="CollisionShape" type="CollisionShape" parent="Static/Tower/Floor2/StaticBody"]
+shape = SubResource( 4 )
 
 [node name="Entities" type="Spatial" parent="."]
 script = ExtResource( 2 )

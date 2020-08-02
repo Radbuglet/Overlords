@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Godot;
 using Godot.Collections;
-using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 
 namespace Overlords.helpers.replication
@@ -25,11 +24,22 @@ namespace Overlords.helpers.replication
             this.FlagRequiresCatchup();
         }
 
+        private static bool ValidateValue<T>(object raw, bool isNullable, out T value)
+        {
+            if (raw is T)
+            {
+                value = (T) raw;
+                return true;
+            }
+            value = default;
+            return isNullable && raw == null;
+        }
+        
         public void AddFieldValidated<T>(ValueGetter<T> getter, ValueSetter<T> setter, bool isNullable = false)
         {
             _fields.Add(new ReplicatedField
             {
-                Setter = raw => raw is T value && setter(value),
+                Setter = raw => ValidateValue(raw, isNullable, out T value) && setter(value),
                 Getter = () => getter()
             });
         }
@@ -40,7 +50,7 @@ namespace Overlords.helpers.replication
             {
                 Setter = raw =>
                 {
-                    if (!(raw is T value)) return false;
+                    if (!ValidateValue(raw, isNullable, out T value)) return false;
                     setter(value);
                     return true;
                 },
@@ -75,7 +85,7 @@ namespace Overlords.helpers.replication
             foreach (var field in _fields)
             {
                 if (!field.Setter(values[index]))
-                    throw new InvalidCatchupException("Invalid field value for StateReplicator.");
+                    throw new InvalidCatchupException("Invalid value for field no. " + index + " in StateReplicator.");
                 index++;
             }
         }

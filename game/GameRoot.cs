@@ -14,9 +14,12 @@ namespace Overlords.game
 	public class GameRoot : Spatial, ICullsNetwork
 	{
 		[FieldNotNull] [Export] private PackedScene _playerPrefab;
+		[FieldNotNull] [Export] private NodePath _pathToSpawn;
+		
 		[LinkNodeStatic("Entities")] public ListReplicator Entities;
 		[LinkNodeStatic("State")] public GameState State;
-
+		[LinkNodeEditor(nameof(_pathToSpawn))] public Position3D OverlordSpawnPoint;
+		
 		public readonly NodeDictionary<int, PlayerRoot> OnlinePlayers = new NodeDictionary<int, PlayerRoot>();
 		public readonly NodeDictionary<string, Node> InteractTargets = new NodeDictionary<string, Node>();
 		
