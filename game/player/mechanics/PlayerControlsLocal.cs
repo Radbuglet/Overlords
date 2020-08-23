@@ -14,11 +14,11 @@ namespace Overlords.game.player.mechanics
 
         private void ApplyRotation()
         {
-            Root.FpsCamera.Transform = new Transform(
+            Root.Camera.Transform = new Transform(
                 Basis.Identity
                     .Rotated(Vector3.Right, _rotation.y)
                     .Rotated(Vector3.Up, _rotation.x),
-                Root.FpsCamera.Translation);
+                Root.Camera.Translation);
         }
 
         public override void _Input(InputEvent @event)
@@ -34,21 +34,21 @@ namespace Overlords.game.player.mechanics
         {
             // Generate heading
             var heading = new Vector3();
-            var isSneaking = HasControl && Input.IsActionPressed(Constants.FpsSneak);
+            var isSneaking = HasControl && Input.IsActionPressed(Constants.Sneak);
             if (HasControl)
             {
-                if (Input.IsActionPressed(Constants.FpsForward)) heading += Vector3.Forward;
-                if (Input.IsActionPressed(Constants.FpsBackward)) heading += Vector3.Back;
-                if (Input.IsActionPressed(Constants.FpsLeftward)) heading += Vector3.Left;
-                if (Input.IsActionPressed(Constants.FpsRightward)) heading += Vector3.Right;
+                if (Input.IsActionPressed(Constants.Forward)) heading += Vector3.Forward;
+                if (Input.IsActionPressed(Constants.Backward)) heading += Vector3.Back;
+                if (Input.IsActionPressed(Constants.Leftward)) heading += Vector3.Left;
+                if (Input.IsActionPressed(Constants.Rightward)) heading += Vector3.Right;
                 heading = heading.Rotated(Vector3.Up, _rotation.x);
 
-                if (Input.IsActionJustPressed(Constants.FpsInteract))
+                if (Input.IsActionJustPressed(Constants.Interact))
                     Root.Interaction.OnLocalInteract(isSneaking);
             }
 
             // Perform movement
-            Root.Mover.Move(delta, heading, HasControl && Input.IsActionPressed(Constants.FpsJump),
+            Root.Mover.Move(delta, heading, HasControl && Input.IsActionPressed(Constants.Jump),
                 isSneaking, Root.Shared.IsOverlord());
             Root.MovementNet.ReplicateMyPosition();
             

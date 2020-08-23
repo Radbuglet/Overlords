@@ -13,7 +13,7 @@ namespace Overlords.game.player
 		public GameRoot Game => this.GetScene<GameRoot>();
 		
 		[LinkNodeStatic("Head")] public Spatial Head;
-		[LinkNodeStatic("Head/Camera")] public Camera FpsCamera;
+		[LinkNodeStatic("Head/Camera")] public Camera Camera;
 		[LinkNodeStatic("Head/Camera/RayCast")] public RayCast LookRayCast;
 		[LinkNodeStatic("Inventory")] public PlayerInventory Inventory;
 		[LinkNodeStatic("Gui")] public GuiController GuiController;

@@ -38,12 +38,12 @@ namespace Overlords.game.player
                 },
                 [NetObjectVariant.LocalAuthoritative] = new Func<Node>[]
                 {
-                    () => Player.FpsCamera,  // This also deletes LookRayCast
+                    () => Player.Camera,  // This also deletes LookRayCast
                     () => Player.ControlsLocal
                 }
             });
             if (variant == NetObjectVariant.LocalAuthoritative)
-                Player.FpsCamera.Current = true;
+                Player.Camera.Current = true;
         }
 
         // Common tasks
