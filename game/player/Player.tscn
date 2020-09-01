@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=2]
+[gd_scene load_steps=16 format=2]
 
 [ext_resource path="res://game/player/PlayerState.cs" type="Script" id=1]
 [ext_resource path="res://game/player/PlayerRoot.cs" type="Script" id=2]
@@ -8,11 +8,9 @@
 [ext_resource path="res://game/player/mechanics/PlayerControlsLocal.cs" type="Script" id=6]
 [ext_resource path="res://game/player/mechanics/PlayerInteraction.cs" type="Script" id=7]
 [ext_resource path="res://assets/ui/crosshair/crosshair.png" type="Texture" id=8]
-[ext_resource path="res://game/player/inventory/PlayerInventory.cs" type="Script" id=9]
-[ext_resource path="res://game/player/inventory/ItemStack.tscn" type="PackedScene" id=10]
 [ext_resource path="res://game/player/gui/GuiController.cs" type="Script" id=11]
 [ext_resource path="res://assets/ui/blur/blur_heavy.tres" type="Material" id=12]
-[ext_resource path="res://game/player/gui/AspectContainer.cs" type="Script" id=13]
+[ext_resource path="res://game/shared/AspectContainer.cs" type="Script" id=13]
 [ext_resource path="res://assets/ui/crosshair/crosshair_shader.tres" type="Material" id=14]
 
 [sub_resource type="StyleBoxFlat" id=1]
@@ -162,11 +160,6 @@ columns = 9
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="Inventory" type="Node" parent="."]
-script = ExtResource( 9 )
-_size = 36
-_stackPrefab = ExtResource( 10 )
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )

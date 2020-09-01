@@ -1,7 +1,7 @@
 ﻿using System;
 using Godot;
 
-namespace Overlords.game.player.gui
+namespace Overlords.game.shared
 {
     [Tool]
     public class AspectContainer : Container

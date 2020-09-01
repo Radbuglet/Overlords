@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Overlords.game.player.gui;
+using Overlords.game.shared;
 using Overlords.helpers.tree;
 
 namespace Overlords.game.player.mechanics

@@ -17,7 +17,7 @@ _global_script_class_icons={
 
 config/name="Overlords"
 run/main_scene="res://menu/MainMenu.tscn"
-config/icon="res://icon.png"
+config/icon="res://assets/defaults/icon.png"
 
 [input]
 
@@ -70,4 +70,4 @@ fps_pause={
 
 [rendering]
 
-environment/default_environment="res://default_env.tres"
+environment/default_environment="res://assets/defaults/default_env.tres"

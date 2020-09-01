@@ -1,6 +1,5 @@
 using Godot;
 using Overlords.game.player.gui;
-using Overlords.game.player.inventory;
 using Overlords.game.player.mechanics;
 using Overlords.game.shared;
 using Overlords.helpers.csharp;
@@ -15,7 +14,6 @@ namespace Overlords.game.player
 		[LinkNodeStatic("Head")] public Spatial Head;
 		[LinkNodeStatic("Head/Camera")] public Camera Camera;
 		[LinkNodeStatic("Head/Camera/RayCast")] public RayCast LookRayCast;
-		[LinkNodeStatic("Inventory")] public PlayerInventory Inventory;
 		[LinkNodeStatic("Gui")] public GuiController GuiController;
 		[LinkNodeStatic("Logic/State")] public PlayerState State;
 		[LinkNodeStatic("Logic/Shared")] public PlayerShared Shared;

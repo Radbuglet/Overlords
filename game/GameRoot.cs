@@ -4,6 +4,7 @@ using Godot;
 using Godot.Collections;
 using Overlords.game.player;
 using Overlords.game.props;
+using Overlords.game.shared;
 using Overlords.helpers.csharp;
 using Overlords.helpers.network;
 using Overlords.helpers.replication;

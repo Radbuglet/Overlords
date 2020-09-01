@@ -1,4 +1,4 @@
-﻿namespace Overlords.game
+﻿namespace Overlords.game.shared
 {
     public static class Constants
     {

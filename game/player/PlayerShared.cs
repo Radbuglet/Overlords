@@ -32,10 +32,6 @@ namespace Overlords.game.player
             var variant = GetTree().GetNetworkVariant(Player.State.OwnerPeerId);
             variant.ApplyToTree(new Dictionary<NetObjectVariant, IEnumerable<Func<Node>>>
             {
-                [NetObjectVariant.FlagAuthoritative] = new Func<Node>[]
-                {
-                    () => Player.Inventory
-                },
                 [NetObjectVariant.LocalAuthoritative] = new Func<Node>[]
                 {
                     () => Player.Camera,  // This also deletes LookRayCast
